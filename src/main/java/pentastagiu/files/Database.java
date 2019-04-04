@@ -34,37 +34,12 @@ public class Database{
      * This method populates the users list from our database file.
      */
     public void populateUsers(){
-        USERS_LIST.addAll(OperationFile.readUsersFromFile(FILE_USERS));
+        USERS_LIST.addAll(OperationFile.readUsersFromFile(USERS_FILE));
     }
 
     public void setTotalNrOfAccounts(){
         Account.setNrOfAccounts(OperationFile.calculateNrAccFromFile(FILE_ACCOUNTS));
     }
-
-// Inca nu merge cu ClassLoader. USERS_FILE e declarat si contine doar users.txt
-    // va urma
-
-//        public void populateUsers(){
-//        String line;
-//        int lineNumber = 1;
-//        ClassLoader classLoader = getClass().getClassLoader();
-//        File file = new File(classLoader.getResource(USERS_FILE).getFile());
-//        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-//            System.out.println("fedf");
-//            while ((line = br.readLine()) != null) {
-//                String[] userDetails = line.split(" ");
-//                if(userDetails.length == 2)
-//                    USERS_LIST.add(new User(userDetails[ACCOUNT_NUMBER],userDetails[USERNAME]));
-//                else
-//                    LOGGER.warn("Problem at line " + lineNumber +
-//                            " in 'users.txt' .User not added to our valid users list.");
-//                lineNumber++;
-//            }
-//        } catch (IOException e) {
-//            LOGGER.error("Database file not found. We can't proceed with checking credentials.");
-//            System.exit(0);
-//        }
-//    }
 
     /**
      * This method adds the account to accounts database file

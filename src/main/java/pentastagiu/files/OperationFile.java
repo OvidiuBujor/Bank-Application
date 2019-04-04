@@ -5,8 +5,7 @@ import pentastagiu.model.User;
 
 import java.io.*;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static pentastagiu.util.Constants.*;
 
@@ -49,24 +48,30 @@ public class OperationFile {
 
     /**
      * This method reads from a users database file and adds them to the USERS_LIST
-     * @param file the file that we read
+     * @param fileName the file name that we load from resource folder
      * @return true if all users from file were added; false otherwise
      */
-    static List<User> readUsersFromFile(File file){
+    static List<User> readUsersFromFile(String fileName){
         List<User> usersList = new ArrayList<>();
         String line;
         int lineNumber = 1;
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            while ((line = br.readLine()) != null) {
-                String[] userDetails = line.split(" ");
-                if(userDetails.length == 2)
-                    usersList.add(new User(userDetails[ACCOUNT_NUMBER],userDetails[USERNAME]));
-                else
-                    LOGGER.warn("Problem at line " + lineNumber +
-                            " in 'users.txt' files. User not added to our valid users list.");
-                lineNumber++;
+        try (InputStream resourceAsStream = OperationFile.class.getClassLoader().getResourceAsStream(fileName)) {
+            try (Scanner br = new Scanner(Objects.requireNonNull(resourceAsStream))) {
+                while (br.hasNext()) {
+                    line = br.nextLine();
+                    String[] userDetails = line.split(" ");
+                    if (userDetails.length == 2)
+                        usersList.add(new User(userDetails[ACCOUNT_NUMBER], userDetails[USERNAME]));
+                    else
+                        LOGGER.warn("Problem at line " + lineNumber +
+                                " in 'users.txt' files. User not added to our valid users list.");
+                    lineNumber++;
+                }
+                return usersList;
+            }catch (InputMismatchException e) {
+                LOGGER.error("The input you entered was not expected.");
+                System.exit(0);
             }
-            return usersList;
         } catch (IOException e) {
             LOGGER.error("Database file not found. We can't proceed with checking credentials.");
             System.exit(0);
