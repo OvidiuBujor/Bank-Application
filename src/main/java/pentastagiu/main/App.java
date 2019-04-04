@@ -5,7 +5,6 @@ import pentastagiu.files.Database;
 import pentastagiu.model.Login;
 import pentastagiu.util.Menu;
 
-
 /**
  * This class is the Main class of the project and the starting point.
  */
@@ -19,6 +18,7 @@ public class App {
      * @param args the arguments list for the project
      */
     public static void main(String[] args) {
+
         Database internalDatabase = Database.getInstance();
 
         internalDatabase.populateUsers();

@@ -42,6 +42,7 @@ public class Database{
     }
 
 // Inca nu merge cu ClassLoader. USERS_FILE e declarat si contine doar users.txt
+    // va urma
 
 //        public void populateUsers(){
 //        String line;
