@@ -28,7 +28,7 @@ public class Database{
      * stores the total number of accounts and
      * it's loaded when the application starts
      */
-    public static long nrOfAccounts;
+    private static long nrOfAccounts;
 
     private static Database instance = new Database();
 
@@ -54,6 +54,14 @@ public class Database{
 
     public void setTotalNrOfAccounts(){
         nrOfAccounts = calculateNrAccFromFile(FILE_ACCOUNTS);
+    }
+
+    public static void increaseTotalNrOfAccounts(){
+        nrOfAccounts++;
+    }
+
+    public static long getNrOfAccounts() {
+        return nrOfAccounts;
     }
 
     /**

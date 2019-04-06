@@ -190,9 +190,9 @@ public class UserCacheService {
         disposeUser();
     }
 
-    public void depositAmount(){
+    public void depositAmountToAcc(){
         if(isPosibleDeposit()) {
-            depositAmount(currentUser);
+            depositAmount();
             if (isUserAbleToTransfer())
                 posibleTransfer = true;
         }else
@@ -300,9 +300,8 @@ public class UserCacheService {
     /**
      * This method updates the balance of the account with the amount entered
      * from console(it can be also negative for withdraw).
-     * @param currentUser the owner of the account
      */
-    public void depositAmount(User currentUser){
+    public void depositAmount(){
 
         int opt;
         Account accountToDeposit;

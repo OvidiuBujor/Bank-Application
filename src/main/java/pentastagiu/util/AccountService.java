@@ -54,6 +54,7 @@ public class AccountService {
      * Updates the database of accounts by invoking
      * {@link Database#updateBalanceAccountInDatabase(BigDecimal,Account) updateBalanceAccountInDatabase} static method.
      * @param amount the amount entered from console
+     * @param account the account to be updated
      */
     public static void updateBalanceAccount(BigDecimal amount, Account account){
         BigDecimal balance = account.getBalance();

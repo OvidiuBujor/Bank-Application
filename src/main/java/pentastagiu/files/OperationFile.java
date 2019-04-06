@@ -3,7 +3,6 @@ package pentastagiu.files;
 import pentastagiu.model.ACCOUNT_TYPES;
 import pentastagiu.model.Account;
 import pentastagiu.model.User;
-import pentastagiu.util.AccountService;
 
 import java.io.*;
 import java.math.BigDecimal;
@@ -125,11 +124,10 @@ public class OperationFile {
                 }
             }
             System.out.println("Number of valid accounts: " + nrOffAccounts);
-            return nrOffAccounts;
         } catch (IOException e) {
             LOGGER.error("Accounts database file not found. We can't proceed with loading number of accounts.");
         }
-        return 0;
+        return nrOffAccounts;
     }
 
     /**

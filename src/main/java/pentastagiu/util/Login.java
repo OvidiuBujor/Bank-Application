@@ -29,7 +29,7 @@ public class Login {
      * {@link UserCacheService#displayAccounts()} method.</li>
      * <li> "Create account" creates a new account invoking
      * {@link UserCacheService#createNewAccount()} method..</li>
-     * <li> "Deposit/withdraw amount ..." invokes {@link UserCacheService#depositAmount()} method
+     * <li> "Deposit/withdraw amount ..." invokes {@link UserCacheService#depositAmountToAcc()} method
      *      to update the balance of the account.</li>
      * <li> "Transfer amount between your accounts" invokes {@link UserCacheService#transferAmountBetweenAcc()}
      * method to transfer between 2 accounts owned by the user.
@@ -65,7 +65,7 @@ public class Login {
                             break;
                         case "3":
                             if (userCacheService.inAccount())
-                                userCacheService.depositAmount();
+                                userCacheService.depositAmountToAcc();
                             else
                                 System.out.println("Please enter a valid option(1 or 2).");
                             break;

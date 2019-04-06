@@ -559,3 +559,11 @@
 [WARN ] 2019-04-06 21:04:50.305 [main] Constants:122 - Problem at line 3 in 'accounts.txt' files. Account didn't count to the total number of valid accounts.
 [WARN ] 2019-04-06 21:04:50.310 [main] Constants:122 - Problem at line 4 in 'accounts.txt' files. Account didn't count to the total number of valid accounts.
 [INFO ] 2019-04-06 21:05:09.994 [main] Constants:66 - Account added successfully.
+[WARN ] 2019-04-06 22:08:29.962 [main] Constants:66 - Problem at line 8 in 'users.txt' files. User not added to our valid users list.
+[WARN ] 2019-04-06 22:08:29.977 [main] Constants:66 - Problem at line 9 in 'users.txt' files. User not added to our valid users list.
+[WARN ] 2019-04-06 22:08:29.977 [main] Constants:66 - Problem at line 11 in 'users.txt' files. User not added to our valid users list.
+[WARN ] 2019-04-06 22:08:29.977 [main] Constants:121 - Problem at line 1 in 'accounts.txt' files. Account didn't count to the total number of valid accounts.
+[WARN ] 2019-04-06 22:08:29.977 [main] Constants:121 - Problem at line 2 in 'accounts.txt' files. Account didn't count to the total number of valid accounts.
+[WARN ] 2019-04-06 22:08:29.977 [main] Constants:121 - Problem at line 3 in 'accounts.txt' files. Account didn't count to the total number of valid accounts.
+[WARN ] 2019-04-06 22:08:29.977 [main] Constants:121 - Problem at line 4 in 'accounts.txt' files. Account didn't count to the total number of valid accounts.
+[INFO ] 2019-04-06 22:09:13.977 [main] Constants:74 - Account added successfully.

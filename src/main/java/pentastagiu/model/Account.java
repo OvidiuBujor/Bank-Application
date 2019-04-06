@@ -76,7 +76,7 @@ public class Account {
         } catch (InputMismatchException e) {
             LOGGER.error("The input you entered was not expected.");
         }
-        Database.nrOfAccounts++;
+        Database.increaseTotalNrOfAccounts();
     }
 
     /**
@@ -85,7 +85,7 @@ public class Account {
      * @return the account number created
      */
     private String generateAccountNumber(){
-        return String.format("%016d", Database.nrOfAccounts);
+        return String.format("%016d", Database.getNrOfAccounts());
     }
 
     public String getAccountNumber() {
