@@ -2,7 +2,7 @@ package pentastagiu.main;
 
 import pentastagiu.cache.UserCacheService;
 import pentastagiu.files.Database;
-import pentastagiu.model.Login;
+import pentastagiu.util.Login;
 import pentastagiu.util.Menu;
 
 /**

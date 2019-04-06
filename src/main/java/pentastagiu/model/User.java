@@ -1,7 +1,5 @@
 package pentastagiu.model;
-import pentastagiu.files.OperationFile;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
@@ -42,82 +40,6 @@ public class User {
         } catch (InputMismatchException e) {
             LOGGER.error("The input you entered was not expected.");
         }
-    }
-
-    /**
-     * This method populates the list of accounts that the user owns
-     * from the accounts database file.
-     */
-    public void setAccountsList() {
-        accountsList.addAll(OperationFile.readAccountsFromFileForUser(FILE_ACCOUNTS,this));
-    }
-
-    /**
-     * This method adds a new created account to the current user's
-     * {@link #accountsList accounts list}.
-     * @param account the new account that is added to the current user
-     */
-    public void addAccountToUserAccountsList(Account account){
-        accountsList.add(account);
-    }
-
-    /**
-     * This method returns the list of filtered accounts
-     * based on the currency of the account received as parameter
-     * except this account.
-     * @param accountFrom the account that we filter by
-     * @return the list of accounts with the same currency excluding it
-     */
-    List<Account> getFilteredAccounts(Account accountFrom) {
-        List<Account> filteredAccounts = new ArrayList<>();
-        for(Account account: accountsList){
-            if(account.getAccountType() == accountFrom.getAccountType() &&
-                    !account.getAccountNumber().equals(accountFrom.getAccountNumber()))
-                filteredAccounts.add(account);
-        }
-        return filteredAccounts;
-    }
-
-    /**
-     * @return the list of accounts with balance greater then 0.
-     */
-    List<Account> getValidTransferAccounts() {
-        List<Account> validTransferedAccounts = new ArrayList<>();
-        for(Account account: accountsList){
-            if(account.getBalance().compareTo(new BigDecimal(0)) > 0)
-                validTransferedAccounts.add(account);
-        }
-        return validTransferedAccounts;
-    }
-
-    /**
-     * This method returns the number of accounts with the currency
-     * specified by the parameter account_type
-     * @param account_type specifies the currency that we filter by
-     * @return the list of accounts with that currency
-     */
-    public int getTotalNumberOfAccountsForAccType(ACCOUNT_TYPES account_type){
-        int totalNumber = 0;
-        for(Account account: accountsList)
-            if(account.getAccountType() == account_type)
-                totalNumber++;
-        return totalNumber;
-    }
-
-    /**
-     * This method returns the number of accounts that can be used to transfer from
-     * with the currency specified by the parameter account_type
-     * @param account_type the curency we filter by
-     * @return number of accounts that satisfy these filters
-     */
-    public int getTotalNumberOfValidTransferAccounts(ACCOUNT_TYPES account_type){
-        int totalNumber = 0;
-        List<Account> validTransferedAccounts = getValidTransferAccounts();
-        for(Account account: validTransferedAccounts)
-            if(account.getBalance().compareTo(new BigDecimal(0)) > 0 &&
-                    account.getAccountType() == account_type)
-                totalNumber++;
-        return totalNumber;
     }
 
     /**

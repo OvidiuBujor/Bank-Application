@@ -1,12 +1,15 @@
 package pentastagiu.files;
 
+import pentastagiu.model.ACCOUNT_TYPES;
 import pentastagiu.model.Account;
 import pentastagiu.model.User;
+import pentastagiu.util.AccountService;
 
 import java.io.*;
 import java.math.BigDecimal;
 import java.util.*;
 
+import static pentastagiu.util.AccountService.validateAccount;
 import static pentastagiu.util.Constants.*;
 
 /**
@@ -27,7 +30,6 @@ public class OperationFile {
             return true;
         } catch (IOException e) {
             LOGGER.error("Unable to write to file.");
-            System.exit(0);
         }
         return false;
     }
@@ -42,7 +44,6 @@ public class OperationFile {
             bw.write(line);
         } catch (IOException e) {
             LOGGER.error("Unable to write to file.");
-            System.exit(0);
         }
     }
 
@@ -67,16 +68,13 @@ public class OperationFile {
                                 " in 'users.txt' files. User not added to our valid users list.");
                     lineNumber++;
                 }
-                return usersList;
             }catch (InputMismatchException e) {
                 LOGGER.error("The input you entered was not expected.");
-                System.exit(0);
             }
         } catch (IOException e) {
             LOGGER.error("Database file not found. We can't proceed with checking credentials.");
-            System.exit(0);
         }
-        return null;
+        return usersList;
     }
 
     /**
@@ -91,7 +89,7 @@ public class OperationFile {
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             while ((line = br.readLine()) != null) {
                 String[] accountDetails = line.split(" ");
-                if(Account.validateAccount(accountDetails)) {
+                if(validateAccount(accountDetails)) {
                     if (currentUser.getUsername().equals(accountDetails[USERNAME])) {
                         accountList.add(new Account(accountDetails[ACCOUNT_NUMBER].toUpperCase(),
                                 accountDetails[USERNAME],
@@ -100,12 +98,10 @@ public class OperationFile {
                     }
                 }
             }
-            return accountList;
         } catch (IOException e) {
             LOGGER.error("Accounts database file not found. We can't proceed with loading the accounts.");
-            System.exit(0);
         }
-        return null;
+        return accountList;
     }
 
     /**
@@ -120,7 +116,7 @@ public class OperationFile {
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             while ((line = br.readLine()) != null) {
                 String[] accountDetails = line.split(" ");
-                if(Account.validateAccount(accountDetails)) {
+                if(validateAccount(accountDetails)) {
                     nrOffAccounts++;
                 }else{
                     LOGGER.warn("Problem at line " + lineNumber +
@@ -132,7 +128,6 @@ public class OperationFile {
             return nrOffAccounts;
         } catch (IOException e) {
             LOGGER.error("Accounts database file not found. We can't proceed with loading number of accounts.");
-            System.exit(0);
         }
         return 0;
     }
@@ -170,11 +165,9 @@ public class OperationFile {
                 }
                 writeToFile(tempFile,line + "\n");
             }
-            return tempFile;
         }catch (IOException e) {
             LOGGER.error("Accounts database file not found. We can't proceed with adding the accounts.");
-            System.exit(0);
         }
-        return null;
+        return tempFile;
     }
 }

@@ -1,7 +1,6 @@
-package pentastagiu.model;
+package pentastagiu.util;
 
 import pentastagiu.cache.UserCacheService;
-import pentastagiu.util.Menu;
 
 import java.util.InputMismatchException;
 
@@ -32,7 +31,7 @@ public class Login {
      * {@link UserCacheService#createNewAccount()} method..</li>
      * <li> "Deposit/withdraw amount ..." invokes {@link UserCacheService#depositAmount()} method
      *      to update the balance of the account.</li>
-     * <li> "Transfer amount between your accounts" invokes {@link UserCacheService#transferAmount()}
+     * <li> "Transfer amount between your accounts" invokes {@link UserCacheService#transferAmountBetweenAcc()}
      * method to transfer between 2 accounts owned by the user.
      * Also 1 of these accounts need to have a balance greater then 0.</li>
      * <li> "Back to previous menu" displays the previous menu.</li>
