@@ -235,15 +235,34 @@ public class UserCacheService {
      * needs to have balance greater then 0.
      */
     public void transferAmount() {
-        int opt;
         Account accountFrom, accountTo;
         BigDecimal amount;
+
+        accountFrom = getAccountFrom();
+        amount = getAmountToBeTransferred(accountFrom);
+        accountTo = getAccountTo(accountFrom);
+
+        updateBalanceAccount(amount.negate(),accountFrom);
+        updateBalanceAccount(amount,accountTo);
+
+        System.out.println("Transfer to Account: {Account Number: " + accountTo.getAccountNumber() +
+                " New Balance: " + accountTo.getBalance().toString() + " " +
+                accountTo.getAccountType().toString() +"}");
+    }
+
+    /**
+     * This method returns the account selected by the user to transfer FROM.
+     * This account will be used by the {@link #transferAmount()} method.
+     * @return the account to transfer FROM
+     */
+    private Account getAccountFrom(){
         List<Account> validTransferAccounts = getValidTransferAccounts();
+        Account accountFrom = new Account();
+        int opt;
         try {
             if (validTransferAccounts.size() == 1) {
                 accountFrom = validTransferAccounts.get(0);
-            }
-            else {
+            } else {
                 System.out.println("\nList of Accounts to transfer FROM:");
                 Menu.printAccounts(validTransferAccounts);
                 while (true) {
@@ -257,17 +276,29 @@ public class UserCacheService {
                             System.out.println("Please enter a number between 1 and " + validTransferAccounts.size());
                         else {
                             accountFrom = validTransferAccounts.get(opt - 1);
-
                             break;
                         }
                     }
                 }
+                System.out.println("From Account: {Account Number: " + accountFrom.getAccountNumber() +
+                        " Balance: " + accountFrom.getBalance() + " " +
+                        accountFrom.getAccountType().toString() + "}");
             }
+        }catch (InputMismatchException e) {
+            LOGGER.error("The input you entered was not expected.");
+        }
+        return accountFrom;
+    }
 
-            System.out.println("From Account: {Account Number: " + accountFrom.getAccountNumber() +
-                    " Balance: " + accountFrom.getBalance() + " " +
-                    accountFrom.getAccountType().toString() + "}");
-
+    /**
+     * This method gets the amount entered from console by the user.
+     * This amount will be used by the {@link #transferAmount()} method.
+     * @param accountFrom the account from which the transfer will be made
+     * @return the amount to be transferred
+     */
+    private BigDecimal getAmountToBeTransferred(Account accountFrom){
+        BigDecimal amount = BigDecimal.valueOf(0);
+        try{
             while (true) {
                 System.out.print("Insert the amount that will transferred between accounts:");
                 if (!SCANNER.hasNextBigDecimal()) {
@@ -283,7 +314,23 @@ public class UserCacheService {
                         break;
                 }
             }
+        }catch (InputMismatchException e) {
+            LOGGER.error("The input you entered was not expected.");
+        }
+        return amount;
+    }
 
+    /**
+     * This method gets the account chosen by the user to transfer into.
+     * This account will be used by {@link #transferAmount()} method.
+     * @param accountFrom the account from which we will transfer
+     * @return the account where the transfer will be made
+     */
+    private Account getAccountTo(Account accountFrom){
+        int opt;
+        Account accountTo = new Account();
+
+        try{
             List<Account> filteredAccounts = getFilteredAccounts(accountFrom);
 
             if (filteredAccounts.size() == 1) {
@@ -308,14 +355,10 @@ public class UserCacheService {
                     }
                 }
             }
-            updateBalanceAccount(amount.negate(),accountFrom);
-            updateBalanceAccount(amount,accountTo);
-            System.out.println("Transfer to Account: {Account Number: " + accountTo.getAccountNumber() +
-                    " New Balance: " + accountTo.getBalance().toString() + " " +
-                    accountTo.getAccountType().toString() +"}");
         }catch (InputMismatchException e) {
             LOGGER.error("The input you entered was not expected.");
         }
+        return accountTo;
     }
 
     /**
@@ -323,17 +366,33 @@ public class UserCacheService {
      * from console(it can be also negative for withdraw).
      */
     private void depositAmount(){
-
-        int opt;
         Account accountToDeposit;
         BigDecimal amount;
 
+        accountToDeposit = getAccountToDeposit();
+
+        amount = getAmountToBeDeposited();
+
+        updateBalanceAccount(amount,accountToDeposit);
+
+        System.out.println("Updated Account: {Account Number: " + accountToDeposit.getAccountNumber() +
+                " New Balance: " + accountToDeposit.getBalance().toString() + " " +
+                accountToDeposit.getAccountType().toString() +"}");
+    }
+
+    /**
+     * This method gets the account selected by the user to deposit/withdraw from.
+     * This account will be used by {@link #depositAmount()} method.
+     * @return the account where the amount will be transferred
+     */
+    private Account getAccountToDeposit(){
+        int opt;
         List<Account> allAccounts = currentUser.getAccountsList();
+        Account accountToDeposit = new Account();
 
         try {
-            if (allAccounts.size() == 1) {
-                accountToDeposit = allAccounts.get(0);
-            }
+            if (allAccounts.size() == 1)
+                accountToDeposit =  allAccounts.get(0);
             else {
                 System.out.println("\nList of Accounts:");
                 Menu.printAccounts(allAccounts);
@@ -347,16 +406,29 @@ public class UserCacheService {
                         if (opt < 1 || opt > allAccounts.size())
                             System.out.println("Please enter a number between 1 and " + allAccounts.size());
                         else {
-                            accountToDeposit = allAccounts.get(opt - 1);
+                            accountToDeposit =  allAccounts.get(opt - 1);
                             break;
                         }
                     }
                 }
+                System.out.println("\nAccount To Deposit: {Account Number: " + accountToDeposit.getAccountNumber() +
+                        " Balance: " + accountToDeposit.getBalance() + " " +
+                        accountToDeposit.getAccountType().toString() + "}");
             }
-            System.out.println("\nAccount To Deposit: {Account Number: " + accountToDeposit.getAccountNumber() +
-                    " Balance: " + accountToDeposit.getBalance() + " " +
-                    accountToDeposit.getAccountType().toString() + "}");
+        }catch (InputMismatchException e) {
+            LOGGER.error("The input you entered was not expected.");
+        }
+        return accountToDeposit;
+    }
 
+    /**
+     * This method gets the amount entered from console by the user.
+     * This amount will be used by the {@link #depositAmount()}  method.
+     * @return the amount to be deposited
+     */
+    private BigDecimal getAmountToBeDeposited(){
+        BigDecimal amount = BigDecimal.valueOf(0);
+        try{
             while (true) {
                 System.out.print("Insert the amount that will update the current balance:");
                 if (!SCANNER.hasNextBigDecimal()) {
@@ -367,14 +439,10 @@ public class UserCacheService {
                     break;
                 }
             }
-
-            updateBalanceAccount(amount,accountToDeposit);
-            System.out.println("Updated Account: {Account Number: " + accountToDeposit.getAccountNumber() +
-                    " New Balance: " + accountToDeposit.getBalance().toString() + " " +
-                    accountToDeposit.getAccountType().toString() +"}");
         }catch (InputMismatchException e) {
             LOGGER.error("The input you entered was not expected.");
         }
+        return amount;
     }
 
     /**

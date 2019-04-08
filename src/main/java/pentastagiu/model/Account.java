@@ -31,6 +31,10 @@ public class Account {
      */
     private ACCOUNT_TYPES accountType;
 
+    public Account(){
+
+    }
+
     /**
      * Constructor that creates an object of type Account with the information below
      * and it's used for validating already created accounts.
