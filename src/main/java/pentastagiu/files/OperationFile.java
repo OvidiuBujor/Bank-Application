@@ -18,7 +18,7 @@ import static pentastagiu.util.Constants.*;
 public class OperationFile {
 
     /**
-     * This method writes an Account to the Accounts database file
+     * This method writes an Account to the AccountsList database file
      * @param account the account to be written
      * @param file the file where is written
      * @return true if the account was written to the file
@@ -95,7 +95,7 @@ public class OperationFile {
                 }
             }
         } catch (IOException e) {
-            LOGGER.error("Accounts database file not found. We can't proceed with loading the accounts.");
+            LOGGER.error("AccountsList database file not found. We can't proceed with loading the accounts.");
         }
         return accountList;
     }
@@ -122,13 +122,13 @@ public class OperationFile {
             }
             System.out.println("Number of valid accounts: " + nrOffAccounts);
         } catch (IOException e) {
-            LOGGER.error("Accounts database file not found. We can't proceed with loading number of accounts.");
+            LOGGER.error("AccountsList database file not found. We can't proceed with loading number of accounts.");
         }
         return nrOffAccounts;
     }
 
     /**
-     * This method creates a new database file for Accounts with the updated balance
+     * This method creates a new database file for AccountsList with the updated balance
      * for the account received as parameter.
      * @param balance the new balance of the account
      * @param account the acccount to be updated
@@ -161,7 +161,7 @@ public class OperationFile {
                 writeToFile(tempFile,line + "\n");
             }
         }catch (IOException e) {
-            LOGGER.error("Accounts database file not found. We can't proceed with adding the accounts.");
+            LOGGER.error("AccountsList database file not found. We can't proceed with adding the accounts.");
         }
         return tempFile;
     }

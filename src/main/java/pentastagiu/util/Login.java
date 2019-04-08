@@ -24,14 +24,14 @@ public class Login {
      * In case of option:
      * <ul>
      * <li> "Log in" checks the user credentials invoking
-     * {@link UserCacheService#checkUserCredentials()} method.</li>
-     * <li> "Display accounts .." displays accounts for current user invoking the
-     * {@link UserCacheService#displayAccounts()} method.</li>
+     * {@link MenuOptionService#checkUserCredentials()} method.</li>
+     * <li> "DisplayMenu accounts .." displays accounts for current user invoking the
+     * {@link MenuOptionService#displayAccounts()} method.</li>
      * <li> "Create account" creates a new account invoking
-     * {@link UserCacheService#createNewAccount()} method..</li>
-     * <li> "Deposit/withdraw amount ..." invokes {@link UserCacheService#depositAmountToAcc()} method
+     * {@link MenuOptionService#createNewAccount()} method..</li>
+     * <li> "Deposit/withdraw amount ..." invokes {@link MenuOptionService#depositAmountToAcc()} method
      *      to update the balance of the account.</li>
-     * <li> "Transfer amount between your accounts" invokes {@link UserCacheService#transferAmountBetweenAcc()}
+     * <li> "Transfer amount between your accounts" invokes {@link MenuOptionService#transferAmountBetweenAcc()}
      * method to transfer between 2 accounts owned by the user.
      * Also 1 of these accounts need to have a balance greater then 0.</li>
      * <li> "Back to previous menu" displays the previous menu.</li>
@@ -40,6 +40,9 @@ public class Login {
      * @param userCacheService the cached user that is logged in
      */
     public void beginProcessing(UserCacheService userCacheService) {
+
+        MenuOptionService handleMenuOptions = new MenuOptionService(userCacheService);
+
         while (true) {
             try {
                 while (SCANNER.hasNext()) {
@@ -47,17 +50,17 @@ public class Login {
                     switch (opt) {
                         case "1":
                             if (userCacheService.inAccount())
-                                userCacheService.createNewAccount();
+                                handleMenuOptions.createNewAccount();
                             else if (userCacheService.isLogged())
                                 userCacheService.setInAccount(true);
                             else
-                                userCacheService.checkUserCredentials();
+                                handleMenuOptions.checkUserCredentials();
                             break;
                         case "2":
                             if (userCacheService.inAccount())
-                                userCacheService.displayAccounts();
+                                handleMenuOptions.displayAccounts();
                             else if (userCacheService.isLogged())
-                                userCacheService.logoutUser();
+                                handleMenuOptions.logoutUser();
                             else {
                                 System.out.println("Bye!");
                                 System.exit(0);
@@ -65,19 +68,19 @@ public class Login {
                             break;
                         case "3":
                             if (userCacheService.inAccount())
-                                userCacheService.depositAmountToAcc();
+                                handleMenuOptions.depositAmountToAcc();
                             else
                                 System.out.println("Please enter a valid option(1 or 2).");
                             break;
                         case "4":
                             if (userCacheService.inAccount())
-                                userCacheService.transferAmount();
+                                handleMenuOptions.transferAmountBetweenAcc();
                             else
                                 System.out.println("Please enter a valid option(1 or 2).");
                             break;
                         case "5":
                             if (userCacheService.inAccount())
-                                userCacheService.goToPreviousMenu();
+                                handleMenuOptions.goToPreviousMenu();
                             else
                                 System.out.println("Please enter a valid option(1 or 2).");
                             break;
@@ -85,18 +88,23 @@ public class Login {
                             break;
                         default:
                             if (userCacheService.inAccount())
-                                System.out.println("Please enter a valid option(1, 2, 3, 4 or 5).");
+                                if(userCacheService.isPosibleDeposit() && userCacheService.isPosibleTransfer())
+                                    System.out.println("Please enter a valid option(1, 2, 3, 4 or 5).");
+                                else if(userCacheService.isPosibleDeposit())
+                                    System.out.println("Please enter a valid option(1, 2, 3 or 4).");
+                                else
+                                    System.out.println("Please enter a valid option(1 or 2).");
                             else
                                 System.out.println("Please enter a valid option(1 or 2).");
                             break;
                     }
                     if(!opt.equals("")) { //added for scanner.nextBigDecimal() that reads an empty string after the BigDecimal
                         if (userCacheService.inAccount())
-                            Menu.printAccountMenu(userCacheService);
+                            DisplayMenu.Account(userCacheService);
                         else if (userCacheService.isLogged())
-                            Menu.printLoggedInMenu(userCacheService);
+                            DisplayMenu.LoggedIn(userCacheService);
                         else
-                            Menu.printInitialMenu();
+                            DisplayMenu.Initial();
                     }
                 }
             } catch (InputMismatchException e) {

@@ -1,0 +1,108 @@
+package pentastagiu.util;
+
+import pentastagiu.cache.UserCacheService;
+import pentastagiu.files.Database;
+import pentastagiu.files.OperationFile;
+import pentastagiu.model.Account;
+import pentastagiu.model.User;
+
+import static pentastagiu.util.Constants.USERS_FILE;
+
+/**
+ * Helper class that implements logic for all Menu Options
+ */
+public class MenuOptionService {
+
+    private UserCacheService userCacheService;
+
+    public MenuOptionService(UserCacheService userCacheService){
+        this.userCacheService = userCacheService;
+    }
+
+    /**
+     * This method creates a new account for the current logged in user.
+     * Also marks the user as being able to deposit amounts and if he qualifies
+     * also marks the user as being able to transfer.
+     */
+    public void createNewAccount(){
+        Account accountCreated = new Account(userCacheService.getCurrentUser());
+        Database.addAccountToDatabase(accountCreated);
+        userCacheService.addAccountToUserAccountsList(accountCreated);
+        userCacheService.setPosibleDeposit(true);
+        if (userCacheService.isUserAbleToTransfer())
+            userCacheService.setPosibleTransfer(true);
+    }
+
+    /**
+     * This method checks the user for his credentials against the
+     * database. If his credentials are ok it loads the user in the memory by
+     * invoking {@link UserCacheService#loadUser()} method.
+     */
+    public void checkUserCredentials(){
+        userCacheService.setCurrentUser(new User());
+        boolean result = OperationFile.validateUserFromFile(userCacheService.getCurrentUser(), USERS_FILE);
+        userCacheService.setLogged(result);
+        if (userCacheService.isLogged())
+            userCacheService.loadUser();
+    }
+
+    /**
+     * This method displays all the accounts for the current logged in user.
+     */
+    public void displayAccounts(){
+        if (userCacheService.isPosibleDeposit()) {
+            System.out.println("\nList of AccountsList:");
+            DisplayMenu.AccountsList(userCacheService.getCurrentUser().getAccountsList());
+        }else
+            userCacheService.setInAccount(false);
+    }
+
+    /**
+     * This method removes the current logged in user from memory
+     * by invoking {@link UserCacheService#disposeUser()} method.
+     */
+    public void logoutUser(){
+        System.out.println("Successfully logout.");
+        userCacheService.disposeUser();
+    }
+
+    /**
+     * This method handles the deposit to an account logic by invoking the
+     * {@link UserCacheService#depositAmount()} method. Also after the deposit it checks
+     * if the user is able to transfer between his accounts and marks him.
+     */
+    public void depositAmountToAcc(){
+        if(userCacheService.isPosibleDeposit()) {
+            userCacheService.depositAmount();
+            if (userCacheService.isUserAbleToTransfer())
+                userCacheService.setPosibleTransfer(true);
+        }else
+            System.out.println("Please enter a valid option(1 or 2).");
+    }
+
+
+    /**
+     * This method handles the logic for transferring between 2 accounts by
+     * invoking the {@link UserCacheService#transferAmount()} method.
+     */
+    public void transferAmountBetweenAcc(){
+        if (userCacheService.isPosibleTransfer())
+            userCacheService.transferAmount();
+        else if (userCacheService.isPosibleDeposit())
+            userCacheService.setInAccount(false);
+        else
+            System.out.println("Please enter a valid option(1 or 2).");
+    }
+
+    /**
+     * This method handles the logic for the menu option "Back to previous menu"
+     */
+    public void goToPreviousMenu(){
+        if(userCacheService.isPosibleDeposit() && userCacheService.isPosibleTransfer())
+            userCacheService.setInAccount(false);
+        else if(userCacheService.isPosibleDeposit())
+            System.out.println("Please enter a valid option(1, 2, 3 or 4).");
+        else
+            System.out.println("Please enter a valid option(1 or 2).");
+    }
+}

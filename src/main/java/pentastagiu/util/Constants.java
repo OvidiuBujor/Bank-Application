@@ -37,7 +37,7 @@ public final class Constants {
     public final static Logger LOGGER = LogManager.getLogger();
 
     /**
-     * stores the database file for Accounts
+     * stores the database file for AccountsList
      */
     public static File FILE_ACCOUNTS = new File("src/main/resources/accounts.txt");
 }

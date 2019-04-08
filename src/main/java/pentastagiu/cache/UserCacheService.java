@@ -1,11 +1,10 @@
 package pentastagiu.cache;
 
-import pentastagiu.files.Database;
 import pentastagiu.files.OperationFile;
 import pentastagiu.model.ACCOUNT_TYPES;
 import pentastagiu.model.Account;
 import pentastagiu.model.User;
-import pentastagiu.util.Menu;
+import pentastagiu.util.DisplayMenu;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -26,7 +25,7 @@ public class UserCacheService {
      */
     private boolean isLogged = false;
     /**
-     * Stores the state if the {@link #currentUser}  is in account Menu
+     * Stores the state if the {@link #currentUser}  is in account DisplayMenu
      */
     private boolean inAccount = false;
 
@@ -49,7 +48,7 @@ public class UserCacheService {
      * marks him if he can deposit or if he can transfer between
      * his accounts.
      */
-    private void loadUser() {
+    public void loadUser() {
         setAccountsList();
         if(currentUser.getAccountsList().size() > 0)
             posibleDeposit = true;
@@ -60,7 +59,7 @@ public class UserCacheService {
     /**
      * This method removes the current logged in user from memory.
      */
-    private void disposeUser() {
+    public void disposeUser() {
         currentUser = null;
         isLogged = false;
         inAccount = false;
@@ -80,7 +79,7 @@ public class UserCacheService {
      * This method adds a new created account to the current user's.
      * @param account the new account that is added to the current user
      */
-    private void addAccountToUserAccountsList(Account account){
+    public void addAccountToUserAccountsList(Account account){
         currentUser.getAccountsList().add(account);
     }
 
@@ -106,11 +105,26 @@ public class UserCacheService {
      */
     private List<Account> getValidTransferAccounts() {
         List<Account> validTransferedAccounts = new ArrayList<>();
-        for(Account account: currentUser.getAccountsList()){
+        for (Account account: currentUser.getAccountsList()){
             if(account.getBalance().compareTo(new BigDecimal(0)) > 0)
                 validTransferedAccounts.add(account);
         }
+        removeAccountThatDoesNotQualify(validTransferedAccounts);
         return validTransferedAccounts;
+    }
+
+    /**
+     * This method removes all the single valid transfer accounts from the validTransferredAccounts
+     * list. This is needed because it is possible to have only 1 valid account to transfer from
+     * but no accounts to transfer into for one currency and 2 accounts for the other currency.
+     * @param validTransferedAccounts the list with all the valid transfer account
+     * @return the list with only the accounts valid (at least 2 for a currency)
+     */
+    private void removeAccountThatDoesNotQualify(List<Account> validTransferedAccounts){
+        if(getTotalNumberOfAccountsForAccType(ACCOUNT_TYPES.EUR) < 2)
+            validTransferedAccounts.removeIf(account -> account.getAccountType().equals(ACCOUNT_TYPES.EUR));
+        if(getTotalNumberOfAccountsForAccType(ACCOUNT_TYPES.RON) < 2)
+            validTransferedAccounts.removeIf(account -> account.getAccountType().equals(ACCOUNT_TYPES.RON));
     }
 
     /**
@@ -145,88 +159,13 @@ public class UserCacheService {
 
     /**
      * This method checks to see if the user is able to transfer between his accounts.
-     * The user needs to have 2 accounts with the same currency and at least 1 of them
-     * should have balance greater then 0.
      * @return true if user is able to transfer; false otherwise
      */
-    private boolean isUserAbleToTransfer(){
+    public boolean isUserAbleToTransfer(){
         return (getTotalNumberOfAccountsForAccType(ACCOUNT_TYPES.EUR) > 1 &&
                 getTotalNumberOfValidTransferAccounts(ACCOUNT_TYPES.EUR) > 0) ||
                 (getTotalNumberOfAccountsForAccType(ACCOUNT_TYPES.RON) > 1 &&
                         getTotalNumberOfValidTransferAccounts(ACCOUNT_TYPES.RON) > 0);
-    }
-
-    /**
-     * This method creates a new account for the current logged in user.
-     * Also marks the user as being able to deposit amounts and if he qualifies
-     * also marks the user as being able to transfer.
-     */
-    public void createNewAccount(){
-        Account accountCreated = new Account(currentUser);
-        Database.addAccountToDatabase(accountCreated);
-        addAccountToUserAccountsList(accountCreated);
-        posibleDeposit = true;
-        if (isUserAbleToTransfer())
-            posibleTransfer = true;
-    }
-
-    /**
-     * This method checks the user for his credentials against the
-     * database. If his credentials are ok it loads the user in the memory by
-     * invoking {@link #loadUser()} method.
-     */
-    public void checkUserCredentials(){
-        currentUser = new User();
-        isLogged = OperationFile.validateUserFromFile(currentUser, USERS_FILE);
-        if (isLogged())
-            loadUser();
-    }
-
-    /**
-     * This method displays all the accounts for the current logged in user.
-     */
-    public void displayAccounts(){
-        if (isPosibleDeposit()) {
-            System.out.println("\nList of Accounts:");
-            Menu.printAccounts(currentUser.getAccountsList());
-        }else
-            setInAccount(false);
-    }
-
-    /**
-     * This method removes the current logged in user from memory
-     * by invoking {@link #disposeUser()} method.
-     */
-    public void logoutUser(){
-        System.out.println("Successfully logout.");
-        disposeUser();
-    }
-
-    /**
-     * This method handles the deposit to an account logic by invoking the
-     * {@link #depositAmount()} method. Also after the deposit it checks
-     * if the user is able to transfer between his accounts and marks him.
-     */
-    public void depositAmountToAcc(){
-        if(isPosibleDeposit()) {
-            depositAmount();
-            if (isUserAbleToTransfer())
-                posibleTransfer = true;
-        }else
-            System.out.println("Please enter a valid option(1 or 2).");
-    }
-
-    /**
-     * This method handles the logic for transferring between 2 accounts by
-     * invoking the {@link #transferAmount()} method.
-     */
-    public void transferAmountBetweenAcc(){
-        if (isPosibleTransfer())
-            transferAmount();
-        else if (isPosibleDeposit())
-            setInAccount(false);
-        else
-            System.out.println("Please enter a valid option(1 or 2).");
     }
 
     /**
@@ -263,8 +202,8 @@ public class UserCacheService {
             if (validTransferAccounts.size() == 1) {
                 accountFrom = validTransferAccounts.get(0);
             } else {
-                System.out.println("\nList of Accounts to transfer FROM:");
-                Menu.printAccounts(validTransferAccounts);
+                System.out.println("\nList of AccountsList to transfer FROM:");
+                DisplayMenu.AccountsList(validTransferAccounts);
                 while (true) {
                     System.out.print("Please enter the number of the account you want to transfer from:");
                     if (!SCANNER.hasNextInt()) {
@@ -280,13 +219,13 @@ public class UserCacheService {
                         }
                     }
                 }
-                System.out.println("From Account: {Account Number: " + accountFrom.getAccountNumber() +
-                        " Balance: " + accountFrom.getBalance() + " " +
-                        accountFrom.getAccountType().toString() + "}");
             }
         }catch (InputMismatchException e) {
             LOGGER.error("The input you entered was not expected.");
         }
+        System.out.println("From Account: {Account Number: " + accountFrom.getAccountNumber() +
+                " Balance: " + accountFrom.getBalance() + " " +
+                accountFrom.getAccountType().toString() + "}");
         return accountFrom;
     }
 
@@ -338,7 +277,7 @@ public class UserCacheService {
             }
             else {
                 System.out.println("\nList of accounts to transfer TO:");
-                Menu.printAccounts(filteredAccounts);
+                DisplayMenu.AccountsList(filteredAccounts);
                 while (true) {
                     System.out.print("Please enter the number of the account you want to transfer to:");
                     if (!SCANNER.hasNextInt()) {
@@ -365,7 +304,7 @@ public class UserCacheService {
      * This method updates the balance of the account with the amount entered
      * from console(it can be also negative for withdraw).
      */
-    private void depositAmount(){
+    public void depositAmount(){
         Account accountToDeposit;
         BigDecimal amount;
 
@@ -394,8 +333,8 @@ public class UserCacheService {
             if (allAccounts.size() == 1)
                 accountToDeposit =  allAccounts.get(0);
             else {
-                System.out.println("\nList of Accounts:");
-                Menu.printAccounts(allAccounts);
+                System.out.println("\nList of AccountsList:");
+                DisplayMenu.AccountsList(allAccounts);
                 while (true) {
                     System.out.print("Please enter the number of the account you want to deposit in:");
                     if (!SCANNER.hasNextInt()) {
@@ -411,13 +350,13 @@ public class UserCacheService {
                         }
                     }
                 }
-                System.out.println("\nAccount To Deposit: {Account Number: " + accountToDeposit.getAccountNumber() +
-                        " Balance: " + accountToDeposit.getBalance() + " " +
-                        accountToDeposit.getAccountType().toString() + "}");
             }
         }catch (InputMismatchException e) {
             LOGGER.error("The input you entered was not expected.");
         }
+        System.out.println("\nAccount To Deposit: {Account Number: " + accountToDeposit.getAccountNumber() +
+                " Balance: " + accountToDeposit.getBalance() + " " +
+                accountToDeposit.getAccountType().toString() + "}");
         return accountToDeposit;
     }
 
@@ -445,19 +384,6 @@ public class UserCacheService {
         return amount;
     }
 
-    /**
-     * This method handles the logic for the menu option "Back to previous menu"
-     */
-    public void goToPreviousMenu(){
-        if(isPosibleDeposit() && isPosibleTransfer())
-            setInAccount(false);
-        else if(isPosibleDeposit())
-            System.out.println("Please enter a valid option(1, 2, 3 or 4).");
-        else
-            System.out.println("Please enter a valid option(1 or 2).");
-    }
-
-
     public boolean isLogged() {
         return isLogged;
     }
@@ -481,5 +407,21 @@ public class UserCacheService {
 
     public boolean isPosibleDeposit() {
         return posibleDeposit;
+    }
+
+    public void setLogged(boolean logged) {
+        isLogged = logged;
+    }
+
+    public void setPosibleDeposit(boolean posibleDeposit) {
+        this.posibleDeposit = posibleDeposit;
+    }
+
+    public void setPosibleTransfer(boolean posibleTransfer) {
+        this.posibleTransfer = posibleTransfer;
+    }
+
+    public void setCurrentUser(User currentUser) {
+        this.currentUser = currentUser;
     }
 }
