@@ -13,7 +13,7 @@ import static pentastagiu.util.Constants.SCANNER;
  * The validation of login is based on a database file that
  * contains username and passwords for all registered users.
  * Other operations are:
- *  - the user can check his currents accounts and create new ones.
+ *  - the user can check his currents accounts and create new ones
  *  - the user can deposit/withdraw amounts from his accounts
  *  - the user can transfer between his accounts
  */

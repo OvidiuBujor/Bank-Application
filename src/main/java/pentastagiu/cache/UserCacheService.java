@@ -12,36 +12,43 @@ import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 
-import static pentastagiu.files.Database.USERS_LIST;
 import static pentastagiu.util.AccountService.updateBalanceAccount;
 import static pentastagiu.util.Constants.*;
 
+/**
+ * This class contains all logic for the current logged in user.
+ */
 public class UserCacheService {
 
     private User currentUser;
     /**
-     * Stores the state if the #currentUser is logged in
+     * Stores the state if the {@link #currentUser} is logged in
      */
     private boolean isLogged = false;
     /**
-     * Stores the state if the #currentUser is in account Menu
+     * Stores the state if the {@link #currentUser}  is in account Menu
      */
     private boolean inAccount = false;
 
     /**
-     * Stores the state if the #currentUser can make a deposit
+     * Stores the state if the {@link #currentUser}  can make a deposit
      * - true if we have at least 1 account; false otherwise
      */
     private boolean posibleDeposit = false;
 
     /**
-     * Stores the state if the #currentUser can make a transfer
+     * Stores the state if the {@link #currentUser}  can make a transfer
      * between 2 of his accounts
      * - true if we have at least 2 accounts of the same currency
      *  and 1 of them has balance greater then 0; false otherwise
      */
     private boolean posibleTransfer = false;
 
+    /**
+     * This method loads the current user into the memory and
+     * marks him if he can deposit or if he can transfer between
+     * his accounts.
+     */
     private void loadUser() {
         setAccountsList();
         if(currentUser.getAccountsList().size() > 0)
@@ -50,6 +57,9 @@ public class UserCacheService {
             posibleTransfer = true;
     }
 
+    /**
+     * This method removes the current logged in user from memory.
+     */
     private void disposeUser() {
         currentUser = null;
         isLogged = false;
@@ -59,25 +69,10 @@ public class UserCacheService {
     }
 
     /**
-     * This method checks current user against the users list and
-     * displays the result to the console.
-     * @return true if user exists in database; false otherwise
-     */
-    private boolean validateUser() {
-
-        if (USERS_LIST.contains(currentUser)) {
-            System.out.println("Welcome " + currentUser.getUsername() + "!");
-            return true;
-        } else
-            System.out.println("Wrong username/password.");
-        return false;
-    }
-
-    /**
      * This method populates the list of accounts that the user owns
      * from the accounts database file.
      */
-    public void setAccountsList() {
+    private void setAccountsList() {
         currentUser.getAccountsList().addAll(OperationFile.readAccountsFromFileForUser(FILE_ACCOUNTS,currentUser));
     }
 
@@ -85,7 +80,7 @@ public class UserCacheService {
      * This method adds a new created account to the current user's.
      * @param account the new account that is added to the current user
      */
-    public void addAccountToUserAccountsList(Account account){
+    private void addAccountToUserAccountsList(Account account){
         currentUser.getAccountsList().add(account);
     }
 
@@ -96,7 +91,7 @@ public class UserCacheService {
      * @param accountFrom the account that we filter by
      * @return the list of accounts with the same currency excluding it
      */
-    public List<Account> getFilteredAccounts(Account accountFrom) {
+    private List<Account> getFilteredAccounts(Account accountFrom) {
         List<Account> filteredAccounts = new ArrayList<>();
         for(Account account: currentUser.getAccountsList()){
             if(account.getAccountType() == accountFrom.getAccountType() &&
@@ -109,7 +104,7 @@ public class UserCacheService {
     /**
      * @return the list of accounts with balance greater then 0.
      */
-    public List<Account> getValidTransferAccounts() {
+    private List<Account> getValidTransferAccounts() {
         List<Account> validTransferedAccounts = new ArrayList<>();
         for(Account account: currentUser.getAccountsList()){
             if(account.getBalance().compareTo(new BigDecimal(0)) > 0)
@@ -124,7 +119,7 @@ public class UserCacheService {
      * @param account_type specifies the currency that we filter by
      * @return the list of accounts with that currency
      */
-    public int getTotalNumberOfAccountsForAccType(ACCOUNT_TYPES account_type){
+    private int getTotalNumberOfAccountsForAccType(ACCOUNT_TYPES account_type){
         int totalNumber = 0;
         for(Account account: currentUser.getAccountsList())
             if(account.getAccountType() == account_type)
@@ -138,7 +133,7 @@ public class UserCacheService {
      * @param account_type the curency we filter by
      * @return number of accounts that satisfy these filters
      */
-    public int getTotalNumberOfValidTransferAccounts(ACCOUNT_TYPES account_type){
+    private int getTotalNumberOfValidTransferAccounts(ACCOUNT_TYPES account_type){
         int totalNumber = 0;
         List<Account> validTransferedAccounts = getValidTransferAccounts();
         for(Account account: validTransferedAccounts)
@@ -161,6 +156,11 @@ public class UserCacheService {
                         getTotalNumberOfValidTransferAccounts(ACCOUNT_TYPES.RON) > 0);
     }
 
+    /**
+     * This method creates a new account for the current logged in user.
+     * Also marks the user as being able to deposit amounts and if he qualifies
+     * also marks the user as being able to transfer.
+     */
     public void createNewAccount(){
         Account accountCreated = new Account(currentUser);
         Database.addAccountToDatabase(accountCreated);
@@ -170,13 +170,21 @@ public class UserCacheService {
             posibleTransfer = true;
     }
 
+    /**
+     * This method checks the user for his credentials against the
+     * database. If his credentials are ok it loads the user in the memory by
+     * invoking {@link #loadUser()} method.
+     */
     public void checkUserCredentials(){
         currentUser = new User();
-        isLogged = validateUser();
+        isLogged = OperationFile.validateUserFromFile(currentUser, USERS_FILE);
         if (isLogged())
             loadUser();
     }
 
+    /**
+     * This method displays all the accounts for the current logged in user.
+     */
     public void displayAccounts(){
         if (isPosibleDeposit()) {
             System.out.println("\nList of Accounts:");
@@ -185,11 +193,20 @@ public class UserCacheService {
             setInAccount(false);
     }
 
+    /**
+     * This method removes the current logged in user from memory
+     * by invoking {@link #disposeUser()} method.
+     */
     public void logoutUser(){
         System.out.println("Successfully logout.");
         disposeUser();
     }
 
+    /**
+     * This method handles the deposit to an account logic by invoking the
+     * {@link #depositAmount()} method. Also after the deposit it checks
+     * if the user is able to transfer between his accounts and marks him.
+     */
     public void depositAmountToAcc(){
         if(isPosibleDeposit()) {
             depositAmount();
@@ -199,6 +216,10 @@ public class UserCacheService {
             System.out.println("Please enter a valid option(1 or 2).");
     }
 
+    /**
+     * This method handles the logic for transferring between 2 accounts by
+     * invoking the {@link #transferAmount()} method.
+     */
     public void transferAmountBetweenAcc(){
         if (isPosibleTransfer())
             transferAmount();
@@ -301,7 +322,7 @@ public class UserCacheService {
      * This method updates the balance of the account with the amount entered
      * from console(it can be also negative for withdraw).
      */
-    public void depositAmount(){
+    private void depositAmount(){
 
         int opt;
         Account accountToDeposit;
@@ -356,6 +377,9 @@ public class UserCacheService {
         }
     }
 
+    /**
+     * This method handles the logic for the menu option "Back to previous menu"
+     */
     public void goToPreviousMenu(){
         if(isPosibleDeposit() && isPosibleTransfer())
             setInAccount(false);

@@ -1,12 +1,9 @@
 package pentastagiu.files;
 
 import pentastagiu.model.Account;
-import pentastagiu.model.User;
 
 import java.io.File;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 import static pentastagiu.files.OperationFile.*;
 import static pentastagiu.util.Constants.*;
@@ -18,11 +15,6 @@ import static pentastagiu.util.Constants.*;
  * populates the users list.
  */
 public class Database{
-
-    /**
-     * stores the users list
-     */
-    public final static List<User> USERS_LIST = new ArrayList<>();
 
     /**
      * stores the total number of accounts and
@@ -43,13 +35,6 @@ public class Database{
      */
     public static Database getInstance(){
         return instance;
-    }
-
-    /**
-     * This method populates the users list from our database file.
-     */
-    public void populateUsers(){
-        USERS_LIST.addAll(readUsersFromFile(USERS_FILE));
     }
 
     public void setTotalNrOfAccounts(){

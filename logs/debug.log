@@ -567,3 +567,16 @@
 [WARN ] 2019-04-06 22:08:29.977 [main] Constants:121 - Problem at line 3 in 'accounts.txt' files. Account didn't count to the total number of valid accounts.
 [WARN ] 2019-04-06 22:08:29.977 [main] Constants:121 - Problem at line 4 in 'accounts.txt' files. Account didn't count to the total number of valid accounts.
 [INFO ] 2019-04-06 22:09:13.977 [main] Constants:74 - Account added successfully.
+[WARN ] 2019-04-08 06:00:07.064 [main] Constants:119 - Problem at line 1 in 'accounts.txt' files. Account didn't count to the total number of valid accounts.
+[WARN ] 2019-04-08 06:00:07.064 [main] Constants:119 - Problem at line 2 in 'accounts.txt' files. Account didn't count to the total number of valid accounts.
+[WARN ] 2019-04-08 06:00:07.064 [main] Constants:119 - Problem at line 3 in 'accounts.txt' files. Account didn't count to the total number of valid accounts.
+[WARN ] 2019-04-08 06:00:07.064 [main] Constants:119 - Problem at line 4 in 'accounts.txt' files. Account didn't count to the total number of valid accounts.
+[WARN ] 2019-04-08 06:04:50.742 [main] Constants:118 - Problem at line 1 in 'accounts.txt' files. Account didn't count to the total number of valid accounts.
+[WARN ] 2019-04-08 06:04:50.742 [main] Constants:118 - Problem at line 2 in 'accounts.txt' files. Account didn't count to the total number of valid accounts.
+[WARN ] 2019-04-08 06:04:50.742 [main] Constants:118 - Problem at line 3 in 'accounts.txt' files. Account didn't count to the total number of valid accounts.
+[WARN ] 2019-04-08 06:04:50.742 [main] Constants:118 - Problem at line 4 in 'accounts.txt' files. Account didn't count to the total number of valid accounts.
+[INFO ] 2019-04-08 06:05:18.237 [main] Constants:67 - Account added successfully.
+[WARN ] 2019-04-08 06:27:45.616 [main] Constants:118 - Problem at line 1 in 'accounts.txt' files. Account didn't count to the total number of valid accounts.
+[WARN ] 2019-04-08 06:27:45.616 [main] Constants:118 - Problem at line 2 in 'accounts.txt' files. Account didn't count to the total number of valid accounts.
+[WARN ] 2019-04-08 06:27:45.616 [main] Constants:118 - Problem at line 3 in 'accounts.txt' files. Account didn't count to the total number of valid accounts.
+[WARN ] 2019-04-08 06:27:45.632 [main] Constants:118 - Problem at line 4 in 'accounts.txt' files. Account didn't count to the total number of valid accounts.

@@ -46,34 +46,31 @@ public class OperationFile {
         }
     }
 
-    /**
-     * This method reads from a users database file and adds them to the USERS_LIST
-     * @param fileName the file name that we load from resource folder
-     * @return true if all users from file were added; false otherwise
-     */
-    static List<User> readUsersFromFile(String fileName){
-        List<User> usersList = new ArrayList<>();
+    public static boolean validateUserFromFile(User currentUser, String fileName){
         String line;
-        int lineNumber = 1;
         try (InputStream resourceAsStream = OperationFile.class.getClassLoader().getResourceAsStream(fileName)) {
             try (Scanner br = new Scanner(Objects.requireNonNull(resourceAsStream))) {
                 while (br.hasNext()) {
                     line = br.nextLine();
                     String[] userDetails = line.split(" ");
-                    if (userDetails.length == 2)
-                        usersList.add(new User(userDetails[ACCOUNT_NUMBER], userDetails[USERNAME]));
-                    else
-                        LOGGER.warn("Problem at line " + lineNumber +
-                                " in 'users.txt' files. User not added to our valid users list.");
-                    lineNumber++;
+                    if (userDetails.length == 2){
+                        User userChecked = new User(userDetails[ACCOUNT_NUMBER], userDetails[USERNAME]);
+                        if (currentUser.equals(userChecked)){
+                            System.out.println("Welcome " + currentUser.getUsername() + "!");
+                            return true;
+                        }
+                    }
                 }
             }catch (InputMismatchException e) {
                 LOGGER.error("The input you entered was not expected.");
+                System.exit(0);
             }
         } catch (IOException e) {
             LOGGER.error("Database file not found. We can't proceed with checking credentials.");
+            System.exit(0);
         }
-        return usersList;
+        System.out.println("Wrong username/password.");
+        return false;
     }
 
     /**
