@@ -4,7 +4,7 @@ import pentastagiu.files.OperationFile;
 import pentastagiu.model.ACCOUNT_TYPES;
 import pentastagiu.model.Account;
 import pentastagiu.model.User;
-import pentastagiu.util.DisplayMenu;
+import pentastagiu.util.Display;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -19,13 +19,16 @@ import static pentastagiu.util.Constants.*;
  */
 public class UserCacheService {
 
+    /**
+     * The current user logged in
+     */
     private User currentUser;
     /**
      * Stores the state if the {@link #currentUser} is logged in
      */
     private boolean isLogged = false;
     /**
-     * Stores the state if the {@link #currentUser}  is in account DisplayMenu
+     * Stores the state if the {@link #currentUser}  is in account Display
      */
     private boolean inAccount = false;
 
@@ -104,27 +107,26 @@ public class UserCacheService {
      * @return the list of accounts with balance greater then 0.
      */
     private List<Account> getValidTransferAccounts() {
-        List<Account> validTransferedAccounts = new ArrayList<>();
+        List<Account> validTransferredAccounts = new ArrayList<>();
         for (Account account: currentUser.getAccountsList()){
             if(account.getBalance().compareTo(new BigDecimal(0)) > 0)
-                validTransferedAccounts.add(account);
+                validTransferredAccounts.add(account);
         }
-        removeAccountThatDoesNotQualify(validTransferedAccounts);
-        return validTransferedAccounts;
+        removeAccountThatDoesNotQualify(validTransferredAccounts);
+        return validTransferredAccounts;
     }
 
     /**
-     * This method removes all the single valid transfer accounts from the validTransferredAccounts
+     * This method removes the single valid transfer accounts from the validTransferredAccounts
      * list. This is needed because it is possible to have only 1 valid account to transfer from
      * but no accounts to transfer into for one currency and 2 accounts for the other currency.
-     * @param validTransferedAccounts the list with all the valid transfer account
-     * @return the list with only the accounts valid (at least 2 for a currency)
+     * @param validTransferredAccounts the list with all the valid transfer account
      */
-    private void removeAccountThatDoesNotQualify(List<Account> validTransferedAccounts){
+    private void removeAccountThatDoesNotQualify(List<Account> validTransferredAccounts){
         if(getTotalNumberOfAccountsForAccType(ACCOUNT_TYPES.EUR) < 2)
-            validTransferedAccounts.removeIf(account -> account.getAccountType().equals(ACCOUNT_TYPES.EUR));
+            validTransferredAccounts.removeIf(account -> account.getAccountType().equals(ACCOUNT_TYPES.EUR));
         if(getTotalNumberOfAccountsForAccType(ACCOUNT_TYPES.RON) < 2)
-            validTransferedAccounts.removeIf(account -> account.getAccountType().equals(ACCOUNT_TYPES.RON));
+            validTransferredAccounts.removeIf(account -> account.getAccountType().equals(ACCOUNT_TYPES.RON));
     }
 
     /**
@@ -149,8 +151,8 @@ public class UserCacheService {
      */
     private int getTotalNumberOfValidTransferAccounts(ACCOUNT_TYPES account_type){
         int totalNumber = 0;
-        List<Account> validTransferedAccounts = getValidTransferAccounts();
-        for(Account account: validTransferedAccounts)
+        List<Account> validTransferredAccounts = getValidTransferAccounts();
+        for(Account account: validTransferredAccounts)
             if(account.getBalance().compareTo(new BigDecimal(0)) > 0 &&
                     account.getAccountType() == account_type)
                 totalNumber++;
@@ -184,7 +186,7 @@ public class UserCacheService {
         updateBalanceAccount(amount.negate(),accountFrom);
         updateBalanceAccount(amount,accountTo);
 
-        System.out.println("Transfer to Account: {Account Number: " + accountTo.getAccountNumber() +
+        System.out.println("Transfer to Account {Account Number: " + accountTo.getAccountNumber() +
                 " New Balance: " + accountTo.getBalance().toString() + " " +
                 accountTo.getAccountType().toString() +"}");
     }
@@ -202,8 +204,8 @@ public class UserCacheService {
             if (validTransferAccounts.size() == 1) {
                 accountFrom = validTransferAccounts.get(0);
             } else {
-                System.out.println("\nList of AccountsList to transfer FROM:");
-                DisplayMenu.AccountsList(validTransferAccounts);
+                System.out.println("\nList of Accounts to transfer FROM:");
+                Display.AccountsList(validTransferAccounts);
                 while (true) {
                     System.out.print("Please enter the number of the account you want to transfer from:");
                     if (!SCANNER.hasNextInt()) {
@@ -245,10 +247,11 @@ public class UserCacheService {
                     SCANNER.next();
                 } else {
                     amount = SCANNER.nextBigDecimal();
-                    if(amount.compareTo(accountFrom.getBalance()) > 0)
-                        System.out.println("Please enter an amount less then or equal with the current balance:" +
-                                accountFrom.getBalance().toString() + " " +
-                                accountFrom.getAccountType().toString());
+                    if(amount.compareTo(accountFrom.getBalance()) > 0 || amount.compareTo(new BigDecimal(0)) <= 0)
+                        System.out.println("Please enter an amount greater then 0 and " +
+                                            "less then or equal with the current balance:" +
+                                            accountFrom.getBalance().toString() + " " +
+                                            accountFrom.getAccountType().toString());
                     else
                         break;
                 }
@@ -277,7 +280,7 @@ public class UserCacheService {
             }
             else {
                 System.out.println("\nList of accounts to transfer TO:");
-                DisplayMenu.AccountsList(filteredAccounts);
+                Display.AccountsList(filteredAccounts);
                 while (true) {
                     System.out.print("Please enter the number of the account you want to transfer to:");
                     if (!SCANNER.hasNextInt()) {
@@ -302,7 +305,7 @@ public class UserCacheService {
 
     /**
      * This method updates the balance of the account with the amount entered
-     * from console(it can be also negative for withdraw).
+     * from console.
      */
     public void depositAmount(){
         Account accountToDeposit;
@@ -333,8 +336,8 @@ public class UserCacheService {
             if (allAccounts.size() == 1)
                 accountToDeposit =  allAccounts.get(0);
             else {
-                System.out.println("\nList of AccountsList:");
-                DisplayMenu.AccountsList(allAccounts);
+                System.out.println("\nList of Accounts:");
+                Display.AccountsList(allAccounts);
                 while (true) {
                     System.out.print("Please enter the number of the account you want to deposit in:");
                     if (!SCANNER.hasNextInt()) {
@@ -375,7 +378,10 @@ public class UserCacheService {
                     SCANNER.next();
                 } else {
                     amount = SCANNER.nextBigDecimal();
-                    break;
+                    if(amount.compareTo(new BigDecimal(0)) <= 0)
+                        System.out.println("Please enter a number greater then 0.");
+                    else
+                        break;
                 }
             }
         }catch (InputMismatchException e) {

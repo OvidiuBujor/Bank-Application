@@ -1,5 +1,8 @@
 package pentastagiu.model;
 
+/**
+ * This enum holds the valid account types for an account.
+ */
 public enum ACCOUNT_TYPES {
     RON("RON"), EUR("EUR");
 

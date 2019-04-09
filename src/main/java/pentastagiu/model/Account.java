@@ -31,6 +31,10 @@ public class Account {
      */
     private ACCOUNT_TYPES accountType;
 
+    /**
+     * Empty constructor used for initialization of some accounts
+     * that will be generated after some future calculations.
+     */
     public Account(){
 
     }

@@ -6,6 +6,7 @@ import pentastagiu.files.OperationFile;
 import pentastagiu.model.Account;
 import pentastagiu.model.User;
 
+import static pentastagiu.util.Constants.LOGGER;
 import static pentastagiu.util.Constants.USERS_FILE;
 
 /**
@@ -40,7 +41,12 @@ public class MenuOptionService {
      */
     public void checkUserCredentials(){
         userCacheService.setCurrentUser(new User());
-        boolean result = OperationFile.validateUserFromFile(userCacheService.getCurrentUser(), USERS_FILE);
+        boolean result = false;
+        try {
+            if (OperationFile.validateUserFromFile(userCacheService.getCurrentUser(), USERS_FILE)) result = true;
+        } catch (InvalidUserException e) {
+            LOGGER.debug("Wrong username/password.");
+        }
         userCacheService.setLogged(result);
         if (userCacheService.isLogged())
             userCacheService.loadUser();
@@ -52,7 +58,7 @@ public class MenuOptionService {
     public void displayAccounts(){
         if (userCacheService.isPosibleDeposit()) {
             System.out.println("\nList of AccountsList:");
-            DisplayMenu.AccountsList(userCacheService.getCurrentUser().getAccountsList());
+            Display.AccountsList(userCacheService.getCurrentUser().getAccountsList());
         }else
             userCacheService.setInAccount(false);
     }
@@ -104,5 +110,35 @@ public class MenuOptionService {
             System.out.println("Please enter a valid option(1, 2, 3 or 4).");
         else
             System.out.println("Please enter a valid option(1 or 2).");
+    }
+
+    /**
+     * This method displays to the user the valid options he can choose on any menu.
+     */
+    public void displayProperInputOptions(){
+        if (userCacheService.inAccount())
+            if(userCacheService.isPosibleDeposit() && userCacheService.isPosibleTransfer())
+                System.out.println("Please enter a valid option(1, 2, 3, 4 or 5).");
+            else if(userCacheService.isPosibleDeposit())
+                System.out.println("Please enter a valid option(1, 2, 3 or 4).");
+            else
+                System.out.println("Please enter a valid option(1 or 2).");
+        else
+            System.out.println("Please enter a valid option(1 or 2).");
+    }
+
+    /**
+     * This method displays the Menu after the current selected operation was executed.
+     * @param opt the option the user entered on the console
+     */
+    public void displayTheMenu(String opt){
+        if(!opt.equals("")) { //added for scanner.nextBigDecimal() that reads an empty string after the BigDecimal
+            if (userCacheService.inAccount())
+                Display.AccountMenu(userCacheService);
+            else if (userCacheService.isLogged())
+                Display.LoggedInMenu(userCacheService);
+            else
+                Display.InitialMenu();
+        }
     }
 }

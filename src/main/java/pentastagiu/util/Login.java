@@ -11,11 +11,11 @@ import static pentastagiu.util.Constants.SCANNER;
  * This class implements a menu with option of "Log in" users
  * based on the username and password entered in console.
  * The validation of login is based on a database file that
- * contains username and passwords for all registered users.
+ * contains all registered users.
  * Other operations are:
  *  - the user can check his currents accounts and create new ones
- *  - the user can deposit/withdraw amounts from his accounts
- *  - the user can transfer between his accounts
+ *  - the user can deposit amounts to his accounts
+ *  - the user can transfer between his accounts if possible
  */
 public class Login {
 
@@ -25,11 +25,11 @@ public class Login {
      * <ul>
      * <li> "Log in" checks the user credentials invoking
      * {@link MenuOptionService#checkUserCredentials()} method.</li>
-     * <li> "DisplayMenu accounts .." displays accounts for current user invoking the
+     * <li> "Display accounts .." displays accounts for current user invoking the
      * {@link MenuOptionService#displayAccounts()} method.</li>
      * <li> "Create account" creates a new account invoking
      * {@link MenuOptionService#createNewAccount()} method..</li>
-     * <li> "Deposit/withdraw amount ..." invokes {@link MenuOptionService#depositAmountToAcc()} method
+     * <li> "Deposit amount" invokes {@link MenuOptionService#depositAmountToAcc()} method
      *      to update the balance of the account.</li>
      * <li> "Transfer amount between your accounts" invokes {@link MenuOptionService#transferAmountBetweenAcc()}
      * method to transfer between 2 accounts owned by the user.
@@ -87,25 +87,10 @@ public class Login {
                         case ""://added for scanner.nextBigDecimal() that reads an empty string after the BigDecimal
                             break;
                         default:
-                            if (userCacheService.inAccount())
-                                if(userCacheService.isPosibleDeposit() && userCacheService.isPosibleTransfer())
-                                    System.out.println("Please enter a valid option(1, 2, 3, 4 or 5).");
-                                else if(userCacheService.isPosibleDeposit())
-                                    System.out.println("Please enter a valid option(1, 2, 3 or 4).");
-                                else
-                                    System.out.println("Please enter a valid option(1 or 2).");
-                            else
-                                System.out.println("Please enter a valid option(1 or 2).");
+                            handleMenuOptions.displayProperInputOptions();
                             break;
                     }
-                    if(!opt.equals("")) { //added for scanner.nextBigDecimal() that reads an empty string after the BigDecimal
-                        if (userCacheService.inAccount())
-                            DisplayMenu.Account(userCacheService);
-                        else if (userCacheService.isLogged())
-                            DisplayMenu.LoggedIn(userCacheService);
-                        else
-                            DisplayMenu.Initial();
-                    }
+                    handleMenuOptions.displayTheMenu(opt);
                 }
             } catch (InputMismatchException e) {
                 LOGGER.error("The input you entered was not expected.");

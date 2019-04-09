@@ -31,6 +31,10 @@ public class User {
         this.password = password;
     }
 
+    /**
+     * This constructor creates an user from information
+     * entered from console.
+     */
     public User(){
         try {
             System.out.print("Username:");
@@ -42,18 +46,10 @@ public class User {
         }
     }
 
-    /**
-     * Getter for username
-     * @return the username
-     */
     public String getUsername() {
         return username;
     }
 
-    /**
-     * Getter for acccounts list owned by the user.
-     * @return the accounts list
-     */
     public List<Account> getAccountsList() {
         return accountsList;
     }

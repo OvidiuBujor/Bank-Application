@@ -8,8 +8,17 @@ import java.util.regex.Pattern;
 
 import static pentastagiu.util.Constants.*;
 
+/**
+ * This is a helper class for Account that holds all the logic
+ * regarding validation and updating the balance of an account.
+ */
 public class AccountService {
 
+    /**
+     * This method validates the account created from a string.
+     * @param accountDetails the string that will be validated.
+     * @return true if the validation process was successful; false otherwise
+     */
     public static boolean validateAccount(String[] accountDetails){
         return accountDetails.length == 4 &&
                 validateAccountNumber(accountDetails[ACCOUNT_NUMBER].toUpperCase()) &&

@@ -3,6 +3,7 @@ package pentastagiu.files;
 import pentastagiu.model.ACCOUNT_TYPES;
 import pentastagiu.model.Account;
 import pentastagiu.model.User;
+import pentastagiu.util.InvalidUserException;
 
 import java.io.*;
 import java.math.BigDecimal;
@@ -13,14 +14,15 @@ import static pentastagiu.util.Constants.*;
 
 /**
  * This class is a helper class that deals with reading/writing to
- * a file and also creating a new file.
+ * a file, creating a new file and also validates an user against
+ * a database file.
  */
 public class OperationFile {
 
     /**
-     * This method writes an Account to the AccountsList database file
-     * @param account the account to be written
+     * This method writes an account to a file.
      * @param file the file where is written
+     * @param account the account to be written
      * @return true if the account was written to the file
      */
     static boolean writeToFile(File file,Account account){
@@ -34,9 +36,9 @@ public class OperationFile {
     }
 
     /**
-     * This method writes a line to a file
-     * @param file the file where we write the line
-     * @param line the line that we write
+     * This method writes a line to a file.
+     * @param file the file where is written
+     * @param line the line to be written
      */
     private static void writeToFile(File file,String line){
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(file,true))) {
@@ -46,22 +48,29 @@ public class OperationFile {
         }
     }
 
-    public static boolean validateUserFromFile(User currentUser, String fileName){
+    /**
+     * This method validates the user's credentials against the database file
+     * @param currentUser the user to be validated
+     * @param fileName the database file that contains all the registered users
+     * @return true if user's credentials are valid
+     * @throws InvalidUserException when the user's credentials are not valid
+     */
+    public static boolean validateUserFromFile(User currentUser, String fileName) throws InvalidUserException {
         String line;
         try (InputStream resourceAsStream = OperationFile.class.getClassLoader().getResourceAsStream(fileName)) {
             try (Scanner br = new Scanner(Objects.requireNonNull(resourceAsStream))) {
                 while (br.hasNext()) {
                     line = br.nextLine();
                     String[] userDetails = line.split(" ");
-                    if (userDetails.length == 2){
+                    if (userDetails.length == 2) {
                         User userChecked = new User(userDetails[ACCOUNT_NUMBER], userDetails[USERNAME]);
-                        if (currentUser.equals(userChecked)){
+                        if (currentUser.equals(userChecked)) {
                             System.out.println("Welcome " + currentUser.getUsername() + "!");
                             return true;
                         }
                     }
                 }
-            }catch (InputMismatchException e) {
+            } catch (InputMismatchException e) {
                 LOGGER.error("The input you entered was not expected.");
                 System.exit(0);
             }
@@ -69,8 +78,7 @@ public class OperationFile {
             LOGGER.error("Database file not found. We can't proceed with checking credentials.");
             System.exit(0);
         }
-        System.out.println("Wrong username/password.");
-        return false;
+        throw new InvalidUserException("User credentials are not correct.");
     }
 
     /**
@@ -101,9 +109,10 @@ public class OperationFile {
     }
 
     /**
-     * This method reads a number from a file and returns it.
-     * @param file the file we read from
-     * @return the number
+     * This method calculates the number of valid accounts from
+     * the database file.
+     * @param file the database file that contains all the accounts
+     * @return the number of valid accounts
      */
     static long calculateNrAccFromFile(File file){
         String line;
@@ -128,10 +137,10 @@ public class OperationFile {
     }
 
     /**
-     * This method creates a new database file for AccountsList with the updated balance
-     * for the account received as parameter.
+     * This method creates a new database file for accounts that contains the
+     * updated information.
      * @param balance the new balance of the account
-     * @param account the acccount to be updated
+     * @param account the account to be updated
      * @return the new updated file
      */
     static File createNewFile(BigDecimal balance, Account account){
