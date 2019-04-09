@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.util.InputMismatchException;
 import java.util.Objects;
 
-import static pentastagiu.util.AccountService.*;
+import static pentastagiu.services.AccountService.*;
 import static pentastagiu.util.Constants.*;
 
 /**

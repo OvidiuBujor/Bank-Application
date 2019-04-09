@@ -1,9 +1,9 @@
 package pentastagiu.main;
 
-import pentastagiu.cache.UserCacheService;
+import pentastagiu.services.UserCacheService;
 import pentastagiu.files.Database;
-import pentastagiu.util.Display;
-import pentastagiu.util.Login;
+import pentastagiu.services.DisplayService;
+import pentastagiu.services.LoginService;
 
 /**
  * This class is the Main class of the project and the starting point.
@@ -22,11 +22,11 @@ public class App {
         Database internalDatabase = Database.getInstance();
         internalDatabase.setTotalNrOfAccounts();
 
-        Display.InitialMenu();
-        Login processUserInput = new Login();
-        UserCacheService userCacheService = new UserCacheService();
+        DisplayService.InitialMenu();
+        LoginService processUserInput = new LoginService();
+        UserCacheService cachedUser = new UserCacheService();
 
-        processUserInput.beginProcessing(userCacheService);
+        processUserInput.beginProcessing(cachedUser);
     }
 
 }

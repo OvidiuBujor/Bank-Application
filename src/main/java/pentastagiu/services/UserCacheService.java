@@ -1,17 +1,15 @@
-package pentastagiu.cache;
+package pentastagiu.services;
 
-import pentastagiu.files.OperationFile;
 import pentastagiu.model.ACCOUNT_TYPES;
 import pentastagiu.model.Account;
 import pentastagiu.model.User;
-import pentastagiu.util.Display;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
 
-import static pentastagiu.util.AccountService.updateBalanceAccount;
+import static pentastagiu.services.AccountService.updateBalanceAccount;
 import static pentastagiu.util.Constants.*;
 
 /**
@@ -28,7 +26,7 @@ public class UserCacheService {
      */
     private boolean isLogged = false;
     /**
-     * Stores the state if the {@link #currentUser}  is in account Display
+     * Stores the state if the {@link #currentUser}  is in account
      */
     private boolean inAccount = false;
 
@@ -75,7 +73,7 @@ public class UserCacheService {
      * from the accounts database file.
      */
     private void setAccountsList() {
-        currentUser.getAccountsList().addAll(OperationFile.readAccountsFromFileForUser(FILE_ACCOUNTS,currentUser));
+        currentUser.getAccountsList().addAll(FileService.readAccountsFromFileForUser(FILE_ACCOUNTS,currentUser));
     }
 
     /**
@@ -205,7 +203,7 @@ public class UserCacheService {
                 accountFrom = validTransferAccounts.get(0);
             } else {
                 System.out.println("\nList of Accounts to transfer FROM:");
-                Display.AccountsList(validTransferAccounts);
+                DisplayService.AccountsList(validTransferAccounts);
                 while (true) {
                     System.out.print("Please enter the number of the account you want to transfer from:");
                     if (!SCANNER.hasNextInt()) {
@@ -280,7 +278,7 @@ public class UserCacheService {
             }
             else {
                 System.out.println("\nList of accounts to transfer TO:");
-                Display.AccountsList(filteredAccounts);
+                DisplayService.AccountsList(filteredAccounts);
                 while (true) {
                     System.out.print("Please enter the number of the account you want to transfer to:");
                     if (!SCANNER.hasNextInt()) {
@@ -337,7 +335,7 @@ public class UserCacheService {
                 accountToDeposit =  allAccounts.get(0);
             else {
                 System.out.println("\nList of Accounts:");
-                Display.AccountsList(allAccounts);
+                DisplayService.AccountsList(allAccounts);
                 while (true) {
                     System.out.print("Please enter the number of the account you want to deposit in:");
                     if (!SCANNER.hasNextInt()) {

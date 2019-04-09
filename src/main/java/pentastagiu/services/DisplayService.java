@@ -1,6 +1,5 @@
-package pentastagiu.util;
+package pentastagiu.services;
 
-import pentastagiu.cache.UserCacheService;
 import pentastagiu.model.Account;
 
 import java.util.List;
@@ -9,7 +8,7 @@ import java.util.List;
  * on user input from console also it displays all
  * accounts for an user.
  */
-public class Display {
+public class DisplayService {
 
     /**
      * This method displays InitialMenu.

@@ -1,10 +1,9 @@
-package pentastagiu.util;
+package pentastagiu.services;
 
-import pentastagiu.cache.UserCacheService;
 import pentastagiu.files.Database;
-import pentastagiu.files.OperationFile;
 import pentastagiu.model.Account;
 import pentastagiu.model.User;
+import pentastagiu.util.InvalidUserException;
 
 import static pentastagiu.util.Constants.LOGGER;
 import static pentastagiu.util.Constants.USERS_FILE;
@@ -43,7 +42,7 @@ public class MenuOptionService {
         userCacheService.setCurrentUser(new User());
         boolean result = false;
         try {
-            if (OperationFile.validateUserFromFile(userCacheService.getCurrentUser(), USERS_FILE)) result = true;
+            if (FileService.validateUserFromFile(userCacheService.getCurrentUser(), USERS_FILE)) result = true;
         } catch (InvalidUserException e) {
             LOGGER.debug("Wrong username/password.");
         }
@@ -58,7 +57,7 @@ public class MenuOptionService {
     public void displayAccounts(){
         if (userCacheService.isPosibleDeposit()) {
             System.out.println("\nList of AccountsList:");
-            Display.AccountsList(userCacheService.getCurrentUser().getAccountsList());
+            DisplayService.AccountsList(userCacheService.getCurrentUser().getAccountsList());
         }else
             userCacheService.setInAccount(false);
     }
@@ -134,11 +133,11 @@ public class MenuOptionService {
     public void displayTheMenu(String opt){
         if(!opt.equals("")) { //added for scanner.nextBigDecimal() that reads an empty string after the BigDecimal
             if (userCacheService.inAccount())
-                Display.AccountMenu(userCacheService);
+                DisplayService.AccountMenu(userCacheService);
             else if (userCacheService.isLogged())
-                Display.LoggedInMenu(userCacheService);
+                DisplayService.LoggedInMenu(userCacheService);
             else
-                Display.InitialMenu();
+                DisplayService.InitialMenu();
         }
     }
 }

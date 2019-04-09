@@ -1,6 +1,4 @@
-package pentastagiu.util;
-
-import pentastagiu.cache.UserCacheService;
+package pentastagiu.services;
 
 import java.util.InputMismatchException;
 
@@ -17,7 +15,7 @@ import static pentastagiu.util.Constants.SCANNER;
  *  - the user can deposit amounts to his accounts
  *  - the user can transfer between his accounts if possible
  */
-public class Login {
+public class LoginService {
 
     /**
      * This method process the user input.

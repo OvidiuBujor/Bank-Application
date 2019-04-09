@@ -1,4 +1,4 @@
-package pentastagiu.files;
+package pentastagiu.services;
 
 import pentastagiu.model.ACCOUNT_TYPES;
 import pentastagiu.model.Account;
@@ -9,7 +9,7 @@ import java.io.*;
 import java.math.BigDecimal;
 import java.util.*;
 
-import static pentastagiu.util.AccountService.validateAccount;
+import static pentastagiu.services.AccountService.validateAccount;
 import static pentastagiu.util.Constants.*;
 
 /**
@@ -17,7 +17,7 @@ import static pentastagiu.util.Constants.*;
  * a file, creating a new file and also validates an user against
  * a database file.
  */
-public class OperationFile {
+public class FileService {
 
     /**
      * This method writes an account to a file.
@@ -25,7 +25,7 @@ public class OperationFile {
      * @param account the account to be written
      * @return true if the account was written to the file
      */
-    static boolean writeToFile(File file,Account account){
+    public static boolean writeToFile(File file,Account account){
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(file,true))) {
             bw.write(account.toString());
             return true;
@@ -57,7 +57,7 @@ public class OperationFile {
      */
     public static boolean validateUserFromFile(User currentUser, String fileName) throws InvalidUserException {
         String line;
-        try (InputStream resourceAsStream = OperationFile.class.getClassLoader().getResourceAsStream(fileName)) {
+        try (InputStream resourceAsStream = FileService.class.getClassLoader().getResourceAsStream(fileName)) {
             try (Scanner br = new Scanner(Objects.requireNonNull(resourceAsStream))) {
                 while (br.hasNext()) {
                     line = br.nextLine();
@@ -114,7 +114,7 @@ public class OperationFile {
      * @param file the database file that contains all the accounts
      * @return the number of valid accounts
      */
-    static long calculateNrAccFromFile(File file){
+    public static long calculateNrAccFromFile(File file){
         String line;
         int lineNumber = 1;
         long nrOffAccounts = 0;
@@ -143,7 +143,7 @@ public class OperationFile {
      * @param account the account to be updated
      * @return the new updated file
      */
-    static File createNewFile(BigDecimal balance, Account account){
+    public static File createNewFile(BigDecimal balance, Account account){
         String line;
         File tempFile = new File("src/main/resources/temp.txt");
         StringBuilder modifiedLine = new StringBuilder();

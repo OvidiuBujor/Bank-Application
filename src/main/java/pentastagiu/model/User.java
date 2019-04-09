@@ -9,8 +9,7 @@ import static pentastagiu.util.Constants.*;
 
 /**
  * This class holds information for an user:
- * username, password, state of the user(regarding
- * login) and the list of accounts owned.
+ * username, password and the list of accounts owned.
  */
 public class User {
     private String username;
