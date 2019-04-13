@@ -1,7 +1,5 @@
 package pentastagiu.validators;
 
-import pentastagiu.operations.DatabaseOperations;
-
 import java.math.BigDecimal;
 import java.util.regex.Pattern;
 
