@@ -3,7 +3,7 @@ package pentastagiu.services;
 import pentastagiu.model.Account;
 import pentastagiu.model.User;
 import pentastagiu.operations.AccountOperations;
-import pentastagiu.operations.Database;
+import pentastagiu.operations.DatabaseOperations;
 import pentastagiu.operations.UserOperations;
 import pentastagiu.util.InvalidUserException;
 
@@ -34,7 +34,7 @@ public class MenuOptionService {
      */
     public void createNewAccount(){
         Account accountCreated = new Account(userCacheService.getCurrentUser());
-        Database.addAccountToDatabase(accountCreated);
+        DatabaseOperations.addAccountToDatabase(accountCreated);
         userOperations.addAccountToUserAccountsList(accountCreated);
         userCacheService.setPosibleDeposit(true);
         if (userOperations.isUserAbleToTransfer())

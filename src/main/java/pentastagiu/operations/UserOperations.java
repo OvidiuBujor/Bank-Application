@@ -1,12 +1,12 @@
 package pentastagiu.operations;
 
-import pentastagiu.model.ACCOUNT_TYPES;
+import pentastagiu.model.AccountType;
 import pentastagiu.model.Account;
 import pentastagiu.services.UserCacheService;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * This class handles all the operations for the user.
@@ -35,24 +35,19 @@ public class UserOperations {
      * @return the list of accounts with the same currency excluding it
      */
     public List<Account> getFilteredAccounts(Account accountFrom) {
-        List<Account> filteredAccounts = new ArrayList<>();
-        for(Account account: userCacheService.getCurrentUser().getAccountsList()){
-            if(account.getAccountType() == accountFrom.getAccountType() &&
-                    !account.getAccountNumber().equals(accountFrom.getAccountNumber()))
-                filteredAccounts.add(account);
-        }
-        return filteredAccounts;
+        List<Account> allAccounts = userCacheService.getCurrentUser().getAccountsList();
+        return allAccounts.stream().filter(account ->
+                account.getAccountType() == accountFrom.getAccountType() &&
+                !account.getAccountNumber().equals(accountFrom.getAccountNumber())).collect(Collectors.toList());
     }
 
     /**
      * @return the list of accounts with balance greater then 0.
      */
     public List<Account> getValidTransferAccounts() {
-        List<Account> validTransferredAccounts = new ArrayList<>();
-        for (Account account: userCacheService.getCurrentUser().getAccountsList()){
-            if(account.getBalance().compareTo(new BigDecimal(0)) > 0)
-                validTransferredAccounts.add(account);
-        }
+        List<Account> allAccounts = userCacheService.getCurrentUser().getAccountsList();
+        List<Account> validTransferredAccounts = allAccounts.stream().filter(account ->
+                account.getBalance().compareTo(new BigDecimal(0)) > 0).collect(Collectors.toList());
         removeAccountThatDoesNotQualify(validTransferredAccounts);
         return validTransferredAccounts;
     }
@@ -64,10 +59,10 @@ public class UserOperations {
      * @param validTransferredAccounts the list with all the valid transfer account
      */
     private void removeAccountThatDoesNotQualify(List<Account> validTransferredAccounts){
-        if(getTotalNumberOfAccountsForAccType(ACCOUNT_TYPES.EUR) < 2)
-            validTransferredAccounts.removeIf(account -> account.getAccountType().equals(ACCOUNT_TYPES.EUR));
-        if(getTotalNumberOfAccountsForAccType(ACCOUNT_TYPES.RON) < 2)
-            validTransferredAccounts.removeIf(account -> account.getAccountType().equals(ACCOUNT_TYPES.RON));
+        if(getTotalNumberOfAccountsForAccType(AccountType.EUR) < 2)
+            validTransferredAccounts.removeIf(account -> account.getAccountType().equals(AccountType.EUR));
+        if(getTotalNumberOfAccountsForAccType(AccountType.RON) < 2)
+            validTransferredAccounts.removeIf(account -> account.getAccountType().equals(AccountType.RON));
     }
 
     /**
@@ -76,12 +71,9 @@ public class UserOperations {
      * @param account_type specifies the currency that we filter by
      * @return the list of accounts with that currency
      */
-    private int getTotalNumberOfAccountsForAccType(ACCOUNT_TYPES account_type){
-        int totalNumber = 0;
-        for(Account account: userCacheService.getCurrentUser().getAccountsList())
-            if(account.getAccountType() == account_type)
-                totalNumber++;
-        return totalNumber;
+    private long getTotalNumberOfAccountsForAccType(AccountType account_type){
+        List<Account> allAccounts = userCacheService.getCurrentUser().getAccountsList();
+        return allAccounts.stream().filter(account -> account.getAccountType() == account_type).count();
     }
 
     /**
@@ -90,14 +82,11 @@ public class UserOperations {
      * @param account_type the curency we filter by
      * @return number of accounts that satisfy these filters
      */
-    private int getTotalNumberOfValidTransferAccounts(ACCOUNT_TYPES account_type){
-        int totalNumber = 0;
+    private long getTotalNumberOfValidTransferAccounts(AccountType account_type){
         List<Account> validTransferredAccounts = getValidTransferAccounts();
-        for(Account account: validTransferredAccounts)
-            if(account.getBalance().compareTo(new BigDecimal(0)) > 0 &&
-                    account.getAccountType() == account_type)
-                totalNumber++;
-        return totalNumber;
+        return validTransferredAccounts.stream().filter(account ->
+                account.getBalance().compareTo(new BigDecimal(0)) > 0 &&
+                        account.getAccountType() == account_type).count();
     }
 
     /**
@@ -105,9 +94,9 @@ public class UserOperations {
      * @return true if user is able to transfer; false otherwise
      */
     public boolean isUserAbleToTransfer(){
-        return (getTotalNumberOfAccountsForAccType(ACCOUNT_TYPES.EUR) > 1 &&
-                getTotalNumberOfValidTransferAccounts(ACCOUNT_TYPES.EUR) > 0) ||
-                (getTotalNumberOfAccountsForAccType(ACCOUNT_TYPES.RON) > 1 &&
-                        getTotalNumberOfValidTransferAccounts(ACCOUNT_TYPES.RON) > 0);
+        return (getTotalNumberOfAccountsForAccType(AccountType.EUR) > 1 &&
+                getTotalNumberOfValidTransferAccounts(AccountType.EUR) > 0) ||
+                (getTotalNumberOfAccountsForAccType(AccountType.RON) > 1 &&
+                        getTotalNumberOfValidTransferAccounts(AccountType.RON) > 0);
     }
 }

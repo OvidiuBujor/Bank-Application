@@ -32,7 +32,8 @@ public class User {
 
     /**
      * This constructor creates an user from information
-     * entered from console.
+     * entered from console. This is used for checking the
+     * user credentials at log in.
      */
     public User(){
         try {

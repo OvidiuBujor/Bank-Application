@@ -1,6 +1,6 @@
 package pentastagiu.services;
 
-import pentastagiu.model.ACCOUNT_TYPES;
+import pentastagiu.model.AccountType;
 import pentastagiu.model.Account;
 import pentastagiu.model.User;
 import pentastagiu.util.InvalidUserException;
@@ -9,7 +9,7 @@ import java.io.*;
 import java.math.BigDecimal;
 import java.util.*;
 
-import static pentastagiu.services.AccountValidations.validateAccount;
+import static pentastagiu.validators.AccountValidations.validateAccount;
 import static pentastagiu.util.Constants.*;
 
 /**
@@ -98,12 +98,12 @@ public class FileService {
                         accountList.add(new Account(accountDetails[ACCOUNT_NUMBER].toUpperCase(),
                                 accountDetails[USERNAME],
                                 new BigDecimal(String.valueOf(accountDetails[BALANCE])),
-                                ACCOUNT_TYPES.fromString(accountDetails[ACCOUNT_TYPE].toUpperCase())));
+                                AccountType.fromString(accountDetails[ACCOUNT_TYPE].toUpperCase())));
                     }
                 }
             }
         } catch (IOException e) {
-            LOGGER.error("AccountsList database file not found. We can't proceed with loading the accounts.");
+            LOGGER.error("Accounts database file not found. We can't proceed with loading the accounts.");
         }
         return accountList;
     }
@@ -131,7 +131,7 @@ public class FileService {
             }
             System.out.println("Number of valid accounts: " + nrOffAccounts);
         } catch (IOException e) {
-            LOGGER.error("AccountsList database file not found. We can't proceed with loading number of accounts.");
+            LOGGER.error("Accounts database file not found. We can't proceed with loading number of accounts.");
         }
         return nrOffAccounts;
     }
@@ -170,7 +170,7 @@ public class FileService {
                 writeToFile(tempFile,line + "\n");
             }
         }catch (IOException e) {
-            LOGGER.error("AccountsList database file not found. We can't proceed with adding the accounts.");
+            LOGGER.error("Accounts database file not found. We can't proceed with adding the accounts.");
         }
         return tempFile;
     }

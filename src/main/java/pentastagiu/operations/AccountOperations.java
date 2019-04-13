@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 import java.util.InputMismatchException;
 import java.util.List;
 
-import static pentastagiu.services.AccountValidations.updateBalanceAccount;
 import static pentastagiu.util.Constants.LOGGER;
 import static pentastagiu.util.Constants.SCANNER;
 
@@ -242,5 +241,19 @@ public class AccountOperations {
             LOGGER.error("The input you entered was not expected.");
         }
         return amount;
+    }
+
+    /**
+     * This method updates the balance  of the account.
+     * Updates the database of accounts by invoking
+     * {@link DatabaseOperations#updateBalanceAccountInDatabase(BigDecimal,Account) updateBalanceAccountInDatabase} static method.
+     * @param amount the amount entered from console
+     * @param account the account to be updated
+     */
+    private static void updateBalanceAccount(BigDecimal amount, Account account){
+        BigDecimal balance = account.getBalance();
+        balance = balance.add(amount);
+        account.setBalance(balance);
+        DatabaseOperations.updateBalanceAccountInDatabase(balance,account);
     }
 }

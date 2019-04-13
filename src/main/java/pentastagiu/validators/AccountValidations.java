@@ -1,7 +1,6 @@
-package pentastagiu.services;
+package pentastagiu.validators;
 
-import pentastagiu.operations.Database;
-import pentastagiu.model.Account;
+import pentastagiu.operations.DatabaseOperations;
 
 import java.math.BigDecimal;
 import java.util.regex.Pattern;
@@ -20,7 +19,7 @@ public class AccountValidations {
      * @return the account number created
      */
     public static String generateAccountNumber(){
-        return String.format("%016d", Database.getNrOfAccounts());
+        return String.format("%016d", DatabaseOperations.getNrOfAccounts());
     }
 
     /**
@@ -67,17 +66,5 @@ public class AccountValidations {
         return accountType.toUpperCase().equals("RON") || accountType.toUpperCase().equals("EUR");
     }
 
-    /**
-     * This method updates the balance  of the account.
-     * Updates the database of accounts by invoking
-     * {@link Database#updateBalanceAccountInDatabase(BigDecimal,Account) updateBalanceAccountInDatabase} static method.
-     * @param amount the amount entered from console
-     * @param account the account to be updated
-     */
-    public static void updateBalanceAccount(BigDecimal amount, Account account){
-        BigDecimal balance = account.getBalance();
-        balance = balance.add(amount);
-        account.setBalance(balance);
-        Database.updateBalanceAccountInDatabase(balance,account);
-    }
+
 }

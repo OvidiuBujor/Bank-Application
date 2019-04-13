@@ -13,7 +13,7 @@ import static pentastagiu.util.Constants.*;
  * database file of accounts.It can perform different operations:
  * adding an account to database, update the balance of an account.
  */
-public class Database{
+public class DatabaseOperations {
 
     /**
      * stores the total number of accounts and
@@ -21,7 +21,7 @@ public class Database{
      */
     private static long nrOfAccounts;
 
-    public void setTotalNrOfAccounts(){
+    public static void setTotalNrOfAccounts(){
         nrOfAccounts = calculateNrAccFromFile(FILE_ACCOUNTS);
     }
 

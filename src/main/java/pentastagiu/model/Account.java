@@ -1,12 +1,12 @@
 package pentastagiu.model;
 
-import pentastagiu.operations.Database;
+import pentastagiu.operations.DatabaseOperations;
 
 import java.math.BigDecimal;
 import java.util.InputMismatchException;
 import java.util.Objects;
 
-import static pentastagiu.services.AccountValidations.*;
+import static pentastagiu.validators.AccountValidations.*;
 import static pentastagiu.util.Constants.*;
 
 /**
@@ -24,7 +24,7 @@ public class Account {
     /**
      * The type of the account. Type can be RON or EUR.
      */
-    private ACCOUNT_TYPES accountType;
+    private AccountType accountType;
 
     /**
      * Empty constructor used for initialization of some accounts
@@ -42,7 +42,7 @@ public class Account {
      * @param balance the balance of the account
      * @param accountType the account type
      */
-    public Account(String accountNumber, String username, BigDecimal balance, ACCOUNT_TYPES accountType) {
+    public Account(String accountNumber, String username, BigDecimal balance, AccountType accountType) {
         this.accountNumber = accountNumber;
         this.username = username;
         this.balance = balance;
@@ -74,11 +74,11 @@ public class Account {
             this.accountNumber = accountNumber.toString();
             this.username = currentUser.getUsername();
             this.balance = balance;
-            this.accountType = ACCOUNT_TYPES.fromString(accountType.toUpperCase());
+            this.accountType = AccountType.fromString(accountType.toUpperCase());
         } catch (InputMismatchException e) {
             LOGGER.error("The input you entered was not expected.");
         }
-        Database.increaseTotalNrOfAccounts();
+        DatabaseOperations.increaseTotalNrOfAccounts();
     }
 
 
@@ -95,7 +95,7 @@ public class Account {
         return balance;
     }
 
-    public ACCOUNT_TYPES getAccountType() {
+    public AccountType getAccountType() {
         return accountType;
     }
 

@@ -1,7 +1,7 @@
 package pentastagiu.main;
 
+import pentastagiu.operations.DatabaseOperations;
 import pentastagiu.services.UserCacheService;
-import pentastagiu.operations.Database;
 import pentastagiu.services.DisplayService;
 import pentastagiu.services.LoginService;
 
@@ -19,10 +19,10 @@ public class App {
      */
     public static void main(String[] args) {
 
-        Database internalDatabase = new Database();
-        internalDatabase.setTotalNrOfAccounts();
+        DatabaseOperations.setTotalNrOfAccounts();
 
         DisplayService.InitialMenu();
+
         LoginService processUserInput = new LoginService();
         UserCacheService cachedUser = new UserCacheService();
 
