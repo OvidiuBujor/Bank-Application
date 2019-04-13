@@ -1,12 +1,12 @@
 package pentastagiu.model;
 
-import pentastagiu.files.Database;
+import pentastagiu.operations.Database;
 
 import java.math.BigDecimal;
 import java.util.InputMismatchException;
 import java.util.Objects;
 
-import static pentastagiu.services.AccountService.*;
+import static pentastagiu.services.AccountValidations.*;
 import static pentastagiu.util.Constants.*;
 
 /**
@@ -14,17 +14,12 @@ import static pentastagiu.util.Constants.*;
  * account.
  */
 public class Account {
-    /**
-     * The account name
-     */
+
     private String accountNumber;
     /**
      * The username of the owner
      */
     private String username;
-    /**
-     * The balance of the account
-     */
     private BigDecimal balance;
     /**
      * The type of the account. Type can be RON or EUR.
@@ -62,19 +57,18 @@ public class Account {
     public Account (User currentUser) {
         String line;
         StringBuilder accountNumber = new StringBuilder();
-        String accountType;
+        String accountType = "";
         BigDecimal balance = BigDecimal.valueOf(0);
         try {
-            while (true) {
-                System.out.println("Please use RON or EUR.");
+            System.out.println("Please use RON or EUR.");
+            do{
                 System.out.print("Account type:");
                 line = SCANNER.nextLine();
-                if (validateAccountType(line)) {
+                if (validateAccountType(line))
                     accountType = line;
-                    break;
-                } else
+                else
                     System.out.println("Incorrect account type. Please use: RON or EUR.");
-            }
+            }while(accountType.isEmpty());
 
             accountNumber.append("RO09BCYP").append(generateAccountNumber());
             this.accountNumber = accountNumber.toString();
@@ -87,14 +81,7 @@ public class Account {
         Database.increaseTotalNrOfAccounts();
     }
 
-    /**
-     * This method generates an account number based on the total number of accounts
-     * for every new account created.
-     * @return the account number created
-     */
-    private String generateAccountNumber(){
-        return String.format("%016d", Database.getNrOfAccounts());
-    }
+
 
     public String getAccountNumber() {
         return accountNumber;

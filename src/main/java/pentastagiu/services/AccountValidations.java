@@ -1,6 +1,6 @@
 package pentastagiu.services;
 
-import pentastagiu.files.Database;
+import pentastagiu.operations.Database;
 import pentastagiu.model.Account;
 
 import java.math.BigDecimal;
@@ -12,7 +12,16 @@ import static pentastagiu.util.Constants.*;
  * This is a helper class for Account that holds all the logic
  * regarding validation and updating the balance of an account.
  */
-public class AccountService {
+public class AccountValidations {
+
+    /**
+     * This method generates an account number based on the total number of accounts
+     * for every new account created.
+     * @return the account number created
+     */
+    public static String generateAccountNumber(){
+        return String.format("%016d", Database.getNrOfAccounts());
+    }
 
     /**
      * This method validates the account created from a string.

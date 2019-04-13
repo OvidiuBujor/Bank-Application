@@ -1,7 +1,7 @@
 package pentastagiu.main;
 
 import pentastagiu.services.UserCacheService;
-import pentastagiu.files.Database;
+import pentastagiu.operations.Database;
 import pentastagiu.services.DisplayService;
 import pentastagiu.services.LoginService;
 
@@ -19,7 +19,7 @@ public class App {
      */
     public static void main(String[] args) {
 
-        Database internalDatabase = Database.getInstance();
+        Database internalDatabase = new Database();
         internalDatabase.setTotalNrOfAccounts();
 
         DisplayService.InitialMenu();

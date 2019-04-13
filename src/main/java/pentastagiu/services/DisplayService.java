@@ -54,7 +54,7 @@ public class DisplayService {
 
     /**
      * This method displays all the accounts owned by the current user.
-     * @param accounts the list of all acccounts owned by the user
+     * @param accounts the list of all accounts owned by the user
      */
     public static void AccountsList(List<Account> accounts){
         int lineNumber = 1;

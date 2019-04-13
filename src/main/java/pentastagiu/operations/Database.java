@@ -1,4 +1,4 @@
-package pentastagiu.files;
+package pentastagiu.operations;
 
 import pentastagiu.model.Account;
 
@@ -11,8 +11,7 @@ import static pentastagiu.util.Constants.*;
 /**
  * This class is a helper class that operates on the
  * database file of accounts.It can perform different operations:
- * adding an account to database, update the balance of an account,
- * populates the users list.
+ * adding an account to database, update the balance of an account.
  */
 public class Database{
 
@@ -21,21 +20,6 @@ public class Database{
      * it's loaded when the application starts
      */
     private static long nrOfAccounts;
-
-    private static Database instance = new Database();
-
-    /**
-     * Private constructor to prevent instatiation - Singleton.
-     */
-    private Database(){
-    }
-
-    /**
-     * @return the ONLY instance of the class
-     */
-    public static Database getInstance(){
-        return instance;
-    }
 
     public void setTotalNrOfAccounts(){
         nrOfAccounts = calculateNrAccFromFile(FILE_ACCOUNTS);

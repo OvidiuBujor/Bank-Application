@@ -9,7 +9,7 @@ import java.io.*;
 import java.math.BigDecimal;
 import java.util.*;
 
-import static pentastagiu.services.AccountService.validateAccount;
+import static pentastagiu.services.AccountValidations.validateAccount;
 import static pentastagiu.util.Constants.*;
 
 /**

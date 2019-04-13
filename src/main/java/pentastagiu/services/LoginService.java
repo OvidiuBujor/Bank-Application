@@ -85,7 +85,7 @@ public class LoginService {
                         case ""://added for scanner.nextBigDecimal() that reads an empty string after the BigDecimal
                             break;
                         default:
-                            handleMenuOptions.displayProperInputOptions();
+                            handleMenuOptions.displayValidInputOptions();
                             break;
                     }
                     handleMenuOptions.displayTheMenu(opt);

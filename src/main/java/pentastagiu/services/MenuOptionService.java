@@ -1,22 +1,27 @@
 package pentastagiu.services;
 
-import pentastagiu.files.Database;
 import pentastagiu.model.Account;
 import pentastagiu.model.User;
+import pentastagiu.operations.AccountOperations;
+import pentastagiu.operations.Database;
 import pentastagiu.util.InvalidUserException;
 
 import static pentastagiu.util.Constants.LOGGER;
 import static pentastagiu.util.Constants.USERS_FILE;
 
 /**
- * Helper class that implements logic for all Menu Options
+ * Helper class that implements logic for all Menu Options:
+ * create new account, login/logout user, display accounts,
+ * deposit and transfer between accounts, go to previous menu.
  */
 public class MenuOptionService {
 
     private UserCacheService userCacheService;
+    private AccountOperations accountOperations;
 
     public MenuOptionService(UserCacheService userCacheService){
         this.userCacheService = userCacheService;
+        accountOperations = new AccountOperations(userCacheService);
     }
 
     /**
@@ -56,7 +61,7 @@ public class MenuOptionService {
      */
     public void displayAccounts(){
         if (userCacheService.isPosibleDeposit()) {
-            System.out.println("\nList of AccountsList:");
+            System.out.println("\nList of Accounts:");
             DisplayService.AccountsList(userCacheService.getCurrentUser().getAccountsList());
         }else
             userCacheService.setInAccount(false);
@@ -73,12 +78,12 @@ public class MenuOptionService {
 
     /**
      * This method handles the deposit to an account logic by invoking the
-     * {@link UserCacheService#depositAmount()} method. Also after the deposit it checks
+     * {@link AccountOperations#depositAmount()} method. Also after the deposit it checks
      * if the user is able to transfer between his accounts and marks him.
      */
     public void depositAmountToAcc(){
         if(userCacheService.isPosibleDeposit()) {
-            userCacheService.depositAmount();
+            accountOperations.depositAmount();
             if (userCacheService.isUserAbleToTransfer())
                 userCacheService.setPosibleTransfer(true);
         }else
@@ -88,11 +93,11 @@ public class MenuOptionService {
 
     /**
      * This method handles the logic for transferring between 2 accounts by
-     * invoking the {@link UserCacheService#transferAmount()} method.
+     * invoking the {@link AccountOperations#transferAmount()} method.
      */
     public void transferAmountBetweenAcc(){
         if (userCacheService.isPosibleTransfer())
-            userCacheService.transferAmount();
+            accountOperations.transferAmount();
         else if (userCacheService.isPosibleDeposit())
             userCacheService.setInAccount(false);
         else
@@ -114,7 +119,7 @@ public class MenuOptionService {
     /**
      * This method displays to the user the valid options he can choose on any menu.
      */
-    public void displayProperInputOptions(){
+    public void displayValidInputOptions(){
         if (userCacheService.inAccount())
             if(userCacheService.isPosibleDeposit() && userCacheService.isPosibleTransfer())
                 System.out.println("Please enter a valid option(1, 2, 3, 4 or 5).");
