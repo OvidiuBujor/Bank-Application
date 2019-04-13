@@ -4,6 +4,7 @@ import pentastagiu.model.Account;
 import pentastagiu.model.User;
 import pentastagiu.operations.AccountOperations;
 import pentastagiu.operations.Database;
+import pentastagiu.operations.UserOperations;
 import pentastagiu.util.InvalidUserException;
 
 import static pentastagiu.util.Constants.LOGGER;
@@ -18,10 +19,12 @@ public class MenuOptionService {
 
     private UserCacheService userCacheService;
     private AccountOperations accountOperations;
+    private UserOperations userOperations;
 
     public MenuOptionService(UserCacheService userCacheService){
         this.userCacheService = userCacheService;
-        accountOperations = new AccountOperations(userCacheService);
+        this.accountOperations = new AccountOperations(userCacheService);
+        this.userOperations = new UserOperations(userCacheService);
     }
 
     /**
@@ -32,9 +35,9 @@ public class MenuOptionService {
     public void createNewAccount(){
         Account accountCreated = new Account(userCacheService.getCurrentUser());
         Database.addAccountToDatabase(accountCreated);
-        userCacheService.addAccountToUserAccountsList(accountCreated);
+        userOperations.addAccountToUserAccountsList(accountCreated);
         userCacheService.setPosibleDeposit(true);
-        if (userCacheService.isUserAbleToTransfer())
+        if (userOperations.isUserAbleToTransfer())
             userCacheService.setPosibleTransfer(true);
     }
 
@@ -84,7 +87,7 @@ public class MenuOptionService {
     public void depositAmountToAcc(){
         if(userCacheService.isPosibleDeposit()) {
             accountOperations.depositAmount();
-            if (userCacheService.isUserAbleToTransfer())
+            if (userOperations.isUserAbleToTransfer())
                 userCacheService.setPosibleTransfer(true);
         }else
             System.out.println("Please enter a valid option(1 or 2).");

@@ -19,9 +19,12 @@ import static pentastagiu.util.Constants.SCANNER;
 public class AccountOperations {
 
     private UserCacheService userCacheService;
+    private UserOperations userOperations;
 
     public AccountOperations(UserCacheService userCacheService){
+
         this.userCacheService = userCacheService;
+        this.userOperations = new UserOperations(userCacheService);
     }
     /**
      * This method transfers an amount between 2 accounts owned by the user.
@@ -50,7 +53,7 @@ public class AccountOperations {
      * @return the account to transfer FROM
      */
     private Account getAccountFrom(){
-        List<Account> validTransferAccounts = userCacheService.getValidTransferAccounts();
+        List<Account> validTransferAccounts = userOperations.getValidTransferAccounts();
         Account accountFrom = new Account();
         int opt;
         try {
@@ -126,7 +129,7 @@ public class AccountOperations {
         Account accountTo = new Account();
 
         try{
-            List<Account> filteredAccounts = userCacheService.getFilteredAccounts(accountFrom);
+            List<Account> filteredAccounts = userOperations.getFilteredAccounts(accountFrom);
 
             if (filteredAccounts.size() == 1) {
                 accountTo = filteredAccounts.get(0);

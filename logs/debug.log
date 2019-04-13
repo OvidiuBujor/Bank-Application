@@ -11757,3 +11757,7 @@
 [DEBUG] 2019-04-13 16:14:10.466 [main] Constants:52 - Wrong username/password.
 [INFO ] 2019-04-13 16:14:47.933 [main] Constants:43 - Account added successfully.
 [INFO ] 2019-04-13 16:15:02.792 [main] Constants:43 - Account added successfully.
+[WARN ] 2019-04-13 16:46:55.866 [main] Constants:127 - Problem at line 1 in 'accounts.txt' files. Account didn't count to the total number of valid accounts.
+[WARN ] 2019-04-13 16:46:55.866 [main] Constants:127 - Problem at line 2 in 'accounts.txt' files. Account didn't count to the total number of valid accounts.
+[WARN ] 2019-04-13 16:46:55.866 [main] Constants:127 - Problem at line 3 in 'accounts.txt' files. Account didn't count to the total number of valid accounts.
+[WARN ] 2019-04-13 16:46:55.866 [main] Constants:127 - Problem at line 4 in 'accounts.txt' files. Account didn't count to the total number of valid accounts.
