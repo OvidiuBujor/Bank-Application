@@ -81,7 +81,14 @@ public class Account {
         DatabaseOperations.increaseTotalNrOfAccounts();
     }
 
-
+    /**
+     * This method generates an account number based on the total number of accounts
+     * for every new account created.
+     * @return the account number created
+     */
+    private String generateAccountNumber(){
+        return String.format("%016d", DatabaseOperations.getNrOfAccounts());
+    }
 
     public String getAccountNumber() {
         return accountNumber;

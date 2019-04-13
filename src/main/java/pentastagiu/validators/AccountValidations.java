@@ -14,15 +14,6 @@ import static pentastagiu.util.Constants.*;
 public class AccountValidations {
 
     /**
-     * This method generates an account number based on the total number of accounts
-     * for every new account created.
-     * @return the account number created
-     */
-    public static String generateAccountNumber(){
-        return String.format("%016d", DatabaseOperations.getNrOfAccounts());
-    }
-
-    /**
      * This method validates the account created from a string.
      * @param accountDetails the string that will be validated.
      * @return true if the validation process was successful; false otherwise
