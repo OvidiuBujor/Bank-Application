@@ -17,7 +17,7 @@ public class DisplayService {
         System.out.println("\n-----Bank App------");
         System.out.println("1.Log in");
         System.out.println("2.Exit");
-        System.out.print("Please enter your option:");
+        System.out.println("Please enter your option:");
     }
 
     /**

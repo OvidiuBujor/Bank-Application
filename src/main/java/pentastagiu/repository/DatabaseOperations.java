@@ -31,7 +31,7 @@ public class DatabaseOperations {
     public static long calculateNrAccFromFile(){
         Session session = FACTORY.getCurrentSession();
         session.beginTransaction();
-        return session.createQuery("from account").getResultList().size();
+        return session.createQuery("from Account").getResultList().size();
     }
 
     /**
@@ -73,8 +73,8 @@ public class DatabaseOperations {
     public static boolean validateUser(User currentUser) throws InvalidUserException {
         Session session = FACTORY.getCurrentSession();
         session.beginTransaction();
-        if(session.createQuery("from user where username = '" + currentUser.getUsername() +
-                "' and password = " + currentUser.getPassword()).getResultList().size() == 1)
+        if(session.createQuery("select username from User where username = '" + currentUser.getUsername() +
+                "' and password = " + currentUser.getPassword()).list().size() == 1)
             return true;
         else
             throw new InvalidUserException("User credentials are not correct.");
@@ -88,6 +88,6 @@ public class DatabaseOperations {
     public static List<Account> readAccountsForUser(User currentUser){
         Session session = FACTORY.getCurrentSession();
         session.beginTransaction();
-        return  session.createQuery("from account where user_id = " + currentUser.getId()).getResultList();
+        return  session.createQuery("from Account where user_id = " + currentUser.getId()).list();
     }
 }

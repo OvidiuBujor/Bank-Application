@@ -12,7 +12,6 @@ import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Objects;
 
-import static pentastagiu.validators.AccountValidations.*;
 import static pentastagiu.util.Constants.*;
 
 /**
@@ -122,6 +121,16 @@ public class Account {
      */
     private String generateAccountNumber(){
         return String.format("%016d", DatabaseOperations.calculateNrAccFromFile());
+    }
+
+    /**
+     * This method validates the account type entered from console.
+     * Valid types of account are RON or EUR.
+     * @param accountType the account type entered from console
+     * @return true if account type is correct; false otherwise
+     */
+    public boolean validateAccountType(String accountType){
+        return accountType.toUpperCase().equals("RON") || accountType.toUpperCase().equals("EUR");
     }
 
     public int getId() {
