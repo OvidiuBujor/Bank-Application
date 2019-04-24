@@ -1,8 +1,5 @@
 package pentastagiu.util;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.File;
 import java.util.Scanner;
 
@@ -31,10 +28,6 @@ public final class Constants {
      * Scanner object used for reading user input from console.
      */
     public static final Scanner SCANNER = new Scanner(System.in);
-    /**
-     * Logger used to log to console and file
-     */
-    public final static Logger LOGGER = LogManager.getLogger();
 
     /**
      * stores the database file for AccountsList

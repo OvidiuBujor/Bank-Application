@@ -1,5 +1,7 @@
-package pentastagiu.operations;
+package pentastagiu.repository;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import pentastagiu.model.Account;
 import pentastagiu.services.DisplayService;
 import pentastagiu.services.UserCacheService;
@@ -8,7 +10,6 @@ import java.math.BigDecimal;
 import java.util.InputMismatchException;
 import java.util.List;
 
-import static pentastagiu.util.Constants.LOGGER;
 import static pentastagiu.util.Constants.SCANNER;
 
 /**
@@ -17,6 +18,7 @@ import static pentastagiu.util.Constants.SCANNER;
  */
 public class AccountOperations {
 
+    private Logger LOGGER = LogManager.getLogger();
     private UserCacheService userCacheService;
     private UserOperations userOperations;
 

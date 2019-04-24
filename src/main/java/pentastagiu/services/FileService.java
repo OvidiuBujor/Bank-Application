@@ -1,5 +1,7 @@
 package pentastagiu.services;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import pentastagiu.model.AccountType;
 import pentastagiu.model.Account;
 import pentastagiu.model.User;
@@ -19,6 +21,7 @@ import static pentastagiu.util.Constants.*;
  */
 public class FileService {
 
+    private static Logger LOGGER = LogManager.getLogger();
     /**
      * This method writes an account to a file.
      * @param file the file where is written

@@ -1,4 +1,4 @@
-package pentastagiu.operations;
+package pentastagiu.repository;
 
 import pentastagiu.model.AccountType;
 import pentastagiu.model.Account;

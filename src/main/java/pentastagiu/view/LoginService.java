@@ -1,8 +1,12 @@
-package pentastagiu.services;
+package pentastagiu.view;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import pentastagiu.services.MenuOptionService;
+import pentastagiu.services.UserCacheService;
 
 import java.util.InputMismatchException;
 
-import static pentastagiu.util.Constants.LOGGER;
 import static pentastagiu.util.Constants.SCANNER;
 
 /**
@@ -17,6 +21,7 @@ import static pentastagiu.util.Constants.SCANNER;
  */
 public class LoginService {
 
+    private Logger LOGGER = LogManager.getLogger();
     /**
      * This method process the user input.
      * In case of option:

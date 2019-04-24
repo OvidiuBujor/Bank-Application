@@ -1,14 +1,22 @@
 package pentastagiu.main;
 
-import pentastagiu.operations.DatabaseOperations;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+import pentastagiu.model.*;
+import pentastagiu.repository.DatabaseOperations;
 import pentastagiu.services.UserCacheService;
 import pentastagiu.services.DisplayService;
-import pentastagiu.services.LoginService;
+import pentastagiu.view.LoginService;
 
 /**
  * This class is the Main class of the project and the starting point.
  */
 public class App {
+
+    private static Logger LOGGER = LogManager.getLogger();
 
     /**
      * Main method that starts the application.
@@ -19,14 +27,39 @@ public class App {
      */
     public static void main(String[] args) {
 
-        DatabaseOperations.setTotalNrOfAccounts();
+        SessionFactory factory = new Configuration().configure("hibernate.cfg.xml")
+                .addAnnotatedClass(User.class)
+                .addAnnotatedClass(Account.class)
+                .addAnnotatedClass(Notification.class)
+                .addAnnotatedClass(Transation.class)
+                .addAnnotatedClass(Person.class)
+                .buildSessionFactory();
+        Session session = factory.getCurrentSession();
+        LOGGER.info("Session created");
 
-        DisplayService.InitialMenu();
+        try {
+            session.beginTransaction();
 
-        LoginService processUserInput = new LoginService();
-        UserCacheService cachedUser = new UserCacheService();
+            //session.save();
 
-        processUserInput.beginProcessing(cachedUser);
+            session.getTransaction().commit();
+            DatabaseOperations.setTotalNrOfAccounts();
+
+            DisplayService.InitialMenu();
+
+            LoginService processUserInput = new LoginService();
+            UserCacheService cachedUser = new UserCacheService();
+
+            processUserInput.beginProcessing(cachedUser);
+
+        } finally {
+            if(!factory.isClosed()) {
+                LOGGER.info("Closing SessionFactory");
+                factory.close();
+            }
+        }
+
+
     }
 
 }

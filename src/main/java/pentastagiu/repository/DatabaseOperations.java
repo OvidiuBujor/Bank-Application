@@ -1,5 +1,7 @@
-package pentastagiu.operations;
+package pentastagiu.repository;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import pentastagiu.model.Account;
 
 import java.io.File;
@@ -15,6 +17,7 @@ import static pentastagiu.util.Constants.*;
  */
 public class DatabaseOperations {
 
+    private static Logger LOGGER = LogManager.getLogger();
     /**
      * stores the total number of accounts and
      * it's loaded when the application starts

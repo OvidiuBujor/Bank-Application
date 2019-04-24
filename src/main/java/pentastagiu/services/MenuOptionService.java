@@ -1,13 +1,17 @@
 package pentastagiu.services;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import pentastagiu.model.Account;
 import pentastagiu.model.User;
-import pentastagiu.operations.AccountOperations;
-import pentastagiu.operations.DatabaseOperations;
-import pentastagiu.operations.UserOperations;
+import pentastagiu.repository.AccountOperations;
+import pentastagiu.repository.DatabaseOperations;
+import pentastagiu.repository.UserOperations;
 import pentastagiu.util.InvalidUserException;
 
-import static pentastagiu.util.Constants.LOGGER;
+import java.util.InputMismatchException;
+
+import static pentastagiu.util.Constants.SCANNER;
 import static pentastagiu.util.Constants.USERS_FILE;
 
 /**
@@ -17,6 +21,7 @@ import static pentastagiu.util.Constants.USERS_FILE;
  */
 public class MenuOptionService {
 
+    private Logger LOGGER = LogManager.getLogger();
     private UserCacheService userCacheService;
     private AccountOperations accountOperations;
     private UserOperations userOperations;
@@ -47,7 +52,7 @@ public class MenuOptionService {
      * invoking {@link UserCacheService#loadUser()} method.
      */
     public void checkUserCredentials(){
-        userCacheService.setCurrentUser(new User());
+        userCacheService.setCurrentUser(getUserCredentials());
         boolean result = false;
         try {
             if (FileService.validateUserFromFile(userCacheService.getCurrentUser(), USERS_FILE)) result = true;
@@ -57,6 +62,20 @@ public class MenuOptionService {
         userCacheService.setLogged(result);
         if (userCacheService.isLogged())
             userCacheService.loadUser();
+    }
+
+    private User getUserCredentials(){
+        String username = "";
+        String password = "";
+        try {
+            System.out.print("Username:");
+            username = SCANNER.nextLine();
+            System.out.print("Password:");
+            password = SCANNER.nextLine();
+        } catch (InputMismatchException e) {
+            LOGGER.error("The input you entered was not expected.");
+        }
+        return new User(username,password);
     }
 
     /**

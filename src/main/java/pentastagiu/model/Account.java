@@ -1,9 +1,15 @@
 package pentastagiu.model;
 
-import pentastagiu.operations.DatabaseOperations;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import pentastagiu.repository.DatabaseOperations;
 
+import javax.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Objects;
 
 import static pentastagiu.validators.AccountValidations.*;
@@ -13,18 +19,48 @@ import static pentastagiu.util.Constants.*;
  * This class stores the information regarding an
  * account.
  */
+@Entity
+@Table(name = "account")
 public class Account {
+    @Transient
+    private Logger LOGGER = LogManager.getLogger();
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", insertable = false, updatable = false)
+    private int id;
+
+    @Column(name = "account_number")
     private String accountNumber;
     /**
      * The username of the owner
      */
     private String username;
+
+    @Column(name = "balance")
     private BigDecimal balance;
     /**
      * The type of the account. Type can be RON or EUR.
      */
+    @Column(name = "account_type")
     private AccountType accountType;
+
+    @Column(name = "created_time")
+    private LocalDateTime createdTime;
+
+    @Column(name = "updated_time")
+    private LocalDateTime updatedTime;
+
+    @ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH})
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    /**
+     * The list of transactions for current account
+     */
+    @OneToMany(mappedBy = "account",
+            cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH})
+    private List<Transation> transactionList = new ArrayList<>();
 
     /**
      * Empty constructor used for initialization of some accounts
@@ -90,24 +126,72 @@ public class Account {
         return String.format("%016d", DatabaseOperations.getNrOfAccounts());
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     public String getAccountNumber() {
         return accountNumber;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public BigDecimal getBalance() {
-        return balance;
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
     }
 
     public AccountType getAccountType() {
         return accountType;
     }
 
+    public void setAccountType(AccountType accountType) {
+        this.accountType = accountType;
+    }
+
+    public LocalDateTime getCreatedTime() {
+        return createdTime;
+    }
+
+    public void setCreatedTime(LocalDateTime createdTime) {
+        this.createdTime = createdTime;
+    }
+
+    public LocalDateTime getUpdatedTime() {
+        return updatedTime;
+    }
+
+    public void setUpdatedTime(LocalDateTime updatedTime) {
+        this.updatedTime = updatedTime;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public List<Transation> getTransactionList() {
+        return transactionList;
+    }
+
+    public void setTransactionList(List<Transation> transactionList) {
+        this.transactionList = transactionList;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public BigDecimal getBalance() {
+        return balance;
     }
 
     public void setBalance(BigDecimal balance) {
@@ -137,4 +221,5 @@ public class Account {
     public int hashCode() {
         return Objects.hash(accountNumber, username, accountType);
     }
+
 }

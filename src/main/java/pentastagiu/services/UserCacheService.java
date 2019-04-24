@@ -1,7 +1,7 @@
 package pentastagiu.services;
 
 import pentastagiu.model.User;
-import pentastagiu.operations.UserOperations;
+import pentastagiu.repository.UserOperations;
 
 import static pentastagiu.util.Constants.*;
 
