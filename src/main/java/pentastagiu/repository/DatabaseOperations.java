@@ -2,12 +2,16 @@ package pentastagiu.repository;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.Session;
+import org.hibernate.resource.transaction.spi.TransactionStatus;
 import pentastagiu.model.Account;
+import pentastagiu.model.User;
+import pentastagiu.util.InvalidUserException;
 
-import java.io.File;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
 
-import static pentastagiu.services.FileService.*;
 import static pentastagiu.util.Constants.*;
 
 /**
@@ -18,22 +22,16 @@ import static pentastagiu.util.Constants.*;
 public class DatabaseOperations {
 
     private static Logger LOGGER = LogManager.getLogger();
+
     /**
-     * stores the total number of accounts and
-     * it's loaded when the application starts
+     * This method calculates the number of valid accounts from
+     * the database file.
+     * @return the number of valid accounts
      */
-    private static long nrOfAccounts;
-
-    public static void setTotalNrOfAccounts(){
-        nrOfAccounts = calculateNrAccFromFile(FILE_ACCOUNTS);
-    }
-
-    public static void increaseTotalNrOfAccounts(){
-        nrOfAccounts++;
-    }
-
-    public static long getNrOfAccounts() {
-        return nrOfAccounts;
+    public static long calculateNrAccFromFile(){
+        Session session = FACTORY.getCurrentSession();
+        session.beginTransaction();
+        return session.createQuery("from account").getResultList().size();
     }
 
     /**
@@ -41,8 +39,11 @@ public class DatabaseOperations {
      * @param account the account to be added
      */
     public static void addAccountToDatabase(Account account){
-        boolean result = writeToFile(FILE_ACCOUNTS,account);
-        if (result)
+        Session session = FACTORY.getCurrentSession();
+        session.beginTransaction();
+        session.save(account);
+        session.getTransaction().commit();
+        if (session.getTransaction().getStatus() == TransactionStatus.COMMITTED)
             LOGGER.info("Account added successfully.");
         else
             LOGGER.warn("Account wasn't added. Please check log file for details.");
@@ -50,19 +51,43 @@ public class DatabaseOperations {
 
     /**
      * This method updates the balance of the account in the database
-     * by creating a copy of the accounts file with the updated balance
-     * and rename it to accounts file name.
-     * @param balance the new balance that will be updated
+     * @param amount the new balance that will be updated
      * @param account the account that is updated
      */
-    public static void updateBalanceAccountInDatabase(BigDecimal balance, Account account){
+    public static void updateBalanceAccount(BigDecimal amount, Account account){
+        Session session = FACTORY.getCurrentSession();
+        session.beginTransaction();
+        BigDecimal balance = account.getBalance();
+        balance = balance.add(amount);
+        account.setBalance(balance);
+        account.setUpdatedTime(LocalDateTime.now());
+        session.getTransaction().commit();
+    }
 
-        File tempFile = createNewFile(balance,account);
-        File accountsDatabaseFile = FILE_ACCOUNTS;
+    /**
+     * This method validates the user's credentials against the database file
+     * @param currentUser the user to be validated
+     * @return true if user's credentials are valid
+     * @throws InvalidUserException when the user's credentials are not valid
+     */
+    public static boolean validateUser(User currentUser) throws InvalidUserException {
+        Session session = FACTORY.getCurrentSession();
+        session.beginTransaction();
+        if(session.createQuery("from user where username = '" + currentUser.getUsername() +
+                "' and password = " + currentUser.getPassword()).getResultList().size() == 1)
+            return true;
+        else
+            throw new InvalidUserException("User credentials are not correct.");
+    }
 
-        if(accountsDatabaseFile.exists())
-            accountsDatabaseFile.delete();
-
-        tempFile.renameTo(accountsDatabaseFile);
+    /**
+     * This method creates the list of accounts for user
+     * @param currentUser the user for which we create the accounts list
+     * @return the account list
+     */
+    public static List<Account> readAccountsForUser(User currentUser){
+        Session session = FACTORY.getCurrentSession();
+        session.beginTransaction();
+        return  session.createQuery("from account where user_id = " + currentUser.getId()).getResultList();
     }
 }

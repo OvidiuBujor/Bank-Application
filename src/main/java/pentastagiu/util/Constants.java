@@ -1,5 +1,9 @@
 package pentastagiu.util;
 
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+import pentastagiu.model.*;
+
 import java.io.File;
 import java.util.Scanner;
 
@@ -20,17 +24,15 @@ public final class Constants {
     public static final int ACCOUNT_TYPE = 3;
 
     /**
-     * stores users file name to be used for ClassLoader
-     */
-    public static final String USERS_FILE = "users.txt";
-
-    /**
      * Scanner object used for reading user input from console.
      */
     public static final Scanner SCANNER = new Scanner(System.in);
 
-    /**
-     * stores the database file for AccountsList
-     */
-    public static File FILE_ACCOUNTS = new File("src/main/resources/accounts.txt");
+    public static SessionFactory FACTORY = new Configuration().configure("hibernate.cfg.xml")
+            .addAnnotatedClass(User.class)
+            .addAnnotatedClass(Account.class)
+            .addAnnotatedClass(Notification.class)
+            .addAnnotatedClass(Transation.class)
+            .addAnnotatedClass(Person.class)
+            .buildSessionFactory();
 }

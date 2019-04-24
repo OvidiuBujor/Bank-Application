@@ -1,9 +1,8 @@
 package pentastagiu.services;
 
 import pentastagiu.model.User;
+import pentastagiu.repository.DatabaseOperations;
 import pentastagiu.repository.UserOperations;
-
-import static pentastagiu.util.Constants.*;
 
 /**
  * This class contains all logic for the current logged in user:
@@ -45,7 +44,7 @@ public class UserCacheService {
      * from the accounts database file.
      */
     private void setAccountsList() {
-        currentUser.getAccountsList().addAll(FileService.readAccountsFromFileForUser(FILE_ACCOUNTS,currentUser));
+        currentUser.getAccountsList().addAll(DatabaseOperations.readAccountsForUser(currentUser));
     }
 
     /**

@@ -32,10 +32,6 @@ public class Account {
 
     @Column(name = "account_number")
     private String accountNumber;
-    /**
-     * The username of the owner
-     */
-    private String username;
 
     @Column(name = "balance")
     private BigDecimal balance;
@@ -74,15 +70,16 @@ public class Account {
      * Constructor that creates an object of type Account with the information below
      * and it's used for validating already created accounts.
      * @param accountNumber the number of the account
-     * @param username the username of the owner
      * @param balance the balance of the account
      * @param accountType the account type
      */
-    public Account(String accountNumber, String username, BigDecimal balance, AccountType accountType) {
+    public Account(String accountNumber, BigDecimal balance, AccountType accountType, LocalDateTime createdTime, LocalDateTime updatedTime,User currentUser) {
         this.accountNumber = accountNumber;
-        this.username = username;
         this.balance = balance;
         this.accountType = accountType;
+        this.createdTime = createdTime;
+        this.updatedTime = updatedTime;
+        this.user = currentUser;
     }
 
     /**
@@ -108,13 +105,14 @@ public class Account {
 
             accountNumber.append("RO09BCYP").append(generateAccountNumber());
             this.accountNumber = accountNumber.toString();
-            this.username = currentUser.getUsername();
             this.balance = balance;
             this.accountType = AccountType.fromString(accountType.toUpperCase());
+            this.createdTime = LocalDateTime.now();
+            this.updatedTime = LocalDateTime.now();
+            this.user = currentUser;
         } catch (InputMismatchException e) {
             LOGGER.error("The input you entered was not expected.");
         }
-        DatabaseOperations.increaseTotalNrOfAccounts();
     }
 
     /**
@@ -123,7 +121,7 @@ public class Account {
      * @return the account number created
      */
     private String generateAccountNumber(){
-        return String.format("%016d", DatabaseOperations.getNrOfAccounts());
+        return String.format("%016d", DatabaseOperations.calculateNrAccFromFile());
     }
 
     public int getId() {
@@ -182,14 +180,6 @@ public class Account {
         this.transactionList = transactionList;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     public BigDecimal getBalance() {
         return balance;
     }
@@ -204,7 +194,7 @@ public class Account {
      */
     @Override
     public String toString() {
-        return  accountNumber.toUpperCase() + " " +  username + " " + balance + " " + accountType.toString() + "\n";
+        return  accountNumber.toUpperCase() + " " +  balance + " " + accountType.toString() + "\n";
     }
 
     @Override
@@ -213,13 +203,12 @@ public class Account {
         if (o == null || getClass() != o.getClass()) return false;
         Account account = (Account) o;
         return accountNumber.equals(account.accountNumber) &&
-                username.equals(account.username) &&
                 accountType == account.accountType;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(accountNumber, username, accountType);
+        return Objects.hash(accountNumber, accountType);
     }
 
 }

@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.util.InputMismatchException;
 import java.util.List;
 
+import static pentastagiu.repository.DatabaseOperations.updateBalanceAccount;
 import static pentastagiu.util.Constants.SCANNER;
 
 /**
@@ -23,7 +24,6 @@ public class AccountOperations {
     private UserOperations userOperations;
 
     public AccountOperations(UserCacheService userCacheService){
-
         this.userCacheService = userCacheService;
         this.userOperations = new UserOperations(userCacheService);
     }
@@ -245,17 +245,4 @@ public class AccountOperations {
         return amount;
     }
 
-    /**
-     * This method updates the balance  of the account.
-     * Updates the database of accounts by invoking
-     * {@link DatabaseOperations#updateBalanceAccountInDatabase(BigDecimal,Account) updateBalanceAccountInDatabase} static method.
-     * @param amount the amount entered from console
-     * @param account the account to be updated
-     */
-    private static void updateBalanceAccount(BigDecimal amount, Account account){
-        BigDecimal balance = account.getBalance();
-        balance = balance.add(amount);
-        account.setBalance(balance);
-        DatabaseOperations.updateBalanceAccountInDatabase(balance,account);
-    }
 }

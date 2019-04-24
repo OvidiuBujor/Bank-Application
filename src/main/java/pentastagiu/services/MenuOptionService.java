@@ -12,7 +12,6 @@ import pentastagiu.util.InvalidUserException;
 import java.util.InputMismatchException;
 
 import static pentastagiu.util.Constants.SCANNER;
-import static pentastagiu.util.Constants.USERS_FILE;
 
 /**
  * Helper class that implements logic for all Menu Options:
@@ -40,7 +39,8 @@ public class MenuOptionService {
     public void createNewAccount(){
         Account accountCreated = new Account(userCacheService.getCurrentUser());
         DatabaseOperations.addAccountToDatabase(accountCreated);
-        userOperations.addAccountToUserAccountsList(accountCreated);
+
+        //userOperations.addAccountToUserAccountsList(accountCreated);
         userCacheService.setPosibleDeposit(true);
         if (userOperations.isUserAbleToTransfer())
             userCacheService.setPosibleTransfer(true);
@@ -55,7 +55,7 @@ public class MenuOptionService {
         userCacheService.setCurrentUser(getUserCredentials());
         boolean result = false;
         try {
-            if (FileService.validateUserFromFile(userCacheService.getCurrentUser(), USERS_FILE)) result = true;
+            if (DatabaseOperations.validateUser(userCacheService.getCurrentUser())) result = true;
         } catch (InvalidUserException e) {
             LOGGER.debug("Wrong username/password.");
         }

@@ -1,16 +1,10 @@
 package pentastagiu.model;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Objects;
-
-import static pentastagiu.util.Constants.*;
 
 /**
  * This class holds information for an user:
@@ -19,15 +13,13 @@ import static pentastagiu.util.Constants.*;
 @Entity
 @Table(name = "user")
 public class User {
-    @Transient
-    private Logger LOGGER = LogManager.getLogger();
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", insertable = false, updatable = false)
     private int id;
 
-    @Column(name = "user_name")
+    @Column(name = "username")
     private String username;
 
     @Column(name = "password")
@@ -61,25 +53,17 @@ public class User {
      * @param username of the new User that is created
      * @param password of the new User that is created
      */
-    public User(String username, String password) {
+    public User(String username, String password,LocalDateTime createdTime, LocalDateTime updatedTime, Person personDetails) {
         this.username = username;
         this.password = password;
+        this.createdTime =  createdTime;
+        this.updatedTime = updatedTime;
+        this.personDetails = personDetails;
     }
 
-    /**
-     * This constructor creates an user from information
-     * entered from console. This is used for checking the
-     * user credentials at log in.
-     */
-    public User(){
-//        try {
-//            System.out.print("Username:");
-//            this.username = SCANNER.nextLine();
-//            System.out.print("Password:");
-//            this.password = SCANNER.nextLine();
-//        } catch (InputMismatchException e) {
-//            LOGGER.error("The input you entered was not expected.");
-//        }
+    public User(String username, String password){
+        this.username = username;
+        this.password = password;
     }
 
     public int getId() {
