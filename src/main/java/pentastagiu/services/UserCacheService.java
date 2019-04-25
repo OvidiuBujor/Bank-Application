@@ -31,7 +31,7 @@ public class UserCacheService {
      * his accounts.
      */
     public void loadUser() {
-        setAccountsList();
+        loadAccountsForUser();
         if(currentUser.getAccountsList().size() > 0)
             posibleDeposit = true;
         UserOperations userOperations = new UserOperations(this);
@@ -43,8 +43,8 @@ public class UserCacheService {
      * This method populates the list of accounts that the user owns
      * from the accounts database file.
      */
-    private void setAccountsList() {
-        currentUser.getAccountsList().addAll(DatabaseOperations.readAccountsForUser(currentUser));
+    public void loadAccountsForUser() {
+        currentUser.setAccountsList(DatabaseOperations.readAccountsForUser(currentUser));
     }
 
     /**

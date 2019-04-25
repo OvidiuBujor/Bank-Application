@@ -23,21 +23,15 @@ public class App {
      * @param args the arguments list for the project
      */
     public static void main(String[] args) {
-        //Session session = FACTORY.getCurrentSession();
         LOGGER.info("Session created");
-
         try {
             DisplayService.InitialMenu();
-
             LoginService processUserInput = new LoginService();
             UserCacheService cachedUser = new UserCacheService();
-            //session.beginTransaction();
             processUserInput.beginProcessing(cachedUser);
         } finally {
-            if(!FACTORY.isClosed()) {
                 LOGGER.info("Closing SessionFactory");
                 FACTORY.close();
-            }
         }
 
 

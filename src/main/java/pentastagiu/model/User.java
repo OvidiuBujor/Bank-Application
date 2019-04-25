@@ -16,7 +16,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", insertable = false, updatable = false)
+    @Column(name = "id")
     private int id;
 
     @Column(name = "username")
@@ -30,9 +30,6 @@ public class User {
 
     @Column(name = "updated_time")
     private LocalDateTime updatedTime;
-
-    @OneToOne(cascade=CascadeType.ALL, fetch =  FetchType.LAZY)
-    private Person personDetails;
 
     /**
      * The list of notifications for user
@@ -48,17 +45,20 @@ public class User {
             cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH})
     private List<Account> accountsList = new ArrayList<>();
 
+    public User(){
+
+    }
+
     /**
      * Constructs an user with the information received
      * @param username of the new User that is created
      * @param password of the new User that is created
      */
-    public User(String username, String password,LocalDateTime createdTime, LocalDateTime updatedTime, Person personDetails) {
+    public User(String username, String password,LocalDateTime createdTime, LocalDateTime updatedTime) {
         this.username = username;
         this.password = password;
         this.createdTime =  createdTime;
         this.updatedTime = updatedTime;
-        this.personDetails = personDetails;
     }
 
     public User(String username, String password){
@@ -122,13 +122,6 @@ public class User {
         this.notificationList = notificationList;
     }
 
-    public Person getPersonDetails() {
-        return personDetails;
-    }
-
-    public void setPersonDetails(Person personDetails) {
-        this.personDetails = personDetails;
-    }
 
     /**
      * This method overrites the equals method used to compare 2 users.

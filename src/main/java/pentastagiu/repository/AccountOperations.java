@@ -186,6 +186,7 @@ public class AccountOperations {
      */
     private Account getAccountToDeposit(){
         int opt;
+        userCacheService.loadAccountsForUser();
         List<Account> allAccounts = userCacheService.getCurrentUser().getAccountsList();
         Account accountToDeposit = new Account();
 

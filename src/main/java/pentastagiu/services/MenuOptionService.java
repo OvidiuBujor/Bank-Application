@@ -40,7 +40,6 @@ public class MenuOptionService {
         Account accountCreated = new Account(userCacheService.getCurrentUser());
         DatabaseOperations.addAccountToDatabase(accountCreated);
 
-        //userOperations.addAccountToUserAccountsList(accountCreated);
         userCacheService.setPosibleDeposit(true);
         if (userOperations.isUserAbleToTransfer())
             userCacheService.setPosibleTransfer(true);
@@ -52,12 +51,13 @@ public class MenuOptionService {
      * invoking {@link UserCacheService#loadUser()} method.
      */
     public void checkUserCredentials(){
-        userCacheService.setCurrentUser(getUserCredentials());
+        User userToValidate = getUserCredentials();
         boolean result = false;
         try {
-            if (DatabaseOperations.validateUser(userCacheService.getCurrentUser())) result = true;
+            userCacheService.setCurrentUser(DatabaseOperations.validateUser(userToValidate));
+            result = true;
         } catch (InvalidUserException e) {
-            LOGGER.debug("Wrong username/password.");
+            System.out.println("Wrong username/password.");
         }
         userCacheService.setLogged(result);
         if (userCacheService.isLogged())
@@ -84,6 +84,7 @@ public class MenuOptionService {
     public void displayAccounts(){
         if (userCacheService.isPosibleDeposit()) {
             System.out.println("\nList of Accounts:");
+            userCacheService.loadAccountsForUser();
             DisplayService.AccountsList(userCacheService.getCurrentUser().getAccountsList());
         }else
             userCacheService.setInAccount(false);

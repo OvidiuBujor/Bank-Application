@@ -20,14 +20,6 @@ public class UserOperations {
     }
 
     /**
-     * This method adds a new created account to the current user's.
-     * @param account the new account that is added to the current user
-     */
-    public void addAccountToUserAccountsList(Account account){
-        userCacheService.getCurrentUser().getAccountsList().add(account);
-    }
-
-    /**
      * This method returns the list of filtered accounts
      * based on the currency of the account received as parameter
      * except this account.

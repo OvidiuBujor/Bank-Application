@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 public class Transation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", insertable = false, updatable = false)
+    @Column(name = "id")
     private int id;
 
     @Column(name = "to_account")

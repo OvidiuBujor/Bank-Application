@@ -2,9 +2,11 @@ package pentastagiu.model;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.Session;
 import pentastagiu.repository.DatabaseOperations;
 
 import javax.persistence.*;
+import javax.xml.stream.FactoryConfigurationError;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -26,7 +28,7 @@ public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", insertable = false, updatable = false)
+    @Column(name = "id")
     private int id;
 
     @Column(name = "account_number")
@@ -129,7 +131,7 @@ public class Account {
      * @param accountType the account type entered from console
      * @return true if account type is correct; false otherwise
      */
-    public boolean validateAccountType(String accountType){
+    private boolean validateAccountType(String accountType){
         return accountType.toUpperCase().equals("RON") || accountType.toUpperCase().equals("EUR");
     }
 

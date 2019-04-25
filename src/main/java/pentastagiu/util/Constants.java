@@ -25,7 +25,7 @@ public final class Constants {
     /**
      * SessionFactory object used to get current session to access the database
      */
-    public static SessionFactory FACTORY = new Configuration().configure("hibernate.cfg.xml")
+    public static final SessionFactory FACTORY = new Configuration().configure()
             .addAnnotatedClass(User.class)
             .addAnnotatedClass(Account.class)
             .addAnnotatedClass(Notification.class)

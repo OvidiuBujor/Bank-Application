@@ -8,8 +8,10 @@ import pentastagiu.model.Account;
 import pentastagiu.model.User;
 import pentastagiu.util.InvalidUserException;
 
+import javax.persistence.NoResultException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static pentastagiu.util.Constants.*;
@@ -31,7 +33,9 @@ public class DatabaseOperations {
     public static long calculateNrAccFromFile(){
         Session session = FACTORY.getCurrentSession();
         session.beginTransaction();
-        return session.createQuery("from Account").getResultList().size();
+        long nrAccounts = session.createQuery("from Account").getResultList().size();
+        session.close();
+        return nrAccounts;
     }
 
     /**
@@ -43,8 +47,11 @@ public class DatabaseOperations {
         session.beginTransaction();
         session.save(account);
         session.getTransaction().commit();
-        if (session.getTransaction().getStatus() == TransactionStatus.COMMITTED)
+        session.close();
+        if (session.getTransaction().getStatus() == TransactionStatus.COMMITTED) {
             LOGGER.info("Account added successfully.");
+            System.out.println("Account added successfully.");
+        }
         else
             LOGGER.warn("Account wasn't added. Please check log file for details.");
     }
@@ -61,7 +68,9 @@ public class DatabaseOperations {
         balance = balance.add(amount);
         account.setBalance(balance);
         account.setUpdatedTime(LocalDateTime.now());
-        session.getTransaction().commit();
+        session.createQuery("update Account set balance = " + balance + ",updated_time = '" + LocalDateTime.now() +
+                                "' where id = " + account.getId()).executeUpdate();
+        session.close();
     }
 
     /**
@@ -70,14 +79,15 @@ public class DatabaseOperations {
      * @return true if user's credentials are valid
      * @throws InvalidUserException when the user's credentials are not valid
      */
-    public static boolean validateUser(User currentUser) throws InvalidUserException {
+    public static User validateUser(User currentUser) throws InvalidUserException {
         Session session = FACTORY.getCurrentSession();
-        session.beginTransaction();
-        if(session.createQuery("select username from User where username = '" + currentUser.getUsername() +
-                "' and password = " + currentUser.getPassword()).list().size() == 1)
-            return true;
-        else
+        try (session) {
+            session.beginTransaction();
+            return (User) session.createQuery("from User where username = '" + currentUser.getUsername() +
+                    "' and password = '" + currentUser.getPassword() + "'").getSingleResult();
+        } catch (NoResultException e) {
             throw new InvalidUserException("User credentials are not correct.");
+        }
     }
 
     /**
@@ -86,8 +96,14 @@ public class DatabaseOperations {
      * @return the account list
      */
     public static List<Account> readAccountsForUser(User currentUser){
+        List<Account> listAccounts = new ArrayList<>();
         Session session = FACTORY.getCurrentSession();
-        session.beginTransaction();
-        return  session.createQuery("from Account where user_id = " + currentUser.getId()).list();
+        try (session) {
+            session.beginTransaction();
+            listAccounts = (List<Account>)session.createQuery("from Account where user_id = " + currentUser.getId()).list();
+        } catch (NoResultException e) {
+            LOGGER.info("No accounts for user.");
+        }
+        return listAccounts;
     }
 }
