@@ -3,7 +3,6 @@ package pentastagiu.services;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import pentastagiu.model.Account;
-import pentastagiu.model.User;
 import pentastagiu.repository.AccountOperations;
 import pentastagiu.repository.DatabaseOperations;
 import pentastagiu.repository.UserOperations;
@@ -11,7 +10,7 @@ import pentastagiu.util.InvalidUserException;
 
 import java.util.InputMismatchException;
 
-import static pentastagiu.util.Constants.SCANNER;
+import static pentastagiu.util.Constants.*;
 
 /**
  * Helper class that implements logic for all Menu Options:
@@ -51,10 +50,9 @@ public class MenuOptionService {
      * invoking {@link UserCacheService#loadUser()} method.
      */
     public void checkUserCredentials(){
-        User userToValidate = getUserCredentials();
         boolean result = false;
         try {
-            userCacheService.setCurrentUser(DatabaseOperations.validateUser(userToValidate));
+            userCacheService.setCurrentUser(DatabaseOperations.validateUser(getUserCredentials()));
             result = true;
         } catch (InvalidUserException e) {
             System.out.println("Wrong username/password.");
@@ -64,18 +62,21 @@ public class MenuOptionService {
             userCacheService.loadUser();
     }
 
-    private User getUserCredentials(){
-        String username = "";
-        String password = "";
+    /**
+     * This method gets the user credentials from the console
+     * @return the credentials
+     */
+    private String[] getUserCredentials(){
+        String[] userCredentials = new String[2];
         try {
             System.out.print("Username:");
-            username = SCANNER.nextLine();
+            userCredentials[USERNAME] = SCANNER.nextLine();
             System.out.print("Password:");
-            password = SCANNER.nextLine();
+            userCredentials[PASSWORD] = SCANNER.nextLine();
         } catch (InputMismatchException e) {
             LOGGER.error("The input you entered was not expected.");
         }
-        return new User(username,password);
+        return userCredentials;
     }
 
     /**

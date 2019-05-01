@@ -27,7 +27,7 @@ public class UserOperations {
      * @return the list of accounts with the same currency excluding it
      */
     public List<Account> getFilteredAccounts(Account accountFrom) {
-        List<Account> allAccounts = userCacheService.getCurrentUser().getAccountsList();
+        List<Account> allAccounts = DatabaseOperations.readAccountsForUser(userCacheService.getCurrentUser());
         return allAccounts.stream().filter(account ->
                 account.getAccountType() == accountFrom.getAccountType() &&
                 !account.getAccountNumber().equals(accountFrom.getAccountNumber())).collect(Collectors.toList());
@@ -37,7 +37,7 @@ public class UserOperations {
      * @return the list of accounts with balance greater then 0.
      */
     public List<Account> getValidTransferAccounts() {
-        List<Account> allAccounts = userCacheService.getCurrentUser().getAccountsList();
+        List<Account> allAccounts = DatabaseOperations.readAccountsForUser(userCacheService.getCurrentUser());
         List<Account> validTransferredAccounts = allAccounts.stream().filter(account ->
                 account.getBalance().compareTo(new BigDecimal(0)) > 0).collect(Collectors.toList());
         removeAccountThatDoesNotQualify(validTransferredAccounts);
@@ -64,7 +64,7 @@ public class UserOperations {
      * @return the list of accounts with that currency
      */
     private long getTotalNumberOfAccountsForAccType(AccountType account_type){
-        List<Account> allAccounts = userCacheService.getCurrentUser().getAccountsList();
+        List<Account> allAccounts = DatabaseOperations.readAccountsForUser(userCacheService.getCurrentUser());
         return allAccounts.stream().filter(account -> account.getAccountType() == account_type).count();
     }
 

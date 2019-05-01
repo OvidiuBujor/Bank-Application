@@ -70,9 +70,12 @@ public class Account {
     /**
      * Constructor that creates an object of type Account with the information below
      * and it's used for validating already created accounts.
-     * @param accountNumber the number of the account
-     * @param balance the balance of the account
-     * @param accountType the account type
+     * @param accountNumber of the account created
+     * @param balance of the account created
+     * @param accountType of the account created
+     * @param createdTime the time when it was created
+     * @param updatedTime the time of the last update for the account
+     * @param currentUser the owner of the account
      */
     public Account(String accountNumber, BigDecimal balance, AccountType accountType, LocalDateTime createdTime, LocalDateTime updatedTime,User currentUser) {
         this.accountNumber = accountNumber;

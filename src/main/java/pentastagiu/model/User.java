@@ -1,5 +1,7 @@
 package pentastagiu.model;
 
+import pentastagiu.repository.DatabaseOperations;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -51,19 +53,16 @@ public class User {
 
     /**
      * Constructs an user with the information received
-     * @param username of the new User that is created
-     * @param password of the new User that is created
+     * @param username of the user created
+     * @param password of the user created
+     * @param createdTime the time when it was created
+     * @param updatedTime the time when there was an update for the user
      */
     public User(String username, String password,LocalDateTime createdTime, LocalDateTime updatedTime) {
         this.username = username;
         this.password = password;
         this.createdTime =  createdTime;
         this.updatedTime = updatedTime;
-    }
-
-    public User(String username, String password){
-        this.username = username;
-        this.password = password;
     }
 
     public int getId() {

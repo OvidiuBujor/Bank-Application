@@ -17,6 +17,9 @@ public final class Constants {
 
     }
 
+    public static final int USERNAME = 0;
+    public static final int PASSWORD = 1;
+
     /**
      * Scanner object used for reading user input from console.
      */

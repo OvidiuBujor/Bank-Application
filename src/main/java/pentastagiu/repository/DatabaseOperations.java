@@ -75,16 +75,16 @@ public class DatabaseOperations {
 
     /**
      * This method validates the user's credentials against the database file
-     * @param currentUser the user to be validated
-     * @return true if user's credentials are valid
+     * @param userCreditials the user credentials to be validated
+     * @return the user if user's credentials are valid
      * @throws InvalidUserException when the user's credentials are not valid
      */
-    public static User validateUser(User currentUser) throws InvalidUserException {
+    public static User validateUser(String[] userCreditials) throws InvalidUserException {
         Session session = FACTORY.getCurrentSession();
         try (session) {
             session.beginTransaction();
-            return (User) session.createQuery("from User where username = '" + currentUser.getUsername() +
-                    "' and password = '" + currentUser.getPassword() + "'").getSingleResult();
+            return (User) session.createQuery("from User where username = '" + userCreditials[USERNAME] +
+                    "' and password = '" + userCreditials[PASSWORD] + "'").getSingleResult();
         } catch (NoResultException e) {
             throw new InvalidUserException("User credentials are not correct.");
         }
