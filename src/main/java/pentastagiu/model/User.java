@@ -121,7 +121,6 @@ public class User {
         this.notificationList = notificationList;
     }
 
-
     /**
      * This method overrites the equals method used to compare 2 users.
      * @param o the user that we compare with current instance
