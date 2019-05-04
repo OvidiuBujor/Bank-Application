@@ -1,7 +1,5 @@
 package pentastagiu.model;
 
-import pentastagiu.repository.DatabaseOperations;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -32,6 +30,10 @@ public class User {
 
     @Column(name = "updated_time")
     private LocalDateTime updatedTime;
+
+    @OneToOne(mappedBy = "user",
+            cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH})
+    private Person details;
 
     /**
      * The list of notifications for user
@@ -119,6 +121,14 @@ public class User {
 
     public void setNotificationList(List<Notification> notificationList) {
         this.notificationList = notificationList;
+    }
+
+    public Person getDetails() {
+        return details;
+    }
+
+    public void setDetails(Person details) {
+        this.details = details;
     }
 
     /**
