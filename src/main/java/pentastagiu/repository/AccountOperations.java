@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.util.InputMismatchException;
 import java.util.List;
 
+import static pentastagiu.repository.DatabaseOperations.saveTransaction;
 import static pentastagiu.repository.DatabaseOperations.updateBalanceAccount;
 import static pentastagiu.util.Constants.SCANNER;
 
@@ -20,12 +21,11 @@ import static pentastagiu.util.Constants.SCANNER;
 public class AccountOperations {
 
     private Logger LOGGER = LogManager.getLogger();
-    private UserCacheService userCacheService;
-    private UserOperations userOperations;
+    private UserCacheService cachedUser;
 
-    public AccountOperations(UserCacheService userCacheService){
-        this.userCacheService = userCacheService;
-        this.userOperations = new UserOperations(userCacheService);
+    public AccountOperations(UserCacheService cachedUser){
+        this.cachedUser = cachedUser;
+
     }
     /**
      * This method transfers an amount between 2 accounts owned by the user.
@@ -35,13 +35,17 @@ public class AccountOperations {
     public void transferAmount() {
         Account accountFrom, accountTo;
         BigDecimal amount;
+        String details;
 
         accountFrom = getAccountFrom();
         amount = getAmountToBeTransferred(accountFrom);
+        details = getDetails();
         accountTo = getAccountTo(accountFrom);
 
         updateBalanceAccount(amount.negate(),accountFrom);
         updateBalanceAccount(amount,accountTo);
+
+        saveTransaction(accountFrom, amount, accountTo, details);
 
         System.out.println("Transfer to Account {Account Number: " + accountTo.getAccountNumber() +
                 " New Balance: " + accountTo.getBalance().toString() + " " +
@@ -54,7 +58,7 @@ public class AccountOperations {
      * @return the account to transfer FROM
      */
     private Account getAccountFrom(){
-        List<Account> validTransferAccounts = userOperations.getValidTransferAccounts();
+        List<Account> validTransferAccounts = cachedUser.getValidTransferAccounts();
         Account accountFrom = new Account();
         int opt;
         try {
@@ -119,6 +123,19 @@ public class AccountOperations {
         return amount;
     }
 
+    private String getDetails(){
+        String details = "";
+        try{
+            do{
+                System.out.print("Insert details regarding this transaction:");
+                details =  SCANNER.nextLine();
+            }while(details.length() == 0);
+        }catch (InputMismatchException e) {
+            LOGGER.error("The input you entered was not expected.");
+        }
+        return details;
+    }
+
     /**
      * This method gets the account chosen by the user to transfer into.
      * This account will be used by {@link #transferAmount()} method.
@@ -130,7 +147,7 @@ public class AccountOperations {
         Account accountTo = new Account();
 
         try{
-            List<Account> filteredAccounts = userOperations.getFilteredAccounts(accountFrom);
+            List<Account> filteredAccounts = cachedUser.getFilteredAccounts(accountFrom);
 
             if (filteredAccounts.size() == 1) {
                 accountTo = filteredAccounts.get(0);
@@ -186,8 +203,8 @@ public class AccountOperations {
      */
     private Account getAccountToDeposit(){
         int opt;
-        userCacheService.loadAccountsForUser();
-        List<Account> allAccounts = userCacheService.getCurrentUser().getAccountsList();
+        cachedUser.loadAccountsForUser();
+        List<Account> allAccounts = cachedUser.getCurrentUser().getAccountsList();
         Account accountToDeposit = new Account();
 
         try {

@@ -5,7 +5,6 @@ import org.apache.logging.log4j.Logger;
 import pentastagiu.model.Account;
 import pentastagiu.repository.AccountOperations;
 import pentastagiu.repository.DatabaseOperations;
-import pentastagiu.repository.UserOperations;
 import pentastagiu.util.InvalidUserException;
 
 import java.util.InputMismatchException;
@@ -20,14 +19,12 @@ import static pentastagiu.util.Constants.*;
 public class MenuOptionService {
 
     private Logger LOGGER = LogManager.getLogger();
-    private UserCacheService userCacheService;
+    private UserCacheService cachedUser;
     private AccountOperations accountOperations;
-    private UserOperations userOperations;
 
-    public MenuOptionService(UserCacheService userCacheService){
-        this.userCacheService = userCacheService;
-        this.accountOperations = new AccountOperations(userCacheService);
-        this.userOperations = new UserOperations(userCacheService);
+    public MenuOptionService(UserCacheService cachedUser){
+        this.cachedUser = cachedUser;
+        this.accountOperations = new AccountOperations(cachedUser);
     }
 
     /**
@@ -36,12 +33,12 @@ public class MenuOptionService {
      * also marks the user as being able to transfer.
      */
     public void createNewAccount(){
-        Account accountCreated = new Account(userCacheService.getCurrentUser());
+        Account accountCreated = new Account(cachedUser.getCurrentUser());
         DatabaseOperations.addAccountToDatabase(accountCreated);
 
-        userCacheService.setPosibleDeposit(true);
-        if (userOperations.isUserAbleToTransfer())
-            userCacheService.setPosibleTransfer(true);
+        cachedUser.setPosibleDeposit(true);
+        if (cachedUser.isPosibleTransfer())
+            cachedUser.setPosibleTransfer(true);
     }
 
     /**
@@ -52,14 +49,14 @@ public class MenuOptionService {
     public void checkUserCredentials(){
         boolean result = false;
         try {
-            userCacheService.setCurrentUser(DatabaseOperations.validateUser(getUserCredentials()));
+            cachedUser.setCurrentUser(DatabaseOperations.validateUser(getUserCredentials()));
             result = true;
         } catch (InvalidUserException e) {
             System.out.println("Wrong username/password.");
         }
-        userCacheService.setLogged(result);
-        if (userCacheService.isLogged())
-            userCacheService.loadUser();
+        cachedUser.setLogged(result);
+        if (cachedUser.isLogged())
+            cachedUser.loadUser();
     }
 
     /**
@@ -83,12 +80,12 @@ public class MenuOptionService {
      * This method displays all the accounts for the current logged in user.
      */
     public void displayAccounts(){
-        if (userCacheService.isPosibleDeposit()) {
+        if (cachedUser.isPosibleDeposit()) {
             System.out.println("\nList of Accounts:");
-            userCacheService.loadAccountsForUser();
-            DisplayService.AccountsList(userCacheService.getCurrentUser().getAccountsList());
+            cachedUser.loadAccountsForUser();
+            DisplayService.AccountsList(cachedUser.getCurrentUser().getAccountsList());
         }else
-            userCacheService.setInAccount(false);
+            cachedUser.setInAccount(false);
     }
 
     /**
@@ -97,7 +94,7 @@ public class MenuOptionService {
      */
     public void logoutUser(){
         System.out.println("Successfully logout.");
-        userCacheService.disposeUser();
+        cachedUser.disposeUser();
     }
 
     /**
@@ -106,10 +103,10 @@ public class MenuOptionService {
      * if the user is able to transfer between his accounts and marks him.
      */
     public void depositAmountToAcc(){
-        if(userCacheService.isPosibleDeposit()) {
+        if(cachedUser.isPosibleDeposit()) {
             accountOperations.depositAmount();
-            if (userOperations.isUserAbleToTransfer())
-                userCacheService.setPosibleTransfer(true);
+            if (cachedUser.isPosibleTransfer())
+                cachedUser.setPosibleTransfer(true);
         }else
             System.out.println("Please enter a valid option(1 or 2).");
     }
@@ -120,10 +117,10 @@ public class MenuOptionService {
      * invoking the {@link AccountOperations#transferAmount()} method.
      */
     public void transferAmountBetweenAcc(){
-        if (userCacheService.isPosibleTransfer())
+        if (cachedUser.isPosibleTransfer())
             accountOperations.transferAmount();
-        else if (userCacheService.isPosibleDeposit())
-            userCacheService.setInAccount(false);
+        else if (cachedUser.isPosibleDeposit())
+            cachedUser.setInAccount(false);
         else
             System.out.println("Please enter a valid option(1 or 2).");
     }
@@ -132,9 +129,9 @@ public class MenuOptionService {
      * This method handles the logic for the menu option "Back to previous menu"
      */
     public void goToPreviousMenu(){
-        if(userCacheService.isPosibleDeposit() && userCacheService.isPosibleTransfer())
-            userCacheService.setInAccount(false);
-        else if(userCacheService.isPosibleDeposit())
+        if(cachedUser.isPosibleDeposit() && cachedUser.isPosibleTransfer())
+            cachedUser.setInAccount(false);
+        else if(cachedUser.isPosibleDeposit())
             System.out.println("Please enter a valid option(1, 2, 3 or 4).");
         else
             System.out.println("Please enter a valid option(1 or 2).");
@@ -144,10 +141,10 @@ public class MenuOptionService {
      * This method displays to the user the valid options he can choose on any menu.
      */
     public void displayValidInputOptions(){
-        if (userCacheService.inAccount())
-            if(userCacheService.isPosibleDeposit() && userCacheService.isPosibleTransfer())
+        if (cachedUser.inAccount())
+            if(cachedUser.isPosibleDeposit() && cachedUser.isPosibleTransfer())
                 System.out.println("Please enter a valid option(1, 2, 3, 4 or 5).");
-            else if(userCacheService.isPosibleDeposit())
+            else if(cachedUser.isPosibleDeposit())
                 System.out.println("Please enter a valid option(1, 2, 3 or 4).");
             else
                 System.out.println("Please enter a valid option(1 or 2).");
@@ -161,10 +158,10 @@ public class MenuOptionService {
      */
     public void displayTheMenu(String opt){
         if(!opt.equals("")) { //added for scanner.nextBigDecimal() that reads an empty string after the BigDecimal
-            if (userCacheService.inAccount())
-                DisplayService.AccountMenu(userCacheService);
-            else if (userCacheService.isLogged())
-                DisplayService.LoggedInMenu(userCacheService);
+            if (cachedUser.inAccount())
+                DisplayService.AccountMenu(cachedUser);
+            else if (cachedUser.isLogged())
+                DisplayService.LoggedInMenu(cachedUser);
             else
                 DisplayService.InitialMenu();
         }

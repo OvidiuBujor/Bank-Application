@@ -31,8 +31,7 @@ public class User {
     @Column(name = "updated_time")
     private LocalDateTime updatedTime;
 
-    @OneToOne(mappedBy = "user",
-            cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH})
+    @OneToOne(mappedBy = "user",cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH})
     private Person details;
 
     /**

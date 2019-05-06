@@ -2,11 +2,8 @@ package pentastagiu.model;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.Session;
 import pentastagiu.repository.DatabaseOperations;
-
 import javax.persistence.*;
-import javax.xml.stream.FactoryConfigurationError;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -57,7 +54,7 @@ public class Account {
      */
     @OneToMany(mappedBy = "account",
             cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH})
-    private List<Transation> transactionList = new ArrayList<>();
+    private List<Transaction> transactionList = new ArrayList<>();
 
     /**
      * Empty constructor used for initialization of some accounts
@@ -186,11 +183,11 @@ public class Account {
         this.user = user;
     }
 
-    public List<Transation> getTransactionList() {
+    public List<Transaction> getTransactionList() {
         return transactionList;
     }
 
-    public void setTransactionList(List<Transation> transactionList) {
+    public void setTransactionList(List<Transaction> transactionList) {
         this.transactionList = transactionList;
     }
 

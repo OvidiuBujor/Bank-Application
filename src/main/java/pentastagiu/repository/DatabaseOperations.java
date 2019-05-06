@@ -5,6 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.resource.transaction.spi.TransactionStatus;
 import pentastagiu.model.Account;
+import pentastagiu.model.Transaction;
 import pentastagiu.model.User;
 import pentastagiu.util.InvalidUserException;
 
@@ -56,6 +57,20 @@ public class DatabaseOperations {
             LOGGER.warn("Account wasn't added. Please check log file for details.");
     }
 
+    public static void addUserToDatabase(User userToBeAdded){
+        Session session = FACTORY.getCurrentSession();
+        session.beginTransaction();
+        session.saveOrUpdate(userToBeAdded);
+        session.getTransaction().commit();
+        session.close();
+        if (session.getTransaction().getStatus() == TransactionStatus.COMMITTED) {
+            LOGGER.info("User added successfully.");
+            System.out.println("User added successfully.");
+        }
+        else
+            LOGGER.warn("User wasn't added. Please check log file for details.");
+    }
+
     /**
      * This method updates the balance of the account in the database
      * @param amount the new balance that will be updated
@@ -71,6 +86,36 @@ public class DatabaseOperations {
         session.createQuery("update Account set balance = " + balance + ",updated_time = '" + LocalDateTime.now() +
                                 "' where id = " + account.getId()).executeUpdate();
         session.close();
+    }
+
+    /**
+     * This method records a Transaction between two accounts
+     * @param accountFrom where we transfer
+     * @param amount that is transferred
+     * @param accountTo where we tarnsfer
+     * @param details about transaction
+     */
+    public static void saveTransaction(Account accountFrom, BigDecimal amount, Account accountTo, String details) {
+        Transaction transactionToBeSaved = new Transaction();
+
+        transactionToBeSaved.setToAccount(accountTo.getAccountNumber());
+        transactionToBeSaved.setAmount(amount);
+        transactionToBeSaved.setDetails(details);
+        transactionToBeSaved.setCreatedTime(LocalDateTime.now());
+        transactionToBeSaved.setAccount(accountFrom);
+
+        Session session = FACTORY.getCurrentSession();
+        session.beginTransaction();
+        session.save(transactionToBeSaved);
+        session.getTransaction().commit();
+        session.close();
+
+        if (session.getTransaction().getStatus() == TransactionStatus.COMMITTED) {
+            LOGGER.info("Transaction saved successfully.");
+            System.out.println("Transaction saved successfully.");
+        }
+        else
+            LOGGER.warn("Transaction wasn't saved. Please check log file for details.");
     }
 
     /**

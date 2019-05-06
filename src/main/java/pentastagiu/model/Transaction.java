@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "transaction")
-public class Transation {
+public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -15,8 +15,8 @@ public class Transation {
     @Column(name = "to_account")
     private String toAccount;
 
-    @Column(name = "balance")
-    private BigDecimal balance;
+    @Column(name = "amount")
+    private BigDecimal amount;
 
     @Column(name = "details")
     private String details;
@@ -44,12 +44,12 @@ public class Transation {
         this.toAccount = toAccount;
     }
 
-    public BigDecimal getBalance() {
-        return balance;
+    public BigDecimal getAmount() {
+        return amount;
     }
 
-    public void setBalance(BigDecimal balance) {
-        this.balance = balance;
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
     }
 
     public String getDetails() {

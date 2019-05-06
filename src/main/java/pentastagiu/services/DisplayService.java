@@ -33,15 +33,15 @@ public class DisplayService {
 
     /**
      * This method displays the state of the menu when the current user is in his account.
-     * @param userCacheService cached user
+     * @param cachedUser cached user
      */
-    public static void AccountMenu(UserCacheService userCacheService) {
+    public static void AccountMenu(UserCacheService cachedUser) {
         System.out.println("\n-----Bank App------");
         System.out.println("1.Create account");
-        if(userCacheService.isPosibleDeposit()) {
-            System.out.println("2.Display accounts for " + userCacheService.getCurrentUser().getUsername());
+        if(cachedUser.isPosibleDeposit()) {
+            System.out.println("2.Display accounts for " + cachedUser.getCurrentUser().getUsername());
             System.out.println("3.Deposit amount");
-            if (userCacheService.isPosibleTransfer()) {
+            if (cachedUser.isPosibleTransfer()) {
                 System.out.println("4.Transfer amount between your accounts");
                 System.out.println("5.Back to previous menu");
             }else

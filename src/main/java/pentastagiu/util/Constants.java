@@ -32,7 +32,7 @@ public final class Constants {
             .addAnnotatedClass(User.class)
             .addAnnotatedClass(Account.class)
             .addAnnotatedClass(Notification.class)
-            .addAnnotatedClass(Transation.class)
+            .addAnnotatedClass(Transaction.class)
             .addAnnotatedClass(Person.class)
             .buildSessionFactory();
 }
