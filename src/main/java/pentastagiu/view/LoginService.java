@@ -3,7 +3,7 @@ package pentastagiu.view;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import pentastagiu.services.MenuOptionService;
-import pentastagiu.services.UserCacheService;
+import pentastagiu.services.UserService;
 
 import java.util.InputMismatchException;
 
@@ -40,11 +40,11 @@ public class LoginService {
      * <li> "Back to previous menu" displays the previous menu.</li>
      * <li> "Exit" terminates the program.</li>
      * </ul>
-     * @param userCacheService the cached user that is logged in
+     * @param userService the cached user that is logged in
      */
-    public void beginProcessing(UserCacheService userCacheService) {
+    public void beginProcessing(UserService userService) {
 
-        MenuOptionService handleMenuOptions = new MenuOptionService(userCacheService);
+        MenuOptionService handleMenuOptions = new MenuOptionService(userService);
 
         while (true) {
             try {
@@ -52,17 +52,17 @@ public class LoginService {
                     String opt = SCANNER.nextLine();
                     switch (opt) {
                         case "1":
-                            if (userCacheService.inAccount())
+                            if (userService.inAccount())
                                 handleMenuOptions.createNewAccount();
-                            else if (userCacheService.isLogged())
-                                userCacheService.setInAccount(true);
+                            else if (userService.isLogged())
+                                userService.setInAccount(true);
                             else
                                 handleMenuOptions.checkUserCredentials();
                             break;
                         case "2":
-                            if (userCacheService.inAccount())
+                            if (userService.inAccount())
                                 handleMenuOptions.displayAccounts();
-                            else if (userCacheService.isLogged())
+                            else if (userService.isLogged())
                                 handleMenuOptions.logoutUser();
                             else {
                                 System.out.println("Bye!");
@@ -70,19 +70,19 @@ public class LoginService {
                             }
                             break;
                         case "3":
-                            if (userCacheService.inAccount())
+                            if (userService.inAccount())
                                 handleMenuOptions.depositAmountToAcc();
                             else
                                 System.out.println("Please enter a valid option(1 or 2).");
                             break;
                         case "4":
-                            if (userCacheService.inAccount())
+                            if (userService.inAccount())
                                 handleMenuOptions.transferAmountBetweenAcc();
                             else
                                 System.out.println("Please enter a valid option(1 or 2).");
                             break;
                         case "5":
-                            if (userCacheService.inAccount())
+                            if (userService.inAccount())
                                 handleMenuOptions.goToPreviousMenu();
                             else
                                 System.out.println("Please enter a valid option(1 or 2).");

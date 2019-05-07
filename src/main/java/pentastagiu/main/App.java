@@ -2,14 +2,9 @@ package pentastagiu.main;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.Session;
-import pentastagiu.model.User;
-import pentastagiu.repository.DatabaseOperations;
-import pentastagiu.services.UserCacheService;
+import pentastagiu.services.UserService;
 import pentastagiu.services.DisplayService;
 import pentastagiu.view.LoginService;
-
-import java.time.LocalDateTime;
 
 import static pentastagiu.util.Constants.FACTORY;
 
@@ -33,9 +28,10 @@ public class App {
             //trebuie sa modific metoda de creare user doar daca nu exista deja
 //            User userToBeAdded = new User("Ovidiu","123",LocalDateTime.now(),LocalDateTime.now());
 //            DatabaseOperations.addUserToDatabase(userToBeAdded);
+
             DisplayService.InitialMenu();
             LoginService processUserInput = new LoginService();
-            UserCacheService cachedUser = new UserCacheService();
+            UserService cachedUser = new UserService();
             processUserInput.beginProcessing(cachedUser);
         } finally {
                 LOGGER.info("Closing SessionFactory");

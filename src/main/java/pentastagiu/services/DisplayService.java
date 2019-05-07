@@ -22,11 +22,11 @@ public class DisplayService {
 
     /**
      * This method displays the state of the menu when the current user is logged in.
-     * @param userCacheService cached user
+     * @param userService cached user
      */
-    public static void LoggedInMenu(UserCacheService userCacheService) {
+    public static void LoggedInMenu(UserService userService) {
         System.out.println("\n-----Bank App------");
-        System.out.println("1.Inspect account '" + userCacheService.getCurrentUser().getUsername() + "'");
+        System.out.println("1.Inspect account '" + userService.getCurrentUser().getUsername() + "'");
         System.out.println("2.Logout");
         System.out.print("Please enter your option:");
     }
@@ -35,7 +35,7 @@ public class DisplayService {
      * This method displays the state of the menu when the current user is in his account.
      * @param cachedUser cached user
      */
-    public static void AccountMenu(UserCacheService cachedUser) {
+    public static void AccountMenu(UserService cachedUser) {
         System.out.println("\n-----Bank App------");
         System.out.println("1.Create account");
         if(cachedUser.isPosibleDeposit()) {
