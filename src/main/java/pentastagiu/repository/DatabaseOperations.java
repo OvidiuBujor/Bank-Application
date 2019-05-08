@@ -4,9 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 import org.hibernate.resource.transaction.spi.TransactionStatus;
-import pentastagiu.model.Account;
-import pentastagiu.model.Transaction;
-import pentastagiu.model.User;
+import pentastagiu.model.*;
 import pentastagiu.util.InvalidUserException;
 
 import javax.persistence.NoResultException;
@@ -95,14 +93,15 @@ public class DatabaseOperations {
      * @param accountTo where we tarnsfer
      * @param details about transaction
      */
-    public static void saveTransaction(Account accountFrom, BigDecimal amount, Account accountTo, String details) {
+    public static void saveTransaction(Account accountFrom, BigDecimal amount, Account accountTo, String details, TransactionType transactionType) {
         Transaction transactionToBeSaved = new Transaction();
 
-        transactionToBeSaved.setToAccount(accountTo.getAccountNumber());
-        transactionToBeSaved.setAmount(amount);
+        transactionToBeSaved.setAccount(accountTo.getAccountNumber());
+        transactionToBeSaved.setBalance(amount);
         transactionToBeSaved.setDetails(details);
         transactionToBeSaved.setCreatedTime(LocalDateTime.now());
-        transactionToBeSaved.setAccount(accountFrom);
+        transactionToBeSaved.setAccountID(accountFrom);
+        transactionToBeSaved.setType(transactionType);
 
         Session session = FACTORY.getCurrentSession();
         session.beginTransaction();
@@ -116,6 +115,32 @@ public class DatabaseOperations {
         }
         else
             LOGGER.warn("Transaction wasn't saved. Please check log file for details.");
+    }
+
+    /**
+     * adds a notification for a transaction
+     * @param details the details of the transaction
+     */
+    public static void addNotification(User cachedUser, String details){
+        Notification notificationToBeSaved = new Notification();
+
+        notificationToBeSaved.setDetails(details);
+        notificationToBeSaved.setCreatedTime(LocalDateTime.now());
+        notificationToBeSaved.setSentTime(LocalDateTime.now());
+        notificationToBeSaved.setUser(cachedUser);
+
+        Session session = FACTORY.getCurrentSession();
+        session.beginTransaction();
+        session.save(notificationToBeSaved);
+        session.getTransaction().commit();
+        session.close();
+
+        if (session.getTransaction().getStatus() == TransactionStatus.COMMITTED) {
+            LOGGER.info("Notification saved successfully.");
+            System.out.println("Notification saved successfully.");
+        }
+        else
+            LOGGER.warn("Notification wasn't saved. Please check log file for details.");
     }
 
     /**

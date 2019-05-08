@@ -52,7 +52,7 @@ public class Account {
     /**
      * The list of transactions for current account
      */
-    @OneToMany(mappedBy = "account",
+    @OneToMany(mappedBy = "accountID",
             cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH})
     private List<Transaction> transactionList = new ArrayList<>();
 

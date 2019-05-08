@@ -12,11 +12,11 @@ public class Transaction {
     @Column(name = "id")
     private int id;
 
-    @Column(name = "to_account")
-    private String toAccount;
+    @Column(name = "account")
+    private String account;
 
-    @Column(name = "amount")
-    private BigDecimal amount;
+    @Column(name = "balance")
+    private BigDecimal balance;
 
     @Column(name = "details")
     private String details;
@@ -24,9 +24,12 @@ public class Transaction {
     @Column(name = "created_time")
     private LocalDateTime createdTime;
 
+    @Column(name = "type")
+    private TransactionType type;
+
     @ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH})
     @JoinColumn(name = "account_id")
-    private Account account;
+    private Account accountID;
 
     public int getId() {
         return id;
@@ -36,20 +39,20 @@ public class Transaction {
         this.id = id;
     }
 
-    public String getToAccount() {
-        return toAccount;
+    public String getAccount() {
+        return account;
     }
 
-    public void setToAccount(String toAccount) {
-        this.toAccount = toAccount;
+    public void setAccount(String account) {
+        this.account = account;
     }
 
-    public BigDecimal getAmount() {
-        return amount;
+    public BigDecimal getBalance() {
+        return balance;
     }
 
-    public void setAmount(BigDecimal amount) {
-        this.amount = amount;
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
     }
 
     public String getDetails() {
@@ -68,11 +71,19 @@ public class Transaction {
         this.createdTime = createdTime;
     }
 
-    public Account getAccount() {
-        return account;
+    public Account getAccountID() {
+        return accountID;
     }
 
-    public void setAccount(Account account) {
-        this.account = account;
+    public void setAccountID(Account accountID) {
+        this.accountID = accountID;
+    }
+
+    public TransactionType getType() {
+        return type;
+    }
+
+    public void setType(TransactionType type) {
+        this.type = type;
     }
 }

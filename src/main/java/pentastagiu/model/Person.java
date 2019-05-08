@@ -19,6 +19,9 @@ public class Person {
     @Column(name = "last_name")
     private String lastName;
 
+    @Column(name = "email")
+    private String email;
+
     @OneToOne(cascade=CascadeType.ALL)
     @JoinColumn(name= "user_id")
     private User user;
@@ -61,5 +64,13 @@ public class Person {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

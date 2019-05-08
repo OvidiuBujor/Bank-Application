@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import pentastagiu.model.Account;
 import pentastagiu.model.AccountType;
+import pentastagiu.model.TransactionType;
 import pentastagiu.repository.DatabaseOperations;
 import pentastagiu.model.User;
 
@@ -12,8 +13,7 @@ import java.util.InputMismatchException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static pentastagiu.repository.DatabaseOperations.saveTransaction;
-import static pentastagiu.repository.DatabaseOperations.updateBalanceAccount;
+import static pentastagiu.repository.DatabaseOperations.*;
 import static pentastagiu.util.Constants.SCANNER;
 
 /**
@@ -52,7 +52,14 @@ public class AccountService {
         updateBalanceAccount(amount.negate(),accountFrom);
         updateBalanceAccount(amount,accountTo);
 
-        saveTransaction(accountFrom, amount, accountTo, details);
+        saveTransaction(accountFrom, amount, accountTo, details, TransactionType.outgoing);
+        saveTransaction(accountTo, amount, accountFrom, details, TransactionType.incoming);
+
+        String transactionDetails = "From account: " + accountFrom.getAccountNumber() +
+                                    " To account: " + accountTo.getAccountNumber() +
+                                    ", amount : " + amount + " , details : " + details;
+
+        addNotification(cachedUser,transactionDetails);
 
         System.out.println("Transfer to Account {Account Number: " + accountTo.getAccountNumber() +
                 " New Balance: " + accountTo.getBalance().toString() + " " +
