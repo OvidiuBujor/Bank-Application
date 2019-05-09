@@ -15,8 +15,8 @@ public class Transaction {
     @Column(name = "account")
     private String account;
 
-    @Column(name = "balance")
-    private BigDecimal balance;
+    @Column(name = "amount")
+    private BigDecimal amount;
 
     @Column(name = "details")
     private String details;
@@ -47,12 +47,12 @@ public class Transaction {
         this.account = account;
     }
 
-    public BigDecimal getBalance() {
-        return balance;
+    public BigDecimal getAmount() {
+        return amount;
     }
 
-    public void setBalance(BigDecimal balance) {
-        this.balance = balance;
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
     }
 
     public String getDetails() {

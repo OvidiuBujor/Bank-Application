@@ -97,7 +97,7 @@ public class DatabaseOperations {
         Transaction transactionToBeSaved = new Transaction();
 
         transactionToBeSaved.setAccount(accountTo.getAccountNumber());
-        transactionToBeSaved.setBalance(amount);
+        transactionToBeSaved.setAmount(amount);
         transactionToBeSaved.setDetails(details);
         transactionToBeSaved.setCreatedTime(LocalDateTime.now());
         transactionToBeSaved.setAccountID(accountFrom);

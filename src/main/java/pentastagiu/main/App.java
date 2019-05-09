@@ -29,13 +29,13 @@ public class App {
      */
     public static void main(String[] args) {
         LOGGER.info("Session created");
-        try{
-            User userToBeAdded;
-            userToBeAdded = new User("Ovidiu", "123", LocalDateTime.now(), LocalDateTime.now());
-            DatabaseOperations.addUserToDatabase(userToBeAdded);
-        }catch(ConstraintViolationException e){
-            System.out.println("User already exists. No user was added.");
-        }
+//        try{
+//            User userToBeAdded;
+//            userToBeAdded = new User("Ovidiu", "123", LocalDateTime.now(), LocalDateTime.now());
+//            DatabaseOperations.addUserToDatabase(userToBeAdded);
+//        }catch(ConstraintViolationException e){
+//            System.out.println("User already exists. No user was added.");
+//        }
 
         try {
             DisplayService.InitialMenu();
