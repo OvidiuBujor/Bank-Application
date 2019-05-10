@@ -58,15 +58,26 @@ public class DatabaseOperations {
     public static void addUserToDatabase(User userToBeAdded){
         Session session = FACTORY.getCurrentSession();
         session.beginTransaction();
-        session.saveOrUpdate(userToBeAdded);
-        session.getTransaction().commit();
+        List resultList = new ArrayList();
+        try {
+            resultList = session.createQuery("from User where username = '" + userToBeAdded.getUsername() + "'").getResultList();
+        }catch (NoResultException e) {
+            LOGGER.info("No user found.");
+        }
+
+        if (resultList.size() == 0) {
+            session.saveOrUpdate(userToBeAdded);
+            session.getTransaction().commit();
+        }
         session.close();
         if (session.getTransaction().getStatus() == TransactionStatus.COMMITTED) {
-            LOGGER.info("User added successfully.");
-            System.out.println("User added successfully.");
+            LOGGER.info("User '" + userToBeAdded.getUsername() + "' added successfully.");
+            System.out.println("User '" + userToBeAdded.getUsername() + "' added successfully.");
         }
-        else
-            LOGGER.warn("User wasn't added. Please check log file for details.");
+        else {
+            LOGGER.warn("User already exists. No user was added.");
+            System.out.println("User '" + userToBeAdded.getUsername() +"' already exists. No user was added.");
+        }
     }
 
     /**
@@ -152,7 +163,7 @@ public class DatabaseOperations {
     public static User validateUser(String[] userCredentials) throws InvalidUserException {
         Session session = FACTORY.getCurrentSession();
         try (session) {
-            session.beginTransaction();
+            if (!session.getTransaction().isActive()) session.beginTransaction();
             return (User) session.createQuery("from User where username = '" + userCredentials[USERNAME] +
                     "' and password = '" + userCredentials[PASSWORD] + "'").getSingleResult();
         } catch (NoResultException e) {

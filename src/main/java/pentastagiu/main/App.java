@@ -29,13 +29,13 @@ public class App {
      */
     public static void main(String[] args) {
         LOGGER.info("Session created");
-//        try{
-//            User userToBeAdded;
-//            userToBeAdded = new User("Ovidiu", "123", LocalDateTime.now(), LocalDateTime.now());
-//            DatabaseOperations.addUserToDatabase(userToBeAdded);
-//        }catch(ConstraintViolationException e){
-//            System.out.println("User already exists. No user was added.");
-//        }
+        User userToBeAdded;
+        userToBeAdded = new User("Ovidiu", "123", LocalDateTime.now(), LocalDateTime.now());
+        DatabaseOperations.addUserToDatabase(userToBeAdded);
+        userToBeAdded = new User("Andrei", "22", LocalDateTime.now(), LocalDateTime.now());
+        DatabaseOperations.addUserToDatabase(userToBeAdded);
+        userToBeAdded = new User("Vasile", "11", LocalDateTime.now(), LocalDateTime.now());
+        DatabaseOperations.addUserToDatabase(userToBeAdded);
 
         try {
             DisplayService.InitialMenu();
@@ -44,11 +44,9 @@ public class App {
             processUserInput.beginProcessing(cachedUser);
         }
         finally {
-                LOGGER.info("Closing SessionFactory");
-                FACTORY.close();
+            LOGGER.info("Closing SessionFactory");
+            FACTORY.close();
         }
-
-
     }
 
 }
