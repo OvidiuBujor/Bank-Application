@@ -2,9 +2,13 @@ package pentastagiu.services;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import pentastagiu.model.AccountType;
 import pentastagiu.model.User;
+import pentastagiu.repository.DatabaseOperations;
 
+import java.time.LocalDateTime;
 import java.util.InputMismatchException;
 
 import static pentastagiu.util.Constants.*;
@@ -14,9 +18,13 @@ import static pentastagiu.util.Constants.SCANNER;
  * This class contains all logic for the current logged in user:
  * load and dispose current user.
  */
+@Service
 public class UserService {
 
     private Logger LOGGER = LogManager.getLogger();
+
+    @Autowired
+    private DatabaseOperations dbOps;
     /**
      * The current user logged in
      */
@@ -48,6 +56,22 @@ public class UserService {
             posibleDeposit = true;
         if (isPosibleTransfer())
             posibleTransfer = true;
+    }
+
+    public void createInitialsUsers(){
+        User userToBeAdded , result;
+
+        userToBeAdded = new User("Ovidiu", "123", LocalDateTime.now(), LocalDateTime.now());
+        result = dbOps.findByUsername(userToBeAdded.getUsername());
+        if (result == null) dbOps.save(userToBeAdded);
+
+        userToBeAdded = new User("Andrei", "22", LocalDateTime.now(), LocalDateTime.now());
+        result = dbOps.findByUsername(userToBeAdded.getUsername());
+        if (result == null) dbOps.save(userToBeAdded);
+
+        userToBeAdded = new User("Vasile", "11", LocalDateTime.now(), LocalDateTime.now());
+        result = dbOps.findByUsername(userToBeAdded.getUsername());
+        if (result == null) dbOps.save(userToBeAdded);
     }
 
     /**

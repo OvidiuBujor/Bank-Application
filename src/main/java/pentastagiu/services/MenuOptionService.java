@@ -1,6 +1,9 @@
 package pentastagiu.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import pentastagiu.model.Account;
+import pentastagiu.model.User;
 import pentastagiu.repository.DatabaseOperations;
 import pentastagiu.util.InvalidUserException;
 
@@ -9,10 +12,13 @@ import pentastagiu.util.InvalidUserException;
  * create new account, login/logout user, display accounts,
  * deposit and transfer between accounts, go to previous menu.
  */
+@Service
 public class MenuOptionService {
 
     private UserService userService;
     private AccountService accountService;
+    @Autowired
+    private DatabaseOperations dbOps;
 
     public MenuOptionService(UserService userService){
         this.userService = userService;
@@ -26,7 +32,7 @@ public class MenuOptionService {
      */
     public void createNewAccount(){
         Account accountCreated = new Account(userService.getCurrentUser());
-        DatabaseOperations.addAccountToDatabase(accountCreated);
+        dbOps.save(accountCreated);
 
         userService.setPosibleDeposit(true);
         if (userService.isPosibleTransfer())
@@ -41,10 +47,16 @@ public class MenuOptionService {
     public void checkUserCredentials(){
         boolean result = false;
         try {
-            userService.setCurrentUser(DatabaseOperations.validateUser(userService.getUserCredentials()));
+            User user = dbOps.findByUsernameAndPassword(userService.getUserCredentials()[0],userService.getUserCredentials()[1]);
+            if (user == null)
+                throw new InvalidUserException("Wrong username/password.");
+            else
+                userService.setCurrentUser(user);
+
+            //userService.setCurrentUser(DatabaseOperations.validateUser(userService.getUserCredentials()));
             result = true;
         } catch (InvalidUserException e) {
-            System.out.println("Wrong username/password.");
+            System.out.println(e.getMessage());
         }
         userService.setLogged(result);
         if (userService.isLogged())

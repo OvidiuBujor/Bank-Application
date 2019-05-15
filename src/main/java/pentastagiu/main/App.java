@@ -2,14 +2,9 @@ package pentastagiu.main;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.exception.ConstraintViolationException;
-import pentastagiu.model.User;
-import pentastagiu.repository.DatabaseOperations;
 import pentastagiu.services.UserService;
 import pentastagiu.services.DisplayService;
 import pentastagiu.view.LoginService;
-
-import java.time.LocalDateTime;
 
 import static pentastagiu.util.Constants.FACTORY;
 
@@ -28,15 +23,9 @@ public class App {
      * @param args the arguments list for the project
      */
     public static void main(String[] args) {
+        UserService userService = new UserService();
         LOGGER.info("Session created");
-        User userToBeAdded;
-        userToBeAdded = new User("Ovidiu", "123", LocalDateTime.now(), LocalDateTime.now());
-        DatabaseOperations.addUserToDatabase(userToBeAdded);
-        userToBeAdded = new User("Andrei", "22", LocalDateTime.now(), LocalDateTime.now());
-        DatabaseOperations.addUserToDatabase(userToBeAdded);
-        userToBeAdded = new User("Vasile", "11", LocalDateTime.now(), LocalDateTime.now());
-        DatabaseOperations.addUserToDatabase(userToBeAdded);
-
+        userService.createInitialsUsers();
         try {
             DisplayService.InitialMenu();
             LoginService processUserInput = new LoginService();

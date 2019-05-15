@@ -2,27 +2,30 @@ package pentastagiu.services;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import pentastagiu.model.Account;
-import pentastagiu.model.AccountType;
-import pentastagiu.model.TransactionType;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import pentastagiu.model.*;
 import pentastagiu.repository.DatabaseOperations;
-import pentastagiu.model.User;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static pentastagiu.repository.DatabaseOperations.*;
 import static pentastagiu.util.Constants.SCANNER;
 
 /**
  * This class handles the operations for accounts:
  * deposit and transfer between 2 valid accounts.
  */
+@Service
 public class AccountService {
 
     private Logger LOGGER = LogManager.getLogger();
+
+    @Autowired
+    DatabaseOperations dbOps;
 
     /**
      * This method populates the list of accounts that the user owns
@@ -30,7 +33,8 @@ public class AccountService {
      * @param cachedUser logged in user
      */
     public void loadAccountsForUser(User cachedUser) {
-        cachedUser.setAccountsList(DatabaseOperations.readAccountsForUser(cachedUser));
+        cachedUser.setAccountsList(dbOps.findByUserId(cachedUser.getId()));
+//        cachedUser.setAccountsList(DatabaseOperations.readAccountsForUser(cachedUser));
     }
 
     /**
@@ -49,17 +53,59 @@ public class AccountService {
         details = getDetails();
         accountTo = getAccountTo(cachedUser, accountFrom);
 
-        updateBalanceAccount(amount.negate(),accountFrom);
-        updateBalanceAccount(amount,accountTo);
+        accountFrom.setBalance(accountFrom.getBalance().subtract(amount));
+        dbOps.save(accountFrom);
 
-        saveTransaction(accountFrom, amount, accountTo, details, TransactionType.outgoing);
-        saveTransaction(accountTo, amount, accountFrom, details, TransactionType.incoming);
+//        updateBalanceAccount(amount.negate(),accountFrom);
+
+        accountTo.setBalance(accountTo.getBalance().add(amount));
+        dbOps.save(accountTo);
+
+//        updateBalanceAccount(amount,accountTo);
+
+        Transaction transactionToBeSaved = new Transaction();
+
+        transactionToBeSaved.setAccount(accountTo.getAccountNumber());
+        transactionToBeSaved.setAmount(amount);
+        transactionToBeSaved.setDetails(details);
+        transactionToBeSaved.setAccountID(accountFrom);
+        transactionToBeSaved.setType(TransactionType.outgoing);
+
+        dbOps.save(transactionToBeSaved);
+
+        LOGGER.info("Transaction saved successfully.");
+        System.out.println("Transaction saved successfully.");
+
+        transactionToBeSaved.setAccount(accountFrom.getAccountNumber());
+        transactionToBeSaved.setAmount(amount);
+        transactionToBeSaved.setDetails(details);
+        transactionToBeSaved.setAccountID(accountTo);
+        transactionToBeSaved.setType(TransactionType.incoming);
+
+        dbOps.save(transactionToBeSaved);
+
+        LOGGER.info("Transaction saved successfully.");
+        System.out.println("Transaction saved successfully.");
+
+
+//        saveTransaction(accountFrom, amount, accountTo, details, TransactionType.outgoing);
+//        saveTransaction(accountTo, amount, accountFrom, details, TransactionType.incoming);
 
         String transactionDetails = "From account: " + accountFrom.getAccountNumber() +
                                     " To account: " + accountTo.getAccountNumber() +
                                     ", amount : " + amount + " , details : " + details;
 
-        addNotification(cachedUser,transactionDetails);
+        Notification notificationToBeSaved = new Notification();
+
+        notificationToBeSaved.setDetails(transactionDetails);
+        notificationToBeSaved.setUser(cachedUser);
+
+        dbOps.save(notificationToBeSaved);
+
+        LOGGER.info("Notification saved successfully.");
+        System.out.println("Notification saved successfully.");
+
+//        addNotification(cachedUser,transactionDetails);
 
         System.out.println("Transfer to Account {Account Number: " + accountTo.getAccountNumber() +
                 " New Balance: " + accountTo.getBalance().toString() + " " +
@@ -74,33 +120,29 @@ public class AccountService {
      */
     private Account getAccountFrom(User cachedUser){
         List<Account> validTransferAccounts = getValidTransferAccounts(cachedUser);
-        Account accountFrom = new Account();
+        Account accountFrom;
         int opt;
-        try {
             if (validTransferAccounts.size() == 1) {
                 accountFrom = validTransferAccounts.get(0);
             } else {
                 System.out.println("\nList of Accounts to transfer FROM:");
                 DisplayService.AccountsList(validTransferAccounts);
-                while (true) {
+                do {
                     System.out.print("Please enter the number of the account you want to transfer from:");
-                    if (!SCANNER.hasNextInt()) {
-                        System.out.println("Please enter a number.");
-                        SCANNER.next();
-                    } else {
-                        opt = SCANNER.nextInt();
+                    try {
+                        opt = Integer.parseInt(SCANNER.nextLine());
                         if (opt < 1 || opt > validTransferAccounts.size())
                             System.out.println("Please enter a number between 1 and " + validTransferAccounts.size());
                         else {
                             accountFrom = validTransferAccounts.get(opt - 1);
                             break;
                         }
+                    }catch (NumberFormatException e){
+                        System.out.println("Please enter a number.");
                     }
-                }
+                }while(true);
             }
-        }catch (InputMismatchException e) {
-            LOGGER.error("The input you entered was not expected.");
-        }
+
         System.out.println("From Account: {Account Number: " + accountFrom.getAccountNumber() +
                 " Balance: " + accountFrom.getBalance() + " " +
                 accountFrom.getAccountType().toString() + "}");
@@ -112,7 +154,10 @@ public class AccountService {
      * @param cachedUser the user for which we get the valid transfer accounts
      */
     private List<Account> getValidTransferAccounts(User cachedUser) {
-        List<Account> allAccounts = DatabaseOperations.readAccountsForUser(cachedUser);
+        List<Account> allAccounts = dbOps.findByUserId(cachedUser.getId());
+
+//        List<Account> allAccounts = DatabaseOperations.readAccountsForUser(cachedUser);
+
         List<Account> validTransferredAccounts = allAccounts.stream().filter(account ->
                 account.getBalance().compareTo(new BigDecimal(0)) > 0).collect(Collectors.toList());
         removeAccountThatDoesNotQualify(cachedUser, validTransferredAccounts);
@@ -142,7 +187,10 @@ public class AccountService {
      * @return the list of accounts with that currency
      */
     public long getTotalNumberOfAccountsForAccType(User cachedUser, AccountType account_type){
-        List<Account> allAccounts = DatabaseOperations.readAccountsForUser(cachedUser);
+        List<Account> allAccounts = dbOps.findByUserId(cachedUser.getId());
+
+//        List<Account> allAccounts = DatabaseOperations.readAccountsForUser(cachedUser);
+
         return allAccounts.stream().filter(account -> account.getAccountType() == account_type).count();
     }
 
@@ -168,27 +216,23 @@ public class AccountService {
      * @return the amount to be transferred
      */
     private BigDecimal getAmountToBeTransferred(Account accountFrom){
-        BigDecimal amount = BigDecimal.valueOf(0);
-        try{
-            while (true) {
-                System.out.print("Insert the amount that will transferred between accounts:");
-                if (!SCANNER.hasNextBigDecimal()) {
-                    System.out.println("Please enter a number.Use ',' as delimiter for decimals.");
-                    SCANNER.next();
-                } else {
-                    amount = SCANNER.nextBigDecimal();
-                    if(amount.compareTo(accountFrom.getBalance()) > 0 || amount.compareTo(new BigDecimal(0)) <= 0)
-                        System.out.println("Please enter an amount greater then 0 and " +
-                                "less then or equal with the current balance:" +
-                                accountFrom.getBalance().toString() + " " +
-                                accountFrom.getAccountType().toString());
-                    else
-                        break;
-                }
+        BigDecimal amount;
+
+        do {
+            System.out.print("Insert the amount that will transferred between accounts:");
+            try{
+                amount = new BigDecimal(SCANNER.nextLine());
+                if(amount.compareTo(accountFrom.getBalance()) > 0 || amount.compareTo(new BigDecimal(0)) <= 0)
+                    System.out.println("Please enter an amount greater then 0 and " +
+                            "less then or equal with the current balance:" +
+                            accountFrom.getBalance().toString() + " " +
+                            accountFrom.getAccountType().toString());
+                else
+                    break;
+            }catch(NumberFormatException e){
+                System.out.println("Please enter a number.Use ',' as delimiter for decimals.");
             }
-        }catch (InputMismatchException e) {
-            LOGGER.error("The input you entered was not expected.");
-        }
+        }while (true);
         return amount;
     }
 
@@ -215,35 +259,30 @@ public class AccountService {
      */
     private Account getAccountTo(User cachedUser, Account accountFrom){
         int opt;
-        Account accountTo = new Account();
+        Account accountTo;
 
-        try{
-            List<Account> filteredAccounts = getFilteredAccounts(cachedUser, accountFrom);
+        List<Account> filteredAccounts = getFilteredAccounts(cachedUser, accountFrom);
 
-            if (filteredAccounts.size() == 1) {
-                accountTo = filteredAccounts.get(0);
-            }
-            else {
-                System.out.println("\nList of accounts to transfer TO:");
-                DisplayService.AccountsList(filteredAccounts);
-                while (true) {
-                    System.out.print("Please enter the number of the account you want to transfer to:");
-                    if (!SCANNER.hasNextInt()) {
-                        System.out.println("Please enter a number.");
-                        SCANNER.next();
-                    } else {
-                        opt = SCANNER.nextInt();
-                        if(opt < 1 || opt > filteredAccounts.size())
-                            System.out.println("Please enter a number between 1 and " + filteredAccounts.size());
-                        else {
-                            accountTo = filteredAccounts.get(opt - 1);
-                            break;
-                        }
+        if (filteredAccounts.size() == 1) {
+            accountTo = filteredAccounts.get(0);
+        }
+        else {
+            System.out.println("\nList of accounts to transfer TO:");
+            DisplayService.AccountsList(filteredAccounts);
+            do {
+                System.out.print("Please enter the number of the account you want to transfer to:");
+                try {
+                    opt = Integer.parseInt(SCANNER.nextLine());
+                    if(opt < 1 || opt > filteredAccounts.size())
+                        System.out.println("Please enter a number between 1 and " + filteredAccounts.size());
+                    else {
+                        accountTo = filteredAccounts.get(opt - 1);
+                        break;
                     }
+                } catch(NumberFormatException e){
+                    System.out.println("Please enter a number.");
                 }
-            }
-        }catch (InputMismatchException e) {
-            LOGGER.error("The input you entered was not expected.");
+            }while(true);
         }
         return accountTo;
     }
@@ -258,7 +297,8 @@ public class AccountService {
      * @return the list of accounts with the same currency excluding it
      */
     private List<Account> getFilteredAccounts(User cachedUser, Account accountFrom) {
-        List<Account> allAccounts = DatabaseOperations.readAccountsForUser(cachedUser);
+        List<Account> allAccounts = dbOps.findByUserId(cachedUser.getId());
+//        List<Account> allAccounts = DatabaseOperations.readAccountsForUser(cachedUser);
         return allAccounts.stream().filter(account ->
                 account.getAccountType() == accountFrom.getAccountType() &&
                         !account.getAccountNumber().equals(accountFrom.getAccountNumber())).collect(Collectors.toList());
@@ -277,7 +317,10 @@ public class AccountService {
 
         amount = getAmountToBeDeposited();
 
-        updateBalanceAccount(amount,accountToDeposit);
+        accountToDeposit.setBalance(accountToDeposit.getBalance().add(amount));
+        dbOps.save(accountToDeposit);
+
+//        updateBalanceAccount(amount,accountToDeposit);
 
         System.out.println("Updated Account: {Account Number: " + accountToDeposit.getAccountNumber() +
                 " New Balance: " + accountToDeposit.getBalance().toString() + " " +
@@ -294,32 +337,27 @@ public class AccountService {
         int opt;
         loadAccountsForUser(cachedUser);
         List<Account> allAccounts = cachedUser.getAccountsList();
-        Account accountToDeposit = new Account();
+        Account accountToDeposit;
 
-        try {
-            if (allAccounts.size() == 1)
-                accountToDeposit =  allAccounts.get(0);
-            else {
-                System.out.println("\nList of Accounts:");
-                DisplayService.AccountsList(allAccounts);
-                while (true) {
-                    System.out.print("Please enter the number of the account you want to deposit in:");
-                    if (!SCANNER.hasNextInt()) {
-                        System.out.println("Please enter a number.");
-                        SCANNER.next();
-                    } else {
-                        opt = SCANNER.nextInt();
-                        if (opt < 1 || opt > allAccounts.size())
-                            System.out.println("Please enter a number between 1 and " + allAccounts.size());
-                        else {
-                            accountToDeposit =  allAccounts.get(opt - 1);
-                            break;
-                        }
+        if (allAccounts.size() == 1)
+            accountToDeposit =  allAccounts.get(0);
+        else {
+            System.out.println("\nList of Accounts:");
+            DisplayService.AccountsList(allAccounts);
+            do {
+                System.out.print("Please enter the number of the account you want to deposit in:");
+                try{
+                    opt = Integer.parseInt(SCANNER.nextLine());
+                    if (opt < 1 || opt > allAccounts.size())
+                        System.out.println("Please enter a number between 1 and " + allAccounts.size());
+                    else {
+                        accountToDeposit =  allAccounts.get(opt - 1);
+                        break;
                     }
+                }catch (NumberFormatException e){
+                    System.out.println("Please enter a number.");
                 }
-            }
-        }catch (InputMismatchException e) {
-            LOGGER.error("The input you entered was not expected.");
+            }while (true);
         }
         System.out.println("\nAccount To Deposit: {Account Number: " + accountToDeposit.getAccountNumber() +
                 " Balance: " + accountToDeposit.getBalance() + " " +
@@ -334,21 +372,16 @@ public class AccountService {
      */
     private BigDecimal getAmountToBeDeposited(){
         BigDecimal amount = BigDecimal.valueOf(0);
-        try{
-            do{
-                System.out.print("Insert the amount that will update the current balance:");
-                if (!SCANNER.hasNextBigDecimal()) {
-                    System.out.println("Please enter a number.Use ',' as delimiter for decimals.");
-                    SCANNER.next();
-                } else {
-                    amount = SCANNER.nextBigDecimal();
-                    if(amount.compareTo(new BigDecimal(0)) <= 0)
-                        System.out.println("Please enter a number greater then 0.");
-                }
-            }while(amount.compareTo(new BigDecimal(0)) <= 0);
-        }catch (InputMismatchException e) {
-            LOGGER.error("The input you entered was not expected.");
-        }
+        do{
+            System.out.print("Insert the amount that will update the current balance:");
+            try{
+                amount = new BigDecimal(SCANNER.nextLine());
+                if(amount.compareTo(new BigDecimal(0)) <= 0)
+                    System.out.println("Please enter a number greater then 0.");
+            }catch (NumberFormatException e){
+                System.out.println("Please enter a number.Use ',' as delimiter for decimals.");
+            }
+        }while(amount.compareTo(new BigDecimal(0)) <= 0);
         return amount;
     }
 

@@ -63,4 +63,9 @@ public class Notification {
     public void setUser(User user) {
         this.user = user;
     }
+
+    public void initializeTimes(){
+        this.createdTime =  LocalDateTime.now();
+        this.sentTime = LocalDateTime.now();
+    }
 }

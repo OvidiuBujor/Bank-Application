@@ -2,6 +2,7 @@ package pentastagiu.model;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import pentastagiu.repository.DatabaseOperations;
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -22,6 +23,9 @@ import static pentastagiu.util.Constants.*;
 public class Account {
     @Transient
     private Logger LOGGER = LogManager.getLogger();
+
+    @Autowired
+    private DatabaseOperations dbOps;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -122,7 +126,7 @@ public class Account {
      * @return the account number created
      */
     private String generateAccountNumber(){
-        return String.format("%016d", DatabaseOperations.calculateNrAccFromFile());
+        return String.format("%016d", dbOps.countByAccount());
     }
 
     /**

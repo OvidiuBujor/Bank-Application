@@ -86,4 +86,9 @@ public class Transaction {
     public void setType(TransactionType type) {
         this.type = type;
     }
+
+    @PrePersist
+    public void initializeCreateTime(){
+        this.createdTime = LocalDateTime.now();
+    }
 }

@@ -1,5 +1,6 @@
 package pentastagiu.services;
 
+import org.springframework.stereotype.Service;
 import pentastagiu.model.Account;
 
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.List;
  * on user input from console also it displays all
  * accounts for an user.
  */
+@Service
 public class DisplayService {
 
     /**
