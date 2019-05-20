@@ -2,15 +2,22 @@ package pentastagiu.main;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.persistenceunit.PersistenceUnitManager;
 import pentastagiu.services.UserService;
 import pentastagiu.services.DisplayService;
 import pentastagiu.view.LoginService;
 
-import static pentastagiu.util.Constants.FACTORY;
+import javax.persistence.EntityManager;
+
+//import static pentastagiu.util.Constants.FACTORY;
 
 /**
  * This class is the Main class of the project and the starting point.
  */
+@SpringBootApplication
 public class App {
 
     private static Logger LOGGER = LogManager.getLogger();
@@ -23,6 +30,10 @@ public class App {
      * @param args the arguments list for the project
      */
     public static void main(String[] args) {
+        SpringApplication.run(App.class, args);
+        JpaConfig jpa = new JpaConfig();
+        LocalContainerEntityManagerFactoryBean em = jpa.entityManagerFactory();
+
         UserService userService = new UserService();
         LOGGER.info("Session created");
         userService.createInitialsUsers();
@@ -34,7 +45,7 @@ public class App {
         }
         finally {
             LOGGER.info("Closing SessionFactory");
-            FACTORY.close();
+//            FACTORY.close();
         }
     }
 

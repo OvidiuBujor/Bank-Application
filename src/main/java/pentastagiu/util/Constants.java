@@ -1,8 +1,8 @@
 package pentastagiu.util;
 
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
-import pentastagiu.model.*;
+//import org.hibernate.SessionFactory;
+//import org.hibernate.cfg.Configuration;
+//import pentastagiu.model.*;
 
 import java.util.Scanner;
 
@@ -28,11 +28,11 @@ public final class Constants {
     /**
      * SessionFactory object used to get current session to access the database
      */
-    public static final SessionFactory FACTORY = new Configuration().configure()
-            .addAnnotatedClass(User.class)
-            .addAnnotatedClass(Account.class)
-            .addAnnotatedClass(Notification.class)
-            .addAnnotatedClass(Transaction.class)
-            .addAnnotatedClass(Person.class)
-            .buildSessionFactory();
+//    public static final SessionFactory FACTORY = new Configuration().configure()
+//            .addAnnotatedClass(User.class)
+//            .addAnnotatedClass(Account.class)
+//            .addAnnotatedClass(Notification.class)
+//            .addAnnotatedClass(Transaction.class)
+//            .addAnnotatedClass(Person.class)
+//            .buildSessionFactory();
 }

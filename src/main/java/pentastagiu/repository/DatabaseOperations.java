@@ -2,8 +2,8 @@ package pentastagiu.repository;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.Session;
-import org.hibernate.resource.transaction.spi.TransactionStatus;
+//import org.hibernate.Session;
+//import org.hibernate.resource.transaction.spi.TransactionStatus;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
