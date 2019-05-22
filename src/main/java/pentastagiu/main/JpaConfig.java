@@ -22,7 +22,6 @@
 //@Configuration
 //@EnableTransactionManagement
 //@EnableJpaRepositories(basePackages = "pentastagiu.repository")
-//
 //public class JpaConfig {
 //    @Autowired
 //    private Environment env;
@@ -75,6 +74,7 @@
 //        properties.setProperty("hibernate.jdbc.lob.non_contextual_creation", env.getProperty("spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation"));
 //        properties.setProperty("hibernate.show_sql", env.getProperty("spring.jpa.show-sql"));
 //        properties.setProperty("hibernate.format_sql", env.getProperty("spring.jpa.properties.hibernate.format_sql"));
+//        //properties.setProperty("spring.main.allow-bean-definition-overriding",env.getProperty("spring.main.allow-bean-definition-overriding"));
 //        return properties;
 //    }
 //}

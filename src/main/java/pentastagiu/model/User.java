@@ -34,6 +34,9 @@ public class User {
     @OneToOne(mappedBy = "user",cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH})
     private Person details;
 
+    @OneToOne(mappedBy = "user",cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH})
+    private Authentication reference;
+
     /**
      * The list of notifications for user
      */
@@ -128,6 +131,14 @@ public class User {
 
     public void setDetails(Person details) {
         this.details = details;
+    }
+
+    public Authentication getReference() {
+        return reference;
+    }
+
+    public void setReference(Authentication reference) {
+        this.reference = reference;
     }
 
     /**
