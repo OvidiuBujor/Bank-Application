@@ -21,7 +21,7 @@ public class Notification {
     private LocalDateTime sentTime;
 
     @ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH})
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "userID")
     private User user;
 
     public int getId() {

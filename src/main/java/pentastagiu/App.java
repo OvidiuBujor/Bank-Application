@@ -2,6 +2,7 @@ package pentastagiu;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 //import static pentastagiu.util.Constants.FACTORY;
 
@@ -9,6 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * This class is the Main class of the project and the starting point.
  */
 @SpringBootApplication
+@EnableJpaRepositories
 public class App {
 
 //    private static Logger LOGGER = LogManager.getLogger();

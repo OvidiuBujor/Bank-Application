@@ -23,7 +23,7 @@ public class Person {
     private String email;
 
     @OneToOne(cascade=CascadeType.ALL)
-    @JoinColumn(name= "user_id")
+    @JoinColumn(name= "userID")
     private User user;
 
     public int getId() {

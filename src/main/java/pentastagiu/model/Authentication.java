@@ -22,7 +22,7 @@ public class Authentication {
     private String token;
 
     @OneToOne(cascade=CascadeType.ALL)
-    @JoinColumn(name= "user_id")
+    @JoinColumn(name= "userID")
     private User user;
 
     @Column(name = "creation_time")

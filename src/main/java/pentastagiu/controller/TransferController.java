@@ -9,13 +9,13 @@ import org.springframework.web.bind.annotation.RestController;
 import pentastagiu.model.Transaction;
 import pentastagiu.services.TransactionService;
 
-@RestController("/transaction")
+@RestController
 public class TransferController {
 
     @Autowired
     TransactionService transactionService;
 
-    @PostMapping
+    @PostMapping("/transaction")
     @ResponseStatus(HttpStatus.CREATED)
     public Transaction createTransaction(@RequestBody Transaction transaction) {
         return transactionService.createTransaction(transaction);

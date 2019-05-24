@@ -11,7 +11,7 @@ import pentastagiu.services.UserService;
 
 import javax.websocket.server.PathParam;
 
-@RestController("/user")
+@RestController
 public class UserController {
 
     @Autowired
@@ -20,18 +20,18 @@ public class UserController {
     @Autowired
     UserConvertor userConverter;
 
-    @GetMapping("/{id}")
-    public UserDTO getUser(@PathParam(value = "id") Long id) {
+    @GetMapping("/user/{id}")
+    public UserDTO getUser(@PathParam(value = "id") Integer id) {
         return userConverter.convertToUserDTO(userService.getUserById(id));
     }
 
-    @PostMapping
+    @PostMapping("/user")
     @ResponseStatus(HttpStatus.CREATED)
     public UserDTO createUser(@RequestBody User user) {
         return userConverter.convertToUserDTO(userService.createUser(user));
     }
 
-    @PutMapping
+    @PutMapping("/user")
     public ResponseEntity<UserDTO> updateUser(@RequestBody User user) {
 
         User updatedUser = userService.updateUser(user);
@@ -44,13 +44,13 @@ public class UserController {
         return ResponseEntity.badRequest().build();
     }
 
-    @DeleteMapping
+    @DeleteMapping("/user")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteUser(@RequestParam Long id) {
+    public void deleteUser(@RequestParam Integer id) {
         userService.deleteUserById(id);
     }
 
-    @GetMapping("/error")
+    @GetMapping("/user/error")
     public UserDTO getError() throws Exception {
         throw new Exception();
     }

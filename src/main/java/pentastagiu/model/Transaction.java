@@ -1,5 +1,7 @@
 package pentastagiu.model;
 
+import pentastagiu.util.TransactionType;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -28,7 +30,7 @@ public class Transaction {
     private TransactionType type;
 
     @ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH})
-    @JoinColumn(name = "account_id")
+    @JoinColumn(name = "accountID")
     private Account accountID;
 
     public int getId() {

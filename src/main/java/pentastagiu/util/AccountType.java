@@ -1,4 +1,4 @@
-package pentastagiu.model;
+package pentastagiu.util;
 
 /**
  * This enum holds the valid account types for an account.

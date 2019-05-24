@@ -54,7 +54,6 @@ public class User {
     public User(){
 
     }
-
     /**
      * Constructs an user with the information received
      * @param username of the user created

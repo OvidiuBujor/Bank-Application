@@ -2,8 +2,7 @@ package pentastagiu.model;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import pentastagiu.repository.AccountRepository;
+import pentastagiu.util.AccountType;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -21,9 +20,6 @@ import java.util.Objects;
 public class Account {
     @Transient
     private Logger LOGGER = LogManager.getLogger();
-
-    @Autowired
-    private AccountRepository dbOps;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,7 +44,7 @@ public class Account {
     private LocalDateTime updatedTime;
 
     @ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH})
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "userID")
     private User user;
 
     /**
@@ -84,58 +80,6 @@ public class Account {
         this.updatedTime = updatedTime;
         this.user = currentUser;
     }
-
-//    /**
-//     * Constructor that creates a NEW Account with the details
-//     * entered from console.
-//     * @param currentUser owner of the account created
-//     */
-//    public Account (User currentUser) {
-//        String line;
-//        StringBuilder accountNumber = new StringBuilder();
-//        String accountType = "";
-//        BigDecimal balance = BigDecimal.valueOf(0);
-//        try {
-//            System.out.println("Please use RON or EUR.");
-//            do{
-//                System.out.print("Account type:");
-//                line = SCANNER.nextLine();
-//                if (validateAccountType(line))
-//                    accountType = line;
-//                else
-//                    System.out.println("Incorrect account type. Please use: RON or EUR.");
-//            }while(accountType.isEmpty());
-//
-//            accountNumber.append("RO09BCYP").append(generateAccountNumber());
-//            this.accountNumber = accountNumber.toString();
-//            this.balance = balance;
-//            this.accountType = AccountType.fromString(accountType.toUpperCase());
-//            this.createdTime = LocalDateTime.now();
-//            this.updatedTime = LocalDateTime.now();
-//            this.user = currentUser;
-//        } catch (InputMismatchException e) {
-//            LOGGER.error("The input you entered was not expected.");
-//        }
-//    }
-//
-//    /**
-//     * This method generates an account number based on the total number of accounts
-//     * for every new account created.
-//     * @return the account number created
-//     */
-//    private String generateAccountNumber(){
-//        return String.format("%016d", dbOps.countByAccount());
-//    }
-//
-//    /**
-//     * This method validates the account type entered from console.
-//     * Valid types of account are RON or EUR.
-//     * @param accountType the account type entered from console
-//     * @return true if account type is correct; false otherwise
-//     */
-//    private boolean validateAccountType(String accountType){
-//        return accountType.toUpperCase().equals("RON") || accountType.toUpperCase().equals("EUR");
-//    }
 
     public int getId() {
         return id;
