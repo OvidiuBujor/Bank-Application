@@ -12,8 +12,8 @@ import java.util.List;
  * adding an account to database, update the balance of an account.
  */
 @Repository
-public interface AccountRepository extends CrudRepository<Account,Integer> {
+public interface AccountRepository extends CrudRepository<Account,Long> {
 
-    List<Account> getAccountByuserID(Integer id);
+    List<Account> getAccountByUser(Long id);
 
 }

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import pentastagiu.model.User;
 
 @Repository
-public interface UserRepository extends CrudRepository<User,Integer> {
+public interface UserRepository extends CrudRepository<User, Long> {
 
     @Nullable
     User findByUsernameAndPassword(String username,String password);

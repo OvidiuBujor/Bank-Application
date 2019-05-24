@@ -21,7 +21,7 @@ public class UserController {
     UserConvertor userConverter;
 
     @GetMapping("/user/{id}")
-    public UserDTO getUser(@PathParam(value = "id") Integer id) {
+    public UserDTO getUser(@PathParam(value = "id") Long id) {
         return userConverter.convertToUserDTO(userService.getUserById(id));
     }
 
@@ -46,7 +46,7 @@ public class UserController {
 
     @DeleteMapping("/user")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteUser(@RequestParam Integer id) {
+    public void deleteUser(@RequestParam Long id) {
         userService.deleteUserById(id);
     }
 

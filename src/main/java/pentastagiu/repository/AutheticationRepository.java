@@ -5,6 +5,6 @@ import org.springframework.stereotype.Repository;
 import pentastagiu.model.Authentication;
 
 @Repository
-public interface AutheticationRepository extends CrudRepository<Authentication,Integer> {
+public interface AutheticationRepository extends CrudRepository<Authentication,Long> {
 
 }

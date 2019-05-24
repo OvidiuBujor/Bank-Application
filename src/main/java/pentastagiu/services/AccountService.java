@@ -17,8 +17,8 @@ public class AccountService {
     @Autowired
     AccountRepository accountRepository;
 
-    public List<Account> getAccounts(Integer userID){
-            return accountRepository.getAccountByuserID(userID);
+    public List<Account> getAccounts(Long userID){
+            return accountRepository.getAccountByUser(userID);
     }
 
     public Account createAccount(Account account) {

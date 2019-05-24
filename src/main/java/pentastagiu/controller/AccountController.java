@@ -17,7 +17,7 @@ public class AccountController {
     AccountService accountService;
 
     @GetMapping("/account/{id}/{token}")
-    public List<Account> getAccounts(@PathParam(value = "id") Integer id, @PathParam(value = "token") String token) {
+    public List<Account> getAccounts(@PathParam(value = "id") Long id, @PathParam(value = "token") String token) {
         return accountService.getAccounts(id);
     }
 

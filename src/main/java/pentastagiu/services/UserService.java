@@ -17,12 +17,9 @@ public class UserService {
     @Autowired
     UserRepository userRepository;
 
-    public User getUserById(Integer id) {
+    public User getUserById(Long id) {
         Optional<User> userToReturn = userRepository.findById(id);
-        if (userToReturn.isPresent())
-            return userToReturn.get();
-        else
-            return new User();
+        return userToReturn.orElseGet(User::new);
     }
     public User createUser(User user) {
         return userRepository.save(user);
@@ -32,7 +29,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public void deleteUserById(Integer id) {
+    public void deleteUserById(Long id) {
         userRepository.deleteById(id);
     }
 }

@@ -2,8 +2,11 @@ package pentastagiu.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pentastagiu.model.Authentication;
 import pentastagiu.model.Transaction;
 import pentastagiu.repository.TransactionRepository;
+
+import java.util.List;
 
 @Service
 public class TransactionService {
@@ -15,7 +18,7 @@ public class TransactionService {
         return transactionRepository.save(transaction);
     }
 
-//    public List<Transaction> getTransactions(Authentication authentication){
-//        return transactionRepository.getTransactionByAccountID(authentication.getUser().getId());
-//    }
+    public List<Transaction> getTransactions(Authentication authentication){
+        return transactionRepository.getTransactionByAccountID(authentication.getUser().getId());
+    }
 }

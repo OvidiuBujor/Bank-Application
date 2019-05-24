@@ -7,8 +7,8 @@ import pentastagiu.model.Transaction;
 import java.util.List;
 
 @Repository
-public interface TransactionRepository extends CrudRepository<Transaction,Integer> {
+public interface TransactionRepository extends CrudRepository<Transaction,Long> {
 
-    List<Transaction> getTransactionByaccountID(int id);
+    List<Transaction> getTransactionByAccountID(long id);
 
 }
