@@ -39,7 +39,9 @@ public class UserService {
     }
 
     public User updateUser(String password, Long id) {
-        return userRepository.updateUser(password,id);
+        userRepository.updateUser(password,id);
+        Optional<User> userToReturn = userRepository.findById(id);
+        return userToReturn.orElseGet(User::new);
     }
 
     public void deleteUserById(Long id) {
