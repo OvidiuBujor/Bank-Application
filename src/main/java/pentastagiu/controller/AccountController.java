@@ -22,7 +22,7 @@ public class AccountController {
         return accountService.getAccountsByToken(token);
     }
 
-    @PostMapping("/account")
+    @PostMapping("/account/{token}/{accountType}")
     @ResponseStatus(HttpStatus.CREATED)
     public Account createAccount(@PathParam(value = "token") String token,
                                  @PathParam(value = "type") AccountType accountType) {

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import pentastagiu.model.User;
 import pentastagiu.repository.UserRepository;
 
+import javax.persistence.PrePersist;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -40,10 +41,5 @@ public class UserService {
 
     public User validateUser(String username, String password){
         return userRepository.findByUsernameAndPassword(username,password);
-    }
-    public void loadUsers(){
-        createUser(new User("Ovidiu","123", LocalDateTime.now(),LocalDateTime.now()));
-        createUser(new User("Andrei","22", LocalDateTime.now(),LocalDateTime.now()));
-        createUser(new User("Vasile","11", LocalDateTime.now(),LocalDateTime.now()));
     }
 }
