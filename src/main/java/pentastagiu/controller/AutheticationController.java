@@ -22,8 +22,10 @@ public class AutheticationController {
     UserService userService;
 
     @GetMapping("/authentication/{username}/{password}")
-    public Authentication login(@PathParam(value = "username") String username,
-                                       @PathParam(value = "password") String password){
+    public Authentication login(@PathVariable(value = "username") String username,
+                                       @PathVariable(value = "password") String password){
+        System.out.println(username);
+        System.out.println(password);
         User user = userService.validateUser(username,password);
         Authentication authenticationToBeReturned = new Authentication();
         if (user != null) {

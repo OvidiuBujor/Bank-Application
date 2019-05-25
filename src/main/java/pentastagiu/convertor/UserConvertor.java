@@ -6,7 +6,7 @@ import pentastagiu.model.User;
 @Component
 public class UserConvertor {
     public User convertFromUserDTO(UserDTO userDto) {
-        return new User(userDto.getUsername(), null,null,null);
+        return new User(userDto.getUsername(), null);
     }
 
     public UserDTO convertToUserDTO(User user) {

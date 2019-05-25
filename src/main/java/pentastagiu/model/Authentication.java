@@ -1,17 +1,11 @@
 package pentastagiu.model;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "authentication")
 public class Authentication {
-
-    @Transient
-    private Logger LOGGER = LogManager.getLogger();
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,14 +21,6 @@ public class Authentication {
 
     @Column(name = "creation_time")
     private LocalDateTime creationTime;
-
-    public Logger getLOGGER() {
-        return LOGGER;
-    }
-
-    public void setLOGGER(Logger LOGGER) {
-        this.LOGGER = LOGGER;
-    }
 
     public long getId() {
         return id;

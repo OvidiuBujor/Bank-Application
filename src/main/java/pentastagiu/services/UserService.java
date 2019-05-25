@@ -1,12 +1,12 @@
 package pentastagiu.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import pentastagiu.model.User;
 import pentastagiu.repository.UserRepository;
+import pentastagiu.util.CustomException;
 
-import javax.persistence.PrePersist;
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 /**
@@ -27,12 +27,19 @@ public class UserService {
         Optional<User> userToReturn = userRepository.findById(id);
         return userToReturn.orElseGet(User::new);
     }
-    public User createUser(User user) {
-        return userRepository.save(user);
+
+    public User createUser(User user) throws CustomException {
+        User result;
+        result = userRepository.findByUsername(user.getUsername());
+        if (result == null)
+            userRepository.save(user);
+        else
+            throw new CustomException("User already registered!", HttpStatus.BAD_REQUEST);
+        return user;
     }
 
-    public User updateUser(User user) {
-        return userRepository.save(user);
+    public User updateUser(String password, Long id) {
+        return userRepository.updateUser(password,id);
     }
 
     public void deleteUserById(Long id) {

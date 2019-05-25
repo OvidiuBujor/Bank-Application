@@ -10,8 +10,6 @@ import pentastagiu.model.User;
 import pentastagiu.services.UserService;
 import pentastagiu.util.CustomException;
 
-import javax.websocket.server.PathParam;
-
 @RestController
 public class UserController {
 
@@ -22,22 +20,22 @@ public class UserController {
     UserConvertor userConverter;
 
     @GetMapping("/user/{id}")
-    public UserDTO getUser(@PathParam(value = "id") Long id) {
+    public UserDTO getUser(@PathVariable(value = "id") Long id) {
         return userConverter.convertToUserDTO(userService.getUserById(id));
     }
 
     @PostMapping("/user")
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDTO createUser(@RequestBody User user) {
+    public UserDTO createUser(@RequestBody User user) throws CustomException {
         return userConverter.convertToUserDTO(userService.createUser(user));
     }
 
     @PutMapping("/user")
     public ResponseEntity<UserDTO> updateUser(@RequestBody User user) {
 
-        User updatedUser = userService.updateUser(user);
+        User updatedUser = userService.updateUser(user.getPassword(),user.getId());
         if (updatedUser != null) {
-            return new ResponseEntity<>(userConverter.convertToUserDTO(userService.updateUser(updatedUser)),
+            return new ResponseEntity<>(userConverter.convertToUserDTO(userService.updateUser(updatedUser.getPassword(),updatedUser.getId())),
                     HttpStatus.OK);
 
         }
@@ -45,9 +43,9 @@ public class UserController {
         return ResponseEntity.badRequest().build();
     }
 
-    @DeleteMapping("/user")
+    @DeleteMapping("/user/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteUser(@RequestParam Long id) {
+    public void deleteUser(@PathVariable(value = "id") Long id) {
         userService.deleteUserById(id);
     }
 

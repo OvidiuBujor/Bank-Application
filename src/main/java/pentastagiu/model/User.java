@@ -54,18 +54,21 @@ public class User {
     public User(){
 
     }
+
+    @PrePersist
+    private void settingDate(){
+        createdTime = LocalDateTime.now();
+        updatedTime = LocalDateTime.now();
+    }
     /**
      * Constructs an user with the information received
      * @param username of the user created
      * @param password of the user created
-     * @param createdTime the time when it was created
-     * @param updatedTime the time when there was an update for the user
      */
-    public User(String username, String password,LocalDateTime createdTime, LocalDateTime updatedTime) {
+    public User(String username, String password) {
         this.username = username;
         this.password = password;
-        this.createdTime =  createdTime;
-        this.updatedTime = updatedTime;
+        settingDate();
     }
 
     public long getId() {
