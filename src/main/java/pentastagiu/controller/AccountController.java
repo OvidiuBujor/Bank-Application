@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import pentastagiu.model.Account;
 import pentastagiu.services.AccountService;
 import pentastagiu.util.AccountType;
+import pentastagiu.util.CustomException;
 
-import javax.websocket.server.PathParam;
 import java.util.List;
 
 @RestController
@@ -18,15 +18,15 @@ public class AccountController {
     AccountService accountService;
 
     @GetMapping("/account/{token}")
-    public List<Account> getAccounts(@PathParam(value = "token") String token) {
+    public List<Account> getAccounts(@PathVariable(value = "token") String token) throws CustomException {
         return accountService.getAccountsByToken(token);
     }
 
     @PostMapping("/account/{token}/{accountType}")
     @ResponseStatus(HttpStatus.CREATED)
-    public Account createAccount(@PathParam(value = "token") String token,
-                                 @PathParam(value = "type") AccountType accountType) {
-        return accountService.createAccount(accountType,token);
+    public ResponseEntity<Account> createAccount(@PathVariable(value = "token") String token,
+                                 @PathVariable(value = "type") AccountType accountType) throws CustomException{
+        return new ResponseEntity<>(accountService.createAccount(accountType,token),HttpStatus.OK);
     }
 
     @PutMapping("/account")

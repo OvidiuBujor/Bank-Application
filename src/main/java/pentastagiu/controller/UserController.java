@@ -32,7 +32,6 @@ public class UserController {
 
     @PutMapping("/user")
     public ResponseEntity<UserDTO> updateUser(@RequestBody User user) {
-
         User updatedUser = userService.updateUser(user.getPassword(),user.getId());
         if (updatedUser != null) {
             return new ResponseEntity<>(userConverter.convertToUserDTO(userService.updateUser(updatedUser.getPassword(),updatedUser.getId())),

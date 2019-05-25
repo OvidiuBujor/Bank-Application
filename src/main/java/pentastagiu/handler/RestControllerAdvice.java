@@ -10,6 +10,7 @@
 //
 //@ControllerAdvice
 //public class RestControllerAdvice {
+//
 //    @ExceptionHandler(Exception.class)
 //    public ResponseEntity<CustomException> handleAllExceptions(HttpServletRequest request, Exception ex) {
 //        return new ResponseEntity<>(

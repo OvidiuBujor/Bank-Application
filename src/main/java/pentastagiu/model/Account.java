@@ -62,23 +62,10 @@ public class Account {
 
     }
 
-    /**
-     * Constructor that creates an object of type Account with the information below
-     * and it's used for validating already created accounts.
-     * @param accountNumber of the account created
-     * @param balance of the account created
-     * @param accountType of the account created
-     * @param createdTime the time when it was created
-     * @param updatedTime the time of the last update for the account
-     * @param currentUser the owner of the account
-     */
-    public Account(String accountNumber, BigDecimal balance, AccountType accountType, LocalDateTime createdTime, LocalDateTime updatedTime,User currentUser) {
-        this.accountNumber = accountNumber;
-        this.balance = balance;
-        this.accountType = accountType;
-        this.createdTime = createdTime;
-        this.updatedTime = updatedTime;
-        this.user = currentUser;
+    @PrePersist
+    void generateTime(){
+        this.createdTime = LocalDateTime.now();
+        this.updatedTime = LocalDateTime.now();
     }
 
     public long getId() {

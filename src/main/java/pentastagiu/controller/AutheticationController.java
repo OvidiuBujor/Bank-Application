@@ -2,6 +2,7 @@ package pentastagiu.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pentastagiu.model.Authentication;
 import pentastagiu.model.User;
@@ -9,8 +10,7 @@ import pentastagiu.services.AutheticationService;
 import pentastagiu.services.UserService;
 import pentastagiu.util.CustomException;
 
-import javax.websocket.server.PathParam;
-import java.time.LocalDateTime;
+import java.util.Optional;
 
 @RestController
 public class AutheticationController {
@@ -21,20 +21,25 @@ public class AutheticationController {
     @Autowired
     UserService userService;
 
+
     @GetMapping("/authentication/{username}/{password}")
-    public Authentication login(@PathVariable(value = "username") String username,
-                                       @PathVariable(value = "password") String password){
-        System.out.println(username);
-        System.out.println(password);
-        User user = userService.validateUser(username,password);
-        Authentication authenticationToBeReturned = new Authentication();
-        if (user != null) {
-            authenticationToBeReturned.setUser(user);
-            authenticationToBeReturned.setToken(autheticationService.createToken());
-            authenticationToBeReturned.setCreationTime(LocalDateTime.now());
-            autheticationService.createAuthentication(authenticationToBeReturned);
-        }
-        return authenticationToBeReturned;
+    public ResponseEntity<Authentication> login(@PathVariable(value = "username") String username,
+                                               @PathVariable(value = "password") String password) throws CustomException {
+        Optional<User> user = userService.validateUser(username,password);
+        if (user.isPresent()) {
+            Optional<Authentication> authenticationToBeReturned = autheticationService.findByUser(user.get());
+
+            if (authenticationToBeReturned.isPresent()) {
+                throw new CustomException("User already logged in!", HttpStatus.ALREADY_REPORTED);
+            }else{
+                Authentication authentication = new Authentication();
+                authentication.setUser(user.get());
+                authentication.setToken(autheticationService.createToken());
+                autheticationService.createAuthentication(authentication);
+                return new ResponseEntity<>(authentication,HttpStatus.OK);
+            }
+        }else
+            throw new CustomException("Credentials are not correct!",HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/authentication/error")
@@ -45,13 +50,13 @@ public class AutheticationController {
 
     @PostMapping("/authentication")
     @ResponseStatus(HttpStatus.CREATED)
-    public Authentication createAuthentication(@RequestBody Authentication authentication){
-        return autheticationService.createAuthentication(authentication);
+    public ResponseEntity<Authentication> createAuthentication(@RequestBody Authentication authentication){
+        return new ResponseEntity<>(autheticationService.createAuthentication(authentication),HttpStatus.OK);
     }
 
     @DeleteMapping("/authentication/{token}")
     @ResponseStatus(HttpStatus.OK)
-    public void logout(@PathParam(value ="token") String token){
+    public void logout(@PathVariable(value ="token") String token) throws CustomException{
         autheticationService.deleteToken(token);
     }
 }

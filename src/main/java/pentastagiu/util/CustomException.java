@@ -2,7 +2,7 @@ package pentastagiu.util;
 
 import org.springframework.http.HttpStatus;
 
-public class CustomException extends Exception {
+public class CustomException extends RuntimeException {
     private String message;
 
     private HttpStatus status;

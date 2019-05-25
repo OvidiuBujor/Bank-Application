@@ -9,11 +9,12 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import pentastagiu.model.User;
 
+import java.util.Optional;
+
 @Repository
 public interface UserRepository extends CrudRepository<User, Long> {
 
-    @Nullable
-    User findByUsernameAndPassword(String username,String password);
+    Optional<User> findByUsernameAndPassword(String username, String password);
 
     @Nullable
     User findByUsername(String username);

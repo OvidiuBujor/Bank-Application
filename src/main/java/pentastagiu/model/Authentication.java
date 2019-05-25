@@ -22,6 +22,11 @@ public class Authentication {
     @Column(name = "creation_time")
     private LocalDateTime creationTime;
 
+    @PrePersist
+    private void generateTime(){
+        creationTime = LocalDateTime.now();
+    }
+
     public long getId() {
         return id;
     }
