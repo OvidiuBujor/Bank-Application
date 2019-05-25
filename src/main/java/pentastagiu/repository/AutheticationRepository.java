@@ -6,5 +6,5 @@ import pentastagiu.model.Authentication;
 
 @Repository
 public interface AutheticationRepository extends CrudRepository<Authentication,Long> {
-
+    Authentication findByToken(String token);
 }

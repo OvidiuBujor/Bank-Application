@@ -3,6 +3,7 @@ package pentastagiu.repository;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 import pentastagiu.model.Account;
+import pentastagiu.model.User;
 
 import java.util.List;
 
@@ -14,6 +15,5 @@ import java.util.List;
 @Repository
 public interface AccountRepository extends CrudRepository<Account,Long> {
 
-    List<Account> getAccountByUser(Long id);
-
+    List<Account> getAccountByUser(User user);
 }

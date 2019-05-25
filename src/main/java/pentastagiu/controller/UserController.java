@@ -8,6 +8,7 @@ import pentastagiu.convertor.UserConvertor;
 import pentastagiu.convertor.UserDTO;
 import pentastagiu.model.User;
 import pentastagiu.services.UserService;
+import pentastagiu.util.CustomException;
 
 import javax.websocket.server.PathParam;
 
@@ -51,7 +52,8 @@ public class UserController {
     }
 
     @GetMapping("/user/error")
-    public UserDTO getError() throws Exception {
-        throw new Exception();
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public UserDTO getError() throws CustomException {
+        throw new CustomException("User not found", HttpStatus.NOT_FOUND);
     }
 }

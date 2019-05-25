@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import pentastagiu.model.User;
 import pentastagiu.repository.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 /**
@@ -16,6 +17,10 @@ public class UserService {
 
     @Autowired
     UserRepository userRepository;
+
+    public UserService(UserRepository userRepository){
+        this.userRepository = userRepository;
+    }
 
     public User getUserById(Long id) {
         Optional<User> userToReturn = userRepository.findById(id);
@@ -31,5 +36,14 @@ public class UserService {
 
     public void deleteUserById(Long id) {
         userRepository.deleteById(id);
+    }
+
+    public User validateUser(String username, String password){
+        return userRepository.findByUsernameAndPassword(username,password);
+    }
+    public void loadUsers(){
+        createUser(new User("Ovidiu","123", LocalDateTime.now(),LocalDateTime.now()));
+        createUser(new User("Andrei","22", LocalDateTime.now(),LocalDateTime.now()));
+        createUser(new User("Vasile","11", LocalDateTime.now(),LocalDateTime.now()));
     }
 }

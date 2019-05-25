@@ -11,7 +11,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaRepositories
 public class App {
 
-    /**
+      /**
      * Main method that starts the application.
      * Sets total number of accounts(this
      * is used for generating new accounts).
@@ -20,7 +20,6 @@ public class App {
      */
     public static void main(String[] args) {
         SpringApplication.run(App.class, args);
-
     }
 
 }
