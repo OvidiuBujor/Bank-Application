@@ -25,15 +25,15 @@ public class AutheticationController {
     @GetMapping("/authentication/{username}/{password}")
     public ResponseEntity<Authentication> login(@PathVariable(value = "username") String username,
                                                @PathVariable(value = "password") String password) throws CustomException {
-        Optional<User> user = userService.validateUser(username,password);
-        if (user.isPresent()) {
-            Optional<Authentication> authenticationToBeReturned = autheticationService.findByUser(user.get());
+        User user = userService.validateUser(username,password);
+        if (user != null) {
+            Optional<Authentication> authenticationToBeReturned = autheticationService.findByUser(user);
 
             if (authenticationToBeReturned.isPresent()) {
                 throw new CustomException("User already logged in!", HttpStatus.ALREADY_REPORTED);
             }else{
                 Authentication authentication = new Authentication();
-                authentication.setUser(user.get());
+                authentication.setUser(user);
                 authentication.setToken(autheticationService.createToken());
                 autheticationService.createAuthentication(authentication);
                 return new ResponseEntity<>(authentication,HttpStatus.OK);

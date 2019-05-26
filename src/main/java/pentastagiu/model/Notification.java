@@ -20,7 +20,7 @@ public class Notification {
     @Column(name = "sent_time")
     private LocalDateTime sentTime;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH})
+    @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "userID")
     private User user;
 

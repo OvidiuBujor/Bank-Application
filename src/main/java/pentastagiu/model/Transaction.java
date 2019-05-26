@@ -29,7 +29,7 @@ public class Transaction {
     @Column(name = "type")
     private TransactionType type;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH})
+    @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "accountID")
     private Account accountID;
 

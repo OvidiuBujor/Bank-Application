@@ -48,7 +48,8 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    public Optional<User> validateUser(String username, String password){
-        return userRepository.findByUsernameAndPassword(username,password);
+    public User validateUser(String username, String password){
+        Optional<User> userToReturn = userRepository.findByUsernameAndPassword(username,password);
+        return userToReturn.orElseGet(User::new);
     }
 }

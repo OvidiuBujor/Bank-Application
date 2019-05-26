@@ -36,9 +36,7 @@ public class UserController {
         if (updatedUser != null) {
             return new ResponseEntity<>(userConverter.convertToUserDTO(userService.updateUser(updatedUser.getPassword(),updatedUser.getId())),
                     HttpStatus.OK);
-
         }
-
         return ResponseEntity.badRequest().build();
     }
 

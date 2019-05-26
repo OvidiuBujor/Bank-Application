@@ -43,7 +43,7 @@ public class Account {
     @Column(name = "updated_time")
     private LocalDateTime updatedTime;
 
-    @ManyToOne(cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH})
+    @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "userID")
     private User user;
 
@@ -51,7 +51,7 @@ public class Account {
      * The list of transactions for current account
      */
     @OneToMany(mappedBy = "accountID",
-            cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH})
+            cascade = {CascadeType.ALL})
     private List<Transaction> transactionList = new ArrayList<>();
 
     /**

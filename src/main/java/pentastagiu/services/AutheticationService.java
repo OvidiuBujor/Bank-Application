@@ -1,5 +1,6 @@
 package pentastagiu.services;
 
+import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -8,10 +9,7 @@ import pentastagiu.model.User;
 import pentastagiu.repository.AutheticationRepository;
 import pentastagiu.util.CustomException;
 
-import java.nio.charset.Charset;
-import java.security.SecureRandom;
 import java.util.Optional;
-import java.util.Random;
 
 @Service
 public class AutheticationService {
@@ -35,11 +33,8 @@ public class AutheticationService {
         return token;
     }
 
-    private String generateToken(){
-        Random randomnr = new Random();
-        byte[] nbyte = new byte[20];
-        randomnr.nextBytes(nbyte);
-        return new String(nbyte, Charset.forName("US-ASCII"));
+    private synchronized String generateToken() {
+        return RandomString.make(20);
     }
 
     private boolean validateToken(String token) {

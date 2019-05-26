@@ -31,24 +31,24 @@ public class User {
     @Column(name = "updated_time")
     private LocalDateTime updatedTime;
 
-    @OneToOne(mappedBy = "user",cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH})
+    @OneToOne(mappedBy = "user",cascade = {CascadeType.ALL})
     private Person details;
 
-    @OneToOne(mappedBy = "user",cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH})
+    @OneToOne(mappedBy = "user",cascade = {CascadeType.ALL})
     private Authentication reference;
 
     /**
      * The list of notifications for user
      */
     @OneToMany(mappedBy = "user",
-            cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH})
+            cascade = {CascadeType.ALL})
     private List<Notification> notificationList = new ArrayList<>();
 
     /**
      * The list of all accounts owned by the user
      */
     @OneToMany(mappedBy = "user",
-            cascade = {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH})
+            cascade = {CascadeType.ALL})
     private List<Account> accountsList = new ArrayList<>();
 
     public User(){
