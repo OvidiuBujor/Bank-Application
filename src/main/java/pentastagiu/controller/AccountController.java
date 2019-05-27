@@ -34,9 +34,9 @@ public class AccountController {
     @PutMapping("/account")
     public ResponseEntity<Account> updateAccount(@RequestBody Account account) {
 
-        Account updatedAccount = accountService.updateAccount(account);
+        Account updatedAccount = accountService.updateAccount(account.getId(),account.getBalance());
 
-        if (updatedAccount != null) return new ResponseEntity<>(accountService.updateAccount(account), HttpStatus.OK);
+        if (updatedAccount != null) return new ResponseEntity<>(accountService.updateAccount(account.getId(),account.getBalance()), HttpStatus.OK);
 
         return ResponseEntity.badRequest().build();
     }

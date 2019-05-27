@@ -42,7 +42,7 @@ public class AccountService {
         if(authentication.isPresent()) {
             Account accountToBeAdded = new Account();
             accountToBeAdded.setBalance(BigDecimal.valueOf(0));
-            accountToBeAdded.setAccountNumber(generateAccountNumber());
+            accountToBeAdded.setAccountNumber("RO09BCYP" + generateAccountNumber());
             accountToBeAdded.setAccountType(accountType);
             User owner = authentication.get().getUser();
             accountToBeAdded.setUser(owner);
@@ -55,7 +55,8 @@ public class AccountService {
         return String.format("%016d", accountRepository.count());
     }
 
-    public Account updateAccount(Account account) {
-        return accountRepository.save(account);
+    public Account updateAccount(Long id, BigDecimal balance) {
+        accountRepository.updateAccount(id,balance);
+        return accountRepository.findById(id).get();
     }
 }

@@ -3,6 +3,7 @@ package pentastagiu.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.data.jpa.repository.Modifying;
 import pentastagiu.convertor.AccountType;
 
 import javax.persistence.*;
@@ -69,6 +70,11 @@ public class Account {
     void generateTime(){
         this.createdTime = LocalDateTime.now();
         this.updatedTime = LocalDateTime.now();
+    }
+
+    @Modifying
+    void generateUpdate(){
+        updatedTime = LocalDateTime.now();
     }
 
     public long getId() {

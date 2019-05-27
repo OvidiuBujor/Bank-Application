@@ -10,5 +10,4 @@ import java.util.List;
 public interface TransactionRepository extends CrudRepository<Transaction,Long> {
 
     List<Transaction> getTransactionByAccountID(long id);
-
 }
