@@ -7,7 +7,7 @@ import pentastagiu.model.Account;
 import pentastagiu.model.Authentication;
 import pentastagiu.model.User;
 import pentastagiu.repository.AccountRepository;
-import pentastagiu.util.AccountType;
+import pentastagiu.convertor.AccountType;
 import pentastagiu.util.CustomException;
 
 import java.math.BigDecimal;

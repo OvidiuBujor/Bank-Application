@@ -1,4 +1,4 @@
-package pentastagiu.util;
+package pentastagiu.convertor;
 
 import java.beans.PropertyEditorSupport;
 

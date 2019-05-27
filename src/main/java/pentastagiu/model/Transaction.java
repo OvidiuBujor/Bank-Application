@@ -1,7 +1,7 @@
 package pentastagiu.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import pentastagiu.util.TransactionType;
+import pentastagiu.convertor.TransactionType;
 
 import javax.persistence.*;
 import java.math.BigDecimal;

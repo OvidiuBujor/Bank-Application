@@ -3,7 +3,7 @@ package pentastagiu.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import pentastagiu.util.AccountType;
+import pentastagiu.convertor.AccountType;
 
 import javax.persistence.*;
 import java.math.BigDecimal;

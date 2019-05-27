@@ -1,4 +1,4 @@
-package pentastagiu.util;
+package pentastagiu.convertor;
 
 /**
  * This enum holds the valid types of a transaction

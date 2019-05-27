@@ -7,8 +7,8 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import pentastagiu.model.Account;
 import pentastagiu.services.AccountService;
-import pentastagiu.util.AccountType;
-import pentastagiu.util.AccountTypeConvertor;
+import pentastagiu.convertor.AccountType;
+import pentastagiu.convertor.AccountTypeConvertor;
 import pentastagiu.util.CustomException;
 
 import java.util.List;
