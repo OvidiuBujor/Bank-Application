@@ -10,7 +10,6 @@ import pentastagiu.repository.AutheticationRepository;
 import pentastagiu.util.CustomException;
 
 import java.util.Optional;
-
 @Service
 public class AutheticationService {
 

@@ -1,5 +1,7 @@
 package pentastagiu.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -32,9 +34,11 @@ public class User {
     private LocalDateTime updatedTime;
 
     @OneToOne(mappedBy = "user",cascade = {CascadeType.ALL})
+    @JsonIgnoreProperties("user")
     private Person details;
 
     @OneToOne(mappedBy = "user",cascade = {CascadeType.ALL})
+    @JsonIgnoreProperties("user")
     private Authentication reference;
 
     /**
@@ -42,6 +46,7 @@ public class User {
      */
     @OneToMany(mappedBy = "user",
             cascade = {CascadeType.ALL})
+    @JsonIgnoreProperties("user")
     private List<Notification> notificationList = new ArrayList<>();
 
     /**
@@ -49,6 +54,7 @@ public class User {
      */
     @OneToMany(mappedBy = "user",
             cascade = {CascadeType.ALL})
+    @JsonIgnoreProperties("user")
     private List<Account> accountsList = new ArrayList<>();
 
     public User(){

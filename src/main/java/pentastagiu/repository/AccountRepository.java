@@ -12,8 +12,11 @@ import java.util.List;
  * database file of accounts.It can perform different operations:
  * adding an account to database, update the balance of an account.
  */
+
 @Repository
 public interface AccountRepository extends CrudRepository<Account,Long> {
 
     List<Account> getAccountByUser(User user);
+
+
 }

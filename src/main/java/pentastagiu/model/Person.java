@@ -1,5 +1,7 @@
 package pentastagiu.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 
 @Entity
@@ -24,6 +26,7 @@ public class Person {
 
     @OneToOne(cascade=CascadeType.ALL)
     @JoinColumn(name= "userID")
+    @JsonIgnoreProperties("details")
     private User user;
 
     public long getId() {

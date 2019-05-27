@@ -1,5 +1,7 @@
 package pentastagiu.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -22,6 +24,7 @@ public class Notification {
 
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "userID")
+    @JsonIgnoreProperties("notificationList")
     private User user;
 
     public long getId() {

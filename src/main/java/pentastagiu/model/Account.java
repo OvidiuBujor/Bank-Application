@@ -1,5 +1,6 @@
 package pentastagiu.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import pentastagiu.util.AccountType;
@@ -45,6 +46,7 @@ public class Account {
 
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "userID")
+    @JsonIgnoreProperties("accountList")
     private User user;
 
     /**
@@ -52,6 +54,7 @@ public class Account {
      */
     @OneToMany(mappedBy = "accountID",
             cascade = {CascadeType.ALL})
+    @JsonIgnoreProperties("accountID")
     private List<Transaction> transactionList = new ArrayList<>();
 
     /**

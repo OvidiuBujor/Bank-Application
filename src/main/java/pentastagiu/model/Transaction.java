@@ -1,5 +1,6 @@
 package pentastagiu.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import pentastagiu.util.TransactionType;
 
 import javax.persistence.*;
@@ -31,6 +32,7 @@ public class Transaction {
 
     @ManyToOne(cascade = {CascadeType.ALL})
     @JoinColumn(name = "accountID")
+    @JsonIgnoreProperties("transactionList")
     private Account accountID;
 
     public long getId() {

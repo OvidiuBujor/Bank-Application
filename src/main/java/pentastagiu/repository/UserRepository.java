@@ -11,6 +11,7 @@ import pentastagiu.model.User;
 
 import java.util.Optional;
 
+
 @Repository
 public interface UserRepository extends CrudRepository<User, Long> {
 

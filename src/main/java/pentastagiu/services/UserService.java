@@ -13,6 +13,7 @@ import java.util.Optional;
  * This class contains all logic for the current logged in user:
  * load and dispose current user.
  */
+
 @Service
 public class UserService {
 
