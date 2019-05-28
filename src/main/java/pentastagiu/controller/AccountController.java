@@ -9,8 +9,10 @@ import pentastagiu.model.Account;
 import pentastagiu.services.AccountService;
 import pentastagiu.convertor.AccountType;
 import pentastagiu.convertor.AccountTypeConvertor;
+import pentastagiu.services.TransactionService;
 import pentastagiu.util.CustomException;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -18,6 +20,9 @@ public class AccountController {
 
     @Autowired
     AccountService accountService;
+
+    @Autowired
+    TransactionService transactionService;
 
     @GetMapping("/account/{token}")
     public ResponseEntity<List<Account>> getAccounts(@PathVariable(value = "token") String token) throws CustomException {
@@ -31,14 +36,11 @@ public class AccountController {
         return new ResponseEntity<>(accountService.createAccount(accountType,token),HttpStatus.OK);
     }
 
-    @PutMapping("/account")
-    public ResponseEntity<Account> updateAccount(@RequestBody Account account) {
-
-        Account updatedAccount = accountService.updateAccount(account.getId(),account.getBalance());
-
-        if (updatedAccount != null) return new ResponseEntity<>(accountService.updateAccount(account.getId(),account.getBalance()), HttpStatus.OK);
-
-        return ResponseEntity.badRequest().build();
+    @PutMapping("/account/{id}/{amount}/{details}/{deposit}")
+    public ResponseEntity<Account> updateBalanceAccount(@PathVariable(value = "id") Long id,
+                                                        @PathVariable(value = "amount") BigDecimal amount,
+                                                        @PathVariable(value = "deposit") Boolean deposit) throws CustomException{
+        return new ResponseEntity<>(accountService.updateBalanceAccount(id, amount, deposit),HttpStatus.OK);
     }
 
     @InitBinder

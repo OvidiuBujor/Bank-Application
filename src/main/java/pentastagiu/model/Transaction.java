@@ -35,6 +35,11 @@ public class Transaction {
     @JsonIgnoreProperties("transactionList")
     private Account accountID;
 
+    @PrePersist
+    void prePersist(){
+        this.createdTime = LocalDateTime.now();
+    }
+
     public long getId() {
         return id;
     }

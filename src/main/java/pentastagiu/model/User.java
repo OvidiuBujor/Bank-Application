@@ -72,11 +72,13 @@ public class User {
     @PrePersist
     void prePersist(){
         createdTime = LocalDateTime.now();
+        System.out.println("User '" + this.getUsername() + "' added.");
     }
 
     @PreUpdate
     void preUpdate(){
         updatedTime = LocalDateTime.now();
+        System.out.println("User '" + this.getUsername() + "' updated.");
     }
 
 

@@ -28,6 +28,7 @@ public class Authentication {
     @PrePersist
     private void generateTime(){
         creationTime = LocalDateTime.now();
+        System.out.println("Token generated for current user.");
     }
 
     public long getId() {

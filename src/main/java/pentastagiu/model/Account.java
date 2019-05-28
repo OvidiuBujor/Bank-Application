@@ -66,14 +66,15 @@ public class Account {
     }
 
     @PrePersist
-    void generateTime(){
+    void prePersit(){
         this.createdTime = LocalDateTime.now();
-        this.updatedTime = LocalDateTime.now();
+        System.out.println("Account " + this.getAccountNumber() + " created.");
     }
 
-    @Modifying
-    void generateUpdate(){
-        updatedTime = LocalDateTime.now();
+    @PreUpdate
+    void preUpdate(){
+        this.updatedTime = LocalDateTime.now();
+        System.out.println("Account " + this.getAccountNumber() + " updated.");
     }
 
     public long getId() {

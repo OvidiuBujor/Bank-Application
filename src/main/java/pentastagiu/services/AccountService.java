@@ -55,8 +55,28 @@ public class AccountService {
         return String.format("%016d", accountRepository.count());
     }
 
-    public Account updateAccount(Long id, BigDecimal balance) {
-        accountRepository.updateAccount(id,balance);
-        return accountRepository.findById(id).get();
+    public Account updateBalanceAccount(Long id, BigDecimal amount, Boolean deposit) throws CustomException{
+         Optional<Account> resultedAccount = accountRepository.findById(id);
+         if (resultedAccount.isPresent()) {
+             Account accountToBeUpdated = resultedAccount.get();
+             BigDecimal initialBalance = accountToBeUpdated.getBalance();
+             if(deposit){
+                 initialBalance = initialBalance.add(amount);
+             }else {
+                 if(initialBalance.compareTo(amount) > 0)
+                    initialBalance = initialBalance.subtract(amount);
+                 else
+                    throw new CustomException("Insufficient funds.",HttpStatus.BAD_REQUEST);
+             }
+             accountToBeUpdated.setBalance(initialBalance);
+             return  accountRepository.save(accountToBeUpdated);
+         }
+         throw new CustomException("Account not found.", HttpStatus.NOT_FOUND);
+    }
+
+    public Account getAccountById(Long id)throws CustomException{
+         if(accountRepository.findById(id).isPresent())
+             return accountRepository.findById(id).get();
+         throw new CustomException("Account not found.", HttpStatus.NOT_FOUND);
     }
 }

@@ -1,7 +1,9 @@
 package pentastagiu.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.OnDelete;
 
+import javax.annotation.PreDestroy;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -26,6 +28,18 @@ public class Notification {
     @JoinColumn(name = "userID")
     @JsonIgnoreProperties("notificationList")
     private User user;
+
+    @PrePersist
+    void prePersist(){
+        this.createdTime = LocalDateTime.now();
+        System.out.println("Notification created.");
+    }
+
+    @PreDestroy
+    void preDestroid(){
+        this.sentTime = LocalDateTime.now();
+        System.out.println("Notification sent.");
+    }
 
     public long getId() {
         return id;
