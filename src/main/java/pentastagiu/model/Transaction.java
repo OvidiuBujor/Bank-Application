@@ -30,7 +30,7 @@ public class Transaction {
     @Column(name = "type")
     private TransactionType type;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne
     @JoinColumn(name = "accountID")
     @JsonIgnoreProperties("transactionList")
     private Account accountID;

@@ -32,10 +32,9 @@ public class UserController {
 
     @PutMapping("/user")
     public ResponseEntity<UserDTO> updateUser(@RequestBody User user) {
-        User updatedUser = userService.updateUser(user.getPassword(),user.getId());
+        User updatedUser = userService.updateUser(user);
         if (updatedUser != null) {
-            return new ResponseEntity<>(userConverter.convertToUserDTO(userService.updateUser(updatedUser.getPassword(),updatedUser.getId())),
-                    HttpStatus.OK);
+            return new ResponseEntity<>(userConverter.convertToUserDTO(updatedUser), HttpStatus.OK);
         }
         return ResponseEntity.badRequest().build();
     }

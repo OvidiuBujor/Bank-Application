@@ -25,8 +25,8 @@ public class AutheticationController {
     @GetMapping("/authentication/{username}/{password}")
     public ResponseEntity<Authentication> login(@PathVariable(value = "username") String username,
                                                @PathVariable(value = "password") String password) throws CustomException {
-        User user = userService.validateUser(username,password);
-        if (user != null) {
+        if (userService.validateUser(username,password)) {
+            User user = userService.getUserByUsername(username);
             Optional<Authentication> authenticationToBeReturned = autheticationService.findByUser(user);
 
             if (authenticationToBeReturned.isPresent()) {

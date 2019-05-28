@@ -17,7 +17,7 @@ public class Authentication {
     @Column(name = "token")
     private String token;
 
-    @OneToOne(cascade=CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name= "userID")
     @JsonIgnoreProperties("reference")
     private User user;

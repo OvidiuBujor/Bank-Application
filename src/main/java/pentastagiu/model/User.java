@@ -33,27 +33,25 @@ public class User {
     @Column(name = "updated_time")
     private LocalDateTime updatedTime;
 
-    @OneToOne(mappedBy = "user",cascade = {CascadeType.ALL})
+    @OneToOne(mappedBy = "user", orphanRemoval = true)
     @JsonIgnoreProperties("user")
     private Person details;
 
-    @OneToOne(mappedBy = "user",cascade = {CascadeType.ALL})
+    @OneToOne(mappedBy = "user", orphanRemoval = true)
     @JsonIgnoreProperties("user")
     private Authentication reference;
 
     /**
      * The list of notifications for user
      */
-    @OneToMany(mappedBy = "user",
-            cascade = {CascadeType.ALL})
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
     @JsonIgnoreProperties("user")
     private List<Notification> notificationList = new ArrayList<>();
 
     /**
      * The list of all accounts owned by the user
      */
-    @OneToMany(mappedBy = "user",
-            cascade = {CascadeType.ALL})
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
     @JsonIgnoreProperties("user")
     private List<Account> accountsList = new ArrayList<>();
 
@@ -61,11 +59,6 @@ public class User {
 
     }
 
-    @PrePersist
-    private void settingDate(){
-        createdTime = LocalDateTime.now();
-        updatedTime = LocalDateTime.now();
-    }
     /**
      * Constructs an user with the information received
      * @param username of the user created
@@ -74,8 +67,18 @@ public class User {
     public User(String username, String password) {
         this.username = username;
         this.password = password;
-        settingDate();
     }
+
+    @PrePersist
+    void prePersist(){
+        createdTime = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    void preUpdate(){
+        updatedTime = LocalDateTime.now();
+    }
+
 
     public long getId() {
         return id;

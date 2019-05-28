@@ -22,7 +22,7 @@ public class Notification {
     @Column(name = "sent_time")
     private LocalDateTime sentTime;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne
     @JoinColumn(name = "userID")
     @JsonIgnoreProperties("notificationList")
     private User user;

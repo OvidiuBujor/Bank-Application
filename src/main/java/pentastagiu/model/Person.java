@@ -24,7 +24,7 @@ public class Person {
     @Column(name = "email")
     private String email;
 
-    @OneToOne(cascade=CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name= "userID")
     @JsonIgnoreProperties("details")
     private User user;

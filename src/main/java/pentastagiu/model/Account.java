@@ -45,7 +45,7 @@ public class Account {
     @Column(name = "updated_time")
     private LocalDateTime updatedTime;
 
-    @ManyToOne(cascade = {CascadeType.ALL})
+    @ManyToOne
     @JoinColumn(name = "userID")
     @JsonIgnoreProperties("accountList")
     private User user;
@@ -53,8 +53,7 @@ public class Account {
     /**
      * The list of transactions for current account
      */
-    @OneToMany(mappedBy = "accountID",
-            cascade = {CascadeType.ALL})
+    @OneToMany(mappedBy = "accountID", orphanRemoval = true)
     @JsonIgnoreProperties("accountID")
     private List<Transaction> transactionList = new ArrayList<>();
 
