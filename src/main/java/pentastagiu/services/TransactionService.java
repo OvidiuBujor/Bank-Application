@@ -1,15 +1,13 @@
 package pentastagiu.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import pentastagiu.convertor.TransactionType;
 import pentastagiu.model.Account;
 import pentastagiu.model.Authentication;
+import pentastagiu.model.Notification;
 import pentastagiu.model.Transaction;
-import pentastagiu.model.User;
 import pentastagiu.repository.TransactionRepository;
-import pentastagiu.util.CustomException;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -18,20 +16,25 @@ import java.util.List;
 @Service
 public class TransactionService {
 
-    @Autowired
-    TransactionRepository transactionRepository;
+    private TransactionRepository transactionRepository;
+
+    private AccountService accountService;
+
+
+    private NotificationService notificationService;
 
     @Autowired
-    AccountService accountService;
-
-    @Autowired
-    NotificationService notificationService;
+    public TransactionService(TransactionRepository transactionRepository, AccountService accountService, NotificationService notificationService){
+        this.transactionRepository = transactionRepository;
+        this.accountService = accountService;
+        this.notificationService = notificationService;
+    }
 
     public Transaction createTransaction(Transaction transaction){
         return transactionRepository.save(transaction);
     }
 
-    public void saveTransfer(Long accountFromId, Long accountToId, BigDecimal amount, String details){
+    public Notification saveTransfer(Long accountFromId, Long accountToId, BigDecimal amount, String details){
         Account accountFrom = accountService.getAccountById(accountFromId);
         Account accountTo = accountService.getAccountById(accountToId);
 
@@ -45,11 +48,11 @@ public class TransactionService {
                 " To account: " + accountTo.getAccountNumber() +
                 ", amount : " + amount + " , details : " + details;
 
-        notificationService.addNotification(accountFrom.getUser(),transactionDetails);
-
         System.out.println("Transfer to Account {Account Number: " + accountTo.getAccountNumber() +
                 " New Balance: " + accountTo.getBalance().toString() + " " +
                 accountTo.getAccountType().toString() +"}");
+
+        return notificationService.addNotification(accountFrom.getUser(),transactionDetails);
     }
 
     public List<Transaction> getTransactions(Authentication authentication){
@@ -60,7 +63,7 @@ public class TransactionService {
         return transactionList;
     }
 
-    public void saveTransaction(Account accountFrom, BigDecimal amount, Account accountTo, String details, TransactionType transactionType) {
+    private void saveTransaction(Account accountFrom, BigDecimal amount, Account accountTo, String details, TransactionType transactionType) {
         Transaction transactionToBeSaved = new Transaction();
 
         transactionToBeSaved.setAccount(accountTo.getAccountNumber());

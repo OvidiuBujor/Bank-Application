@@ -22,14 +22,18 @@ import java.util.Optional;
 @Service
 public class AccountService {
 
-    @Autowired
-    AccountRepository accountRepository;
+    private AccountRepository accountRepository;
+
+    private AuthenticationService authenticationService;
 
     @Autowired
-    AutheticationService autheticationService;
+    public AccountService(AccountRepository accountRepository, AuthenticationService authenticationService){
+        this.accountRepository = accountRepository;
+        this.authenticationService = authenticationService;
+    }
 
      public List<Account> getAccountsByToken(String token) throws CustomException {
-        Optional<Authentication> authentication = autheticationService.findByToken(token);
+        Optional<Authentication> authentication = authenticationService.findByToken(token);
         if (authentication.isPresent()) {
             User user = authentication.get().getUser();
             return accountRepository.getAccountByUser(user);
@@ -37,18 +41,23 @@ public class AccountService {
             throw new CustomException("User not logged in!", HttpStatus.NOT_FOUND);
     }
 
-    public Account createAccount(AccountType accountType, String token) throws CustomException {
-        Optional<Authentication> authentication = autheticationService.findByToken(token);
+    public Account saveAccount(AccountType accountType, String token) throws CustomException {
+        Optional<Authentication> authentication = authenticationService.findByToken(token);
         if(authentication.isPresent()) {
-            Account accountToBeAdded = new Account();
-            accountToBeAdded.setBalance(BigDecimal.valueOf(0));
-            accountToBeAdded.setAccountNumber("RO09BCYP" + generateAccountNumber());
-            accountToBeAdded.setAccountType(accountType);
-            User owner = authentication.get().getUser();
-            accountToBeAdded.setUser(owner);
+            Account accountToBeAdded = createAccount(authentication.get(),accountType);
             return accountRepository.save(accountToBeAdded);
         }else
             throw new CustomException("Token doesn't exists.", HttpStatus.NOT_FOUND);
+    }
+
+    private Account createAccount(Authentication authentication, AccountType accountType){
+        Account accountToBeAdded = new Account();
+        accountToBeAdded.setBalance(BigDecimal.valueOf(0));
+        accountToBeAdded.setAccountNumber("RO09BCYP" + generateAccountNumber());
+        accountToBeAdded.setAccountType(accountType);
+        User owner = authentication.getUser();
+        accountToBeAdded.setUser(owner);
+        return accountToBeAdded;
     }
 
     private String generateAccountNumber(){
@@ -74,7 +83,7 @@ public class AccountService {
          throw new CustomException("Account not found.", HttpStatus.NOT_FOUND);
     }
 
-    public Account getAccountById(Long id)throws CustomException{
+    Account getAccountById(Long id)throws CustomException{
          if(accountRepository.findById(id).isPresent())
              return accountRepository.findById(id).get();
          throw new CustomException("Account not found.", HttpStatus.NOT_FOUND);

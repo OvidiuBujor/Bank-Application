@@ -13,11 +13,15 @@ import pentastagiu.util.CustomException;
 @RestController
 public class UserController {
 
-    @Autowired
-    UserService userService;
+    private UserService userService;
+
+    private UserConvertor userConverter;
 
     @Autowired
-    UserConvertor userConverter;
+    public UserController(UserService userService, UserConvertor userConvertor){
+        this.userService = userService;
+        this.userConverter = userConvertor;
+    }
 
     @GetMapping("/user/{id}")
     public UserDTO getUser(@PathVariable(value = "id") Long id) {

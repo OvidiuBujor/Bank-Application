@@ -5,43 +5,51 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pentastagiu.model.Authentication;
+import pentastagiu.model.Notification;
 import pentastagiu.model.Transaction;
-import pentastagiu.services.AutheticationService;
+import pentastagiu.model.TransferDetails;
+import pentastagiu.services.AuthenticationService;
 import pentastagiu.services.TransactionService;
-import pentastagiu.util.CustomException;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
 @RestController
 public class TransferController {
 
-    @Autowired
-    AutheticationService autheticationService;
+    private AuthenticationService authenticationService;
+
+    private TransactionService transactionService;
 
     @Autowired
-    TransactionService transactionService;
+    public TransferController(AuthenticationService authenticationService, TransactionService transactionService){
+        this.authenticationService = authenticationService;
+        this.transactionService = transactionService;
+    }
 
-    @PostMapping("/transaction/{token}/{accountFromId}/{accountToId}/{amount}/{details}")
+    @PostMapping("/transaction/{token}")
     @ResponseStatus(HttpStatus.CREATED)
-    public void saveTransfer(@PathVariable(value = "token") String token,
-                             @PathVariable(value = "accountFromId") Long accountFromId,
-                             @PathVariable(value = "accountToId") Long accountToId,
-                             @PathVariable(value = "amount")BigDecimal amount,
-                             @PathVariable(value = "details") String details) throws CustomException{
-        if(autheticationService.findByToken(token).isPresent())
-            transactionService.saveTransfer(accountFromId,accountToId,amount,details);
-        else throw new CustomException("Token for transfer doesn't exists.", HttpStatus.NOT_FOUND);
+    public ResponseEntity<Notification> saveTransfer(@PathVariable(value = "token") String token,
+                                                     @RequestBody TransferDetails transferDetails){
+        if(authenticationService.findByToken(token).isPresent()) {
+            Notification notificationToReturn = transactionService.saveTransfer(transferDetails.getAccountFromId(),
+                    transferDetails.getAccountToId(),
+                    transferDetails.getAmount(),
+                    transferDetails.getDetails());
+            return  new ResponseEntity<>(notificationToReturn,HttpStatus.CREATED);
+        }
+        else
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/transaction/{token}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<Transaction>> getTransactions(@PathVariable(value = "token") String token){
-        Optional<Authentication> resultedAuthentication = autheticationService.findByToken(token);
+        Optional<Authentication> resultedAuthentication = authenticationService.findByToken(token);
         if(resultedAuthentication.isPresent()){
             Authentication authentication = resultedAuthentication.get();
             return new ResponseEntity<>(transactionService.getTransactions(authentication),HttpStatus.OK);
-        }else throw new CustomException("Token to get transactions not found.", HttpStatus.NOT_FOUND);
+        }else
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }

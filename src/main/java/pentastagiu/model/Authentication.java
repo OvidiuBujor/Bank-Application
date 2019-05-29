@@ -14,7 +14,7 @@ public class Authentication {
     @Column(name = "id")
     private long id;
 
-    @Column(name = "token")
+    @Column(name = "token", unique = true)
     private String token;
 
     @OneToOne

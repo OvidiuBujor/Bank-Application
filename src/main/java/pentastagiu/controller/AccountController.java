@@ -5,11 +5,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import pentastagiu.model.Account;
-import pentastagiu.services.AccountService;
 import pentastagiu.convertor.AccountType;
 import pentastagiu.convertor.AccountTypeConvertor;
-import pentastagiu.services.TransactionService;
+import pentastagiu.model.Account;
+import pentastagiu.services.AccountService;
 import pentastagiu.util.CustomException;
 
 import java.math.BigDecimal;
@@ -18,22 +17,23 @@ import java.util.List;
 @RestController
 public class AccountController {
 
-    @Autowired
-    AccountService accountService;
+    private AccountService accountService;
 
     @Autowired
-    TransactionService transactionService;
+    public AccountController(AccountService accountService){
+        this.accountService = accountService;
+    }
 
     @GetMapping("/account/{token}")
-    public ResponseEntity<List<Account>> getAccounts(@PathVariable(value = "token") String token) throws CustomException {
+    public ResponseEntity<List<Account>> getAccountsByToken(@PathVariable(value = "token") String token) throws CustomException {
         return new ResponseEntity<>(accountService.getAccountsByToken(token),HttpStatus.OK);
     }
 
     @PostMapping("/account/{token}/{accountType}")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Account> createAccount(@PathVariable(value = "token") String token,
-                                 @PathVariable(value = "accountType") AccountType accountType) throws CustomException{
-        return new ResponseEntity<>(accountService.createAccount(accountType,token),HttpStatus.OK);
+    public ResponseEntity<Account> saveAccount(@PathVariable(value = "token") String token,
+                                               @PathVariable(value = "accountType") AccountType accountType) throws CustomException{
+        return new ResponseEntity<>(accountService.saveAccount(accountType,token),HttpStatus.OK);
     }
 
     @PutMapping("/account/{id}/{amount}/{details}/{deposit}")
