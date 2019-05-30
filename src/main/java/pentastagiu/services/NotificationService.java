@@ -9,10 +9,14 @@ import pentastagiu.repository.NotificationRepository;
 import java.time.LocalDateTime;
 
 @Service
-class NotificationService {
+public class NotificationService {
+
+    private NotificationRepository notificationRepository;
 
     @Autowired
-    private NotificationRepository notificationRepository;
+    public NotificationService(NotificationRepository notificationRepository){
+        this.notificationRepository = notificationRepository;
+    }
 
     Notification addNotification(User cachedUser, String details){
         Notification notificationToBeSaved = new Notification();
@@ -22,5 +26,13 @@ class NotificationService {
         notificationToBeSaved.setSentTime(LocalDateTime.now());
         notificationToBeSaved.setUser(cachedUser);
         return notificationRepository.save(notificationToBeSaved);
+    }
+
+    public Notification updateNotification(Notification notification){
+        return notificationRepository.save(notification);
+    }
+
+    public Iterable<Notification> getNotifications(){
+        return notificationRepository.findAll();
     }
 }

@@ -3,11 +3,12 @@ package pentastagiu.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import pentastagiu.convertor.AccountType;
+import pentastagiu.convertor.OperationType;
 import pentastagiu.model.Account;
 import pentastagiu.model.Authentication;
 import pentastagiu.model.User;
 import pentastagiu.repository.AccountRepository;
-import pentastagiu.convertor.AccountType;
 import pentastagiu.util.CustomException;
 
 import java.math.BigDecimal;
@@ -16,7 +17,7 @@ import java.util.Optional;
 
 /**
  * This class handles the operations for accounts:
- * deposit and transfer between 2 valid accounts.
+ * deposit and withdraw.
  */
 
 @Service
@@ -64,15 +65,15 @@ public class AccountService {
         return String.format("%016d", accountRepository.count());
     }
 
-    public Account updateBalanceAccount(Long id, BigDecimal amount, Boolean deposit) throws CustomException{
+    public Account updateBalanceAccount(Long id, BigDecimal amount, OperationType deposit) throws CustomException{
          Optional<Account> resultedAccount = accountRepository.findById(id);
          if (resultedAccount.isPresent()) {
              Account accountToBeUpdated = resultedAccount.get();
              BigDecimal initialBalance = accountToBeUpdated.getBalance();
-             if(deposit){
+             if(deposit == OperationType.DEPOSIT){
                  initialBalance = initialBalance.add(amount);
              }else {
-                 if(initialBalance.compareTo(amount) > 0)
+                 if(initialBalance.compareTo(amount) >= 0)
                     initialBalance = initialBalance.subtract(amount);
                  else
                     throw new CustomException("Insufficient funds.",HttpStatus.BAD_REQUEST);
@@ -87,5 +88,9 @@ public class AccountService {
          if(accountRepository.findById(id).isPresent())
              return accountRepository.findById(id).get();
          throw new CustomException("Account not found.", HttpStatus.NOT_FOUND);
+    }
+
+    boolean validateAccountTypes(AccountType accountTypeFrom, AccountType accountTypeTo){
+        return accountTypeFrom.equals(accountTypeTo);
     }
 }

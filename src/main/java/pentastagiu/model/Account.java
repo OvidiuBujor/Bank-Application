@@ -3,7 +3,6 @@ package pentastagiu.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.data.jpa.repository.Modifying;
 import pentastagiu.convertor.AccountType;
 
 import javax.persistence.*;
@@ -20,6 +19,7 @@ import java.util.Objects;
 @Entity
 @Table(name = "account")
 public class Account {
+
     @Transient
     private Logger LOGGER = LogManager.getLogger();
 
@@ -27,10 +27,14 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private long id;
-
+    /**
+     * The account number of the account
+     */
     @Column(name = "account_number")
     private String accountNumber;
-
+    /**
+     * Current balance of the account
+     */
     @Column(name = "balance")
     private BigDecimal balance;
     /**
@@ -38,20 +42,28 @@ public class Account {
      */
     @Column(name = "account_type")
     private AccountType accountType;
-
+    /**
+     * Time when the account was created
+     */
     @Column(name = "created_time")
     private LocalDateTime createdTime;
-
+    /**
+     * Time when the account was last updated
+     */
     @Column(name = "updated_time")
     private LocalDateTime updatedTime;
-
+    /**
+     * The owner of the account. Creates the connection
+     * with the User class.
+     */
     @ManyToOne
     @JoinColumn(name = "userID")
     @JsonIgnoreProperties("accountList")
     private User user;
 
     /**
-     * The list of transactions for current account
+     * The list of transactions for current account.
+     * Creates the connection with the Transaction class.
      */
     @OneToMany(mappedBy = "accountID", orphanRemoval = true)
     @JsonIgnoreProperties("accountID")
@@ -65,16 +77,24 @@ public class Account {
 
     }
 
+    /**
+     * This method adds the time when the account was created.
+     */
     @PrePersist
     void prePersit(){
         this.createdTime = LocalDateTime.now();
-        System.out.println("Account " + this.getAccountNumber() + " created.");
+        System.out.println("Account '" + this.getAccountNumber() + "' created.");
+        LOGGER.info("Account '" + this.getAccountNumber() + "' created.");
     }
 
+    /**
+     * This method adds the time when the account is updated.
+     */
     @PreUpdate
     void preUpdate(){
         this.updatedTime = LocalDateTime.now();
-        System.out.println("Account " + this.getAccountNumber() + " updated.");
+        System.out.println("Account '" + this.getAccountNumber() + "' updated.");
+        LOGGER.info("Account '" + this.getAccountNumber() + "' updated. New balance is: " + balance + ".");
     }
 
     public long getId() {

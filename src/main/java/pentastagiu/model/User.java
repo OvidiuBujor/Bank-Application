@@ -9,8 +9,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * This class holds information for an user:
- * username, password and the list of accounts owned.
+ * This class holds information for an user
  */
 @Entity
 @Table(name = "user")
@@ -26,17 +25,28 @@ public class User {
 
     @Column(name = "password")
     private String password;
-
+    /**
+     * The time when the user was created
+     */
     @Column(name = "created_time")
     private LocalDateTime createdTime;
 
+    /**
+     * The time of the last updated operated for the user
+     */
     @Column(name = "updated_time")
     private LocalDateTime updatedTime;
 
+    /**
+     * User personal details
+     */
     @OneToOne(mappedBy = "user", orphanRemoval = true)
     @JsonIgnoreProperties("user")
     private Person details;
 
+    /**
+     * The authentication created when the user is logged in
+     */
     @OneToOne(mappedBy = "user", orphanRemoval = true)
     @JsonIgnoreProperties("user")
     private Authentication reference;
@@ -69,18 +79,23 @@ public class User {
         this.password = password;
     }
 
+    /**
+     * This method adds the time when the user was created.
+     */
     @PrePersist
     void prePersist(){
         createdTime = LocalDateTime.now();
         System.out.println("User '" + this.getUsername() + "' added.");
     }
 
+    /**
+     * This method updates the updated time field when the user is updated.
+     */
     @PreUpdate
     void preUpdate(){
         updatedTime = LocalDateTime.now();
         System.out.println("User '" + this.getUsername() + "' updated.");
     }
-
 
     public long getId() {
         return id;

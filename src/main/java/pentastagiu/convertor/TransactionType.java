@@ -4,7 +4,7 @@ package pentastagiu.convertor;
  * This enum holds the valid types of a transaction
  */
 public enum TransactionType {
-    incoming("incoming"), outgoing("outgoing");
+    INCOMING("INCOMING"), OUTGOING("OUTGOING");
 
     private String text;
 

@@ -17,9 +17,9 @@ import java.util.Optional;
 @Service
 public class UserService {
 
-    @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
 
+    @Autowired
     public UserService(UserRepository userRepository){
         this.userRepository = userRepository;
     }
@@ -33,10 +33,7 @@ public class UserService {
         Optional<User> result = userRepository.findByUsername(user.getUsername());
         if (result.isPresent())
             throw new CustomException("User already registered!", HttpStatus.BAD_REQUEST);
-        else{
-            userRepository.save(user);
-            return user;
-        }
+        return userRepository.save(user);
     }
 
     public User updateUser(User user) throws CustomException{
@@ -55,13 +52,14 @@ public class UserService {
     }
 
 
-    public boolean validateUser(String username, String password){
+    boolean validateUser(String username, String password){
         return userRepository.findByUsernameAndPassword(username, password).isPresent();
     }
 
-    public User getUserByUsername(String username) throws CustomException{
+    User getUserByUsername(String username) throws CustomException{
         Optional<User> result = userRepository.findByUsername(username);
-        if(result.isPresent()) return result.get();
+        if(result.isPresent())
+            return result.get();
         throw new CustomException("User does not exists", HttpStatus.NOT_FOUND);
     }
 }

@@ -2,10 +2,29 @@ package pentastagiu.model;
 
 import java.math.BigDecimal;
 
+/**
+ * This class contains all the details for
+ * a transfer
+ */
 public class TransferDetails {
+    /**
+     * Id of the account from which the amount is transferred
+     */
     private Long accountFromId;
+
+    /**
+     * Id of the account where the amount is transferred
+     */
     private Long accountToId;
+
+    /**
+     * The amount to be transfered
+     */
     private BigDecimal amount;
+
+    /**
+     * The details of the transfer
+     */
     private String details;
 
     public Long getAccountFromId() {

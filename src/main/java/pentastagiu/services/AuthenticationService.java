@@ -52,6 +52,7 @@ public class AuthenticationService {
         Authentication authentication = new Authentication();
         authentication.setUser(user);
         authentication.setToken(createToken());
+        authenticationRepository.save(authentication);
         return authentication;
     }
 
