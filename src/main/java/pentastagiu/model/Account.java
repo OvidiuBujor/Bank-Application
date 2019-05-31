@@ -6,6 +6,7 @@ import org.apache.logging.log4j.Logger;
 import pentastagiu.convertor.AccountType;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -26,11 +27,12 @@ public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private long id;
+    private String id;
     /**
      * The account number of the account
      */
-    @Column(name = "account_number")
+    @Column(name = "account_number", unique = true)
+    @Size(min = 24, max = 24)
     private String accountNumber;
     /**
      * Current balance of the account
@@ -77,6 +79,12 @@ public class Account {
 
     }
 
+    public Account(String accountNumber, BigDecimal balance, AccountType accountType){
+        this.accountNumber = accountNumber;
+        this.balance = balance;
+        this.accountType = accountType;
+    }
+
     /**
      * This method adds the time when the account was created.
      */
@@ -97,11 +105,11 @@ public class Account {
         LOGGER.info("Account '" + this.getAccountNumber() + "' updated. New balance is: " + balance + ".");
     }
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

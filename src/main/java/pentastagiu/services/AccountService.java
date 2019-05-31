@@ -34,18 +34,18 @@ public class AccountService {
     }
 
      public List<Account> getAccountsByToken(String token) throws CustomException {
-        Optional<Authentication> authentication = authenticationService.findByToken(token);
-        if (authentication.isPresent()) {
-            User user = authentication.get().getUser();
+         if (authenticationService.existsByToken(token)) {
+            Authentication authentication = authenticationService.findByToken(token);
+            User user = authentication.getUser();
             return accountRepository.getAccountByUser(user);
         }else
             throw new CustomException("User not logged in!", HttpStatus.NOT_FOUND);
     }
 
     public Account saveAccount(AccountType accountType, String token) throws CustomException {
-        Optional<Authentication> authentication = authenticationService.findByToken(token);
-        if(authentication.isPresent()) {
-            Account accountToBeAdded = createAccount(authentication.get(),accountType);
+        if(authenticationService.existsByToken(token)) {
+            Authentication authentication = authenticationService.findByToken(token);
+            Account accountToBeAdded = createAccount(authentication,accountType);
             return accountRepository.save(accountToBeAdded);
         }else
             throw new CustomException("Token doesn't exists.", HttpStatus.NOT_FOUND);
@@ -65,10 +65,8 @@ public class AccountService {
         return String.format("%016d", accountRepository.count());
     }
 
-    public Account updateBalanceAccount(Long id, BigDecimal amount, OperationType deposit) throws CustomException{
-         Optional<Account> resultedAccount = accountRepository.findById(id);
-         if (resultedAccount.isPresent()) {
-             Account accountToBeUpdated = resultedAccount.get();
+    public Account updateBalanceAccount(String accountNumber, BigDecimal amount, OperationType deposit) throws CustomException{
+             Account accountToBeUpdated = getAccountByAccountNumber(accountNumber);
              BigDecimal initialBalance = accountToBeUpdated.getBalance();
              if(deposit == OperationType.DEPOSIT){
                  initialBalance = initialBalance.add(amount);
@@ -80,14 +78,13 @@ public class AccountService {
              }
              accountToBeUpdated.setBalance(initialBalance);
              return  accountRepository.save(accountToBeUpdated);
-         }
-         throw new CustomException("Account not found.", HttpStatus.NOT_FOUND);
     }
 
-    Account getAccountById(Long id)throws CustomException{
-         if(accountRepository.findById(id).isPresent())
-             return accountRepository.findById(id).get();
-         throw new CustomException("Account not found.", HttpStatus.NOT_FOUND);
+    Account getAccountByAccountNumber(String accountNumber) throws CustomException{
+        Optional<Account> account = accountRepository.findByAccountNumber(accountNumber);
+       if(account.isPresent())
+           return account.get();
+       throw new CustomException("Account doesn't exists.", HttpStatus.NOT_FOUND);
     }
 
     boolean validateAccountTypes(AccountType accountTypeFrom, AccountType accountTypeTo){

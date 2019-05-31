@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * This class holds information for an user
+ * This class holds information for an User
  */
 @Entity
 @Table(name = "user")
@@ -32,7 +32,7 @@ public class User {
     private LocalDateTime createdTime;
 
     /**
-     * The time of the last updated operated for the user
+     * The time of the last update for the user
      */
     @Column(name = "updated_time")
     private LocalDateTime updatedTime;
@@ -59,7 +59,7 @@ public class User {
     private List<Notification> notificationList = new ArrayList<>();
 
     /**
-     * The list of all accounts owned by the user
+     * The list of accounts owned by the user
      */
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     @JsonIgnoreProperties("user")
@@ -70,13 +70,12 @@ public class User {
     }
 
     /**
-     * Constructs an user with the information received
+     * Constructs an user with the information received.
+     * Used for UserDTO conversion.
      * @param username of the user created
-     * @param password of the user created
      */
-    public User(String username, String password) {
+    public User(String username) {
         this.username = username;
-        this.password = password;
     }
 
     /**

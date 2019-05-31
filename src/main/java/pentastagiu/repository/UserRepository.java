@@ -6,7 +6,10 @@ import pentastagiu.model.User;
 
 import java.util.Optional;
 
-
+/**
+ * This class is the repository class
+ * for User model class.
+ */
 @Repository
 public interface UserRepository extends CrudRepository<User, Long> {
 

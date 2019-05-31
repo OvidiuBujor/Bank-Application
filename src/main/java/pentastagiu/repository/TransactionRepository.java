@@ -7,6 +7,10 @@ import pentastagiu.model.Transaction;
 
 import java.util.List;
 
+/**
+ * This class is the repository class
+ * for Transaction model class.
+ */
 @Repository
 public interface TransactionRepository extends CrudRepository<Transaction,Long> {
 

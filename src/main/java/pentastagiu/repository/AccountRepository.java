@@ -6,15 +6,23 @@ import pentastagiu.model.Account;
 import pentastagiu.model.User;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
- * This class is a helper class that operates on the
- * database file of accounts.It can perform different operations:
- * adding an account to database, update the balance of an account.
+ * This class is the repository class
+ * for Account model class.
  */
 
 @Repository
 public interface AccountRepository extends CrudRepository<Account,Long> {
 
+    /**
+     * This method gets the accounts list for the
+     * user.
+     * @param user the user for which to return the accounts list
+     * @return the list of account for the user
+     */
     List<Account> getAccountByUser(User user);
+
+    Optional<Account> findByAccountNumber(String accountNumber);
 }

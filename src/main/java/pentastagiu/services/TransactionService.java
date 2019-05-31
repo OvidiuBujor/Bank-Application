@@ -16,6 +16,10 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class handles all the transaction
+ * operations
+ */
 @Service
 public class TransactionService {
 
@@ -34,12 +38,26 @@ public class TransactionService {
         this.notificationService = notificationService;
     }
 
-    public Notification saveTransfer(Long accountFromId, Long accountToId, BigDecimal amount, String details){
-        Account accountFrom = accountService.getAccountById(accountFromId);
-        Account accountTo = accountService.getAccountById(accountToId);
+    /**
+     * This method returns the corresponding notification
+     * of a transfer operation between 2 accounts.
+     * @param accountNumberFrom the id of the account from which
+     *                      the amount is transferred
+     * @param accountNumberTo the id of the account where the amount
+     *                    is deposited
+     * @param amount that is transferred
+     * @param details of the transfer
+     * @return the corresponding notification of the transfer
+     * @throws CustomException in case account types don't match
+     */
+    public Notification saveTransfer(String accountNumberFrom, String accountNumberTo, BigDecimal amount, String details)
+            throws CustomException{
+        Account accountFrom = accountService.getAccountByAccountNumber(accountNumberFrom);
+        Account accountTo = accountService.getAccountByAccountNumber(accountNumberTo);
         if (accountService.validateAccountTypes(accountFrom.getAccountType(),accountTo.getAccountType())) {
-            accountService.updateBalanceAccount(accountFrom.getId(), amount, OperationType.WITHDRAW);
-            accountService.updateBalanceAccount(accountTo.getId(), amount, OperationType.DEPOSIT);
+
+            accountService.updateBalanceAccount(accountFrom.getAccountNumber(), amount, OperationType.WITHDRAW);
+            accountService.updateBalanceAccount(accountTo.getAccountNumber(), amount, OperationType.DEPOSIT);
 
             saveTransaction(accountFrom, amount, accountTo, details, TransactionType.OUTGOING);
             saveTransaction(accountTo, amount, accountFrom, details, TransactionType.INCOMING);
@@ -58,10 +76,17 @@ public class TransactionService {
 
             return notificationService.addNotification(accountFrom.getUser(), transactionDetails);
         }
-            else
-                throw new CustomException("Account types doesn't match. Transfer can't be executed.", HttpStatus.BAD_REQUEST);
+        else
+            throw new CustomException("Account types doesn't match. Transfer can't be executed.", HttpStatus.BAD_REQUEST);
     }
 
+    /**
+     * This method returns all transactions corresponding to
+     * the token of the notification passed as parameter
+     * @param authentication that contains the token
+     * @return the list of the transactions that are linked
+     * to the token
+     */
     public List<Transaction> getTransactions(Authentication authentication){
         List<Account> accountList = accountService.getAccountsByToken(authentication.getToken());
         List<Transaction> transactionList = new ArrayList<>();
@@ -70,6 +95,18 @@ public class TransactionService {
         return transactionList;
     }
 
+    /**
+     * This method saves a transaction that has all the
+     * details passed as parameters.
+     * @param accountFrom the account from which the amount
+     *                    is transferred
+     * @param amount to be transferred
+     * @param accountTo the account to which the amount
+     *                  is transferred to
+     * @param details of the transaction
+     * @param transactionType the type of the transaction:
+     *                        incoming or outgoing
+     */
     private void saveTransaction(Account accountFrom,
                                  BigDecimal amount,
                                  Account accountTo,

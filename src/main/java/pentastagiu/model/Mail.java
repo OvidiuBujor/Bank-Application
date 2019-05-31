@@ -1,5 +1,10 @@
 package pentastagiu.model;
 
+/**
+ * This class represents the email
+ * object that is sent for each
+ * notification.
+ */
 public class Mail {
 
     private String from;

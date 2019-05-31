@@ -23,12 +23,14 @@ public class AuthenticationService {
         this.userService = userService;
     }
 
-    public Authentication saveAuthentication(Authentication authentication){
-        return authenticationRepository.save(authentication);
+    public Authentication findByToken(String token) throws CustomException{
+        if (existsByToken(token))
+            return authenticationRepository.findByToken(token).get();
+        throw new CustomException("Token not found.", HttpStatus.NOT_FOUND);
     }
 
-    public Optional<Authentication> findByToken(String token){
-        return authenticationRepository.findByToken(token);
+    public boolean existsByToken(String token){
+        return authenticationRepository.existsByToken(token);
     }
 
     public Authentication login(String username, String password) throws CustomException{
@@ -73,10 +75,17 @@ public class AuthenticationService {
     }
 
     public void deleteToken(String token) throws CustomException {
-        Optional<Authentication> authentication = authenticationRepository.findByToken(token);
-       if(authentication.isPresent())
-            authenticationRepository.delete(authentication.get());
-       else
+        if(existsByToken(token)) {
+            authenticationRepository.delete(authenticationRepository.findByToken(token).get());
+        }else
            throw new CustomException("Token not found", HttpStatus.NOT_FOUND);
+    }
+
+    public Iterable<Authentication> getAuthentications(){
+        return authenticationRepository.findAll();
+    }
+
+    public void deleteAuthentication(Authentication authentication){
+        authenticationRepository.delete(authentication);
     }
 }

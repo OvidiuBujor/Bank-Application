@@ -4,21 +4,21 @@ import java.math.BigDecimal;
 
 /**
  * This class contains all the details for
- * a transfer
+ * a transfer between 2 accounts
  */
 public class TransferDetails {
     /**
-     * Id of the account from which the amount is transferred
+     * Account number of the account from which the amount is transferred
      */
-    private Long accountFromId;
+    private String accountNumberFrom;
 
     /**
-     * Id of the account where the amount is transferred
+     * Account number of the account where the amount is transferred
      */
-    private Long accountToId;
+    private String accountNumberTo;
 
     /**
-     * The amount to be transfered
+     * The amount to be transferred
      */
     private BigDecimal amount;
 
@@ -27,20 +27,20 @@ public class TransferDetails {
      */
     private String details;
 
-    public Long getAccountFromId() {
-        return accountFromId;
+    public String getAccountNumberFrom() {
+        return accountNumberFrom;
     }
 
-    public void setAccountFromId(Long accountFromId) {
-        this.accountFromId = accountFromId;
+    public void setAccountNumberFrom(String accountNumberFrom) {
+        this.accountNumberFrom = accountNumberFrom;
     }
 
-    public Long getAccountToId() {
-        return accountToId;
+    public String getAccountNumberTo() {
+        return accountNumberTo;
     }
 
-    public void setAccountToId(Long accountToId) {
-        this.accountToId = accountToId;
+    public void setAccountNumberTo(String accountNumberTo) {
+        this.accountNumberTo = accountNumberTo;
     }
 
     public BigDecimal getAmount() {

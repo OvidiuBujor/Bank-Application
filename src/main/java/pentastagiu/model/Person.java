@@ -5,8 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import javax.persistence.*;
 
 /**
- * This class holds the information for
- * an User
+ * This class holds the personal information
+ * for an User
  */
 @Entity
 @Table(name = "person")

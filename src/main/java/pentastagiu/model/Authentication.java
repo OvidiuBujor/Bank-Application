@@ -3,6 +3,7 @@ package pentastagiu.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 /**
@@ -21,6 +22,7 @@ public class Authentication {
      * The generated token for the user
      */
     @Column(name = "token", unique = true)
+    @Size(min = 20, max = 20)
     private String token;
     /**
      * The user that is logged in
