@@ -85,7 +85,7 @@ public class ScheduledTasks {
             Long duration = Duration.between(authentication.getCreationTime(),LocalDateTime.now()).toMinutes();
             if (duration >= tokenValability) {
                 authenticationService.deleteAuthentication(authentication);
-                System.out.println(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE) +
+                System.out.println(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) +
                         "  Authentication with id = " + authentication.getId() + " was deleted.");
             }
         }
