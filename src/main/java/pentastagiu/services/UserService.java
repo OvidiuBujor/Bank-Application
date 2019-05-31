@@ -1,11 +1,12 @@
 package pentastagiu.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import pentastagiu.model.User;
 import pentastagiu.repository.UserRepository;
-import pentastagiu.util.CustomException;
+import pentastagiu.exceptions.CustomException;
+import pentastagiu.exceptions.UserAlreadyRegisteredException;
+import pentastagiu.exceptions.UserNotFoundException;
 
 import java.util.Optional;
 
@@ -44,10 +45,10 @@ public class UserService {
      * @throws CustomException in case user is
      * already registered.
      */
-    public User createUser(User user) throws CustomException {
+    public User createUser(User user) {
         Optional<User> result = userRepository.findByUsername(user.getUsername());
         if (result.isPresent())
-            throw new CustomException("User already registered!", HttpStatus.BAD_REQUEST);
+            throw new UserAlreadyRegisteredException("User already registered!");
         return userRepository.save(user);
     }
 
@@ -58,7 +59,7 @@ public class UserService {
      * @throws CustomException in case the user to be updated doesn't
      * exists in database.
      */
-    public User updateUser(User user) throws CustomException{
+    public User updateUser(User user) {
         Optional<User> resultedUser = userRepository.findById(user.getId());
         if(resultedUser.isPresent()) {
             User userToUpdate = resultedUser.get();
@@ -66,7 +67,7 @@ public class UserService {
             userRepository.save(userToUpdate);
             return resultedUser.orElseGet(User::new);
         }
-        throw new CustomException("User not found.",HttpStatus.NOT_FOUND);
+        throw new UserNotFoundException("User not found.");
     }
 
     /**
@@ -98,10 +99,10 @@ public class UserService {
      * @throws CustomException in case User doesn't
      * exists in database.
      */
-    User getUserByUsername(String username) throws CustomException{
+    User getUserByUsername(String username){
         Optional<User> result = userRepository.findByUsername(username);
         if(result.isPresent())
             return result.get();
-        throw new CustomException("User does not exists", HttpStatus.NOT_FOUND);
+        throw new UserNotFoundException("User does not exists.");
     }
 }

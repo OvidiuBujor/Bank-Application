@@ -1,15 +1,14 @@
 package pentastagiu.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import pentastagiu.convertor.AccountType;
 import pentastagiu.convertor.OperationType;
+import pentastagiu.exceptions.*;
 import pentastagiu.model.Account;
 import pentastagiu.model.Authentication;
 import pentastagiu.model.User;
 import pentastagiu.repository.AccountRepository;
-import pentastagiu.util.CustomException;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -33,22 +32,22 @@ public class AccountService {
         this.authenticationService = authenticationService;
     }
 
-     public List<Account> getAccountsByToken(String token) throws CustomException {
+     public List<Account> getAccountsByToken(String token) {
          if (authenticationService.existsByToken(token)) {
             Authentication authentication = authenticationService.findByToken(token);
             User user = authentication.getUser();
             return accountRepository.getAccountByUser(user);
         }else
-            throw new CustomException("User not logged in!", HttpStatus.NOT_FOUND);
+            throw new UserNotLoggedInException("User not logged in!");
     }
 
-    public Account saveAccount(AccountType accountType, String token) throws CustomException {
+    public Account saveAccount(AccountType accountType, String token) {
         if(authenticationService.existsByToken(token)) {
             Authentication authentication = authenticationService.findByToken(token);
             Account accountToBeAdded = createAccount(authentication,accountType);
             return accountRepository.save(accountToBeAdded);
         }else
-            throw new CustomException("Token doesn't exists.", HttpStatus.NOT_FOUND);
+            throw new TokenNotFoundException("Token doesn't exists.");
     }
 
     private Account createAccount(Authentication authentication, AccountType accountType){
@@ -65,7 +64,7 @@ public class AccountService {
         return String.format("%016d", accountRepository.count());
     }
 
-    public Account updateBalanceAccount(String accountNumber, BigDecimal amount, OperationType deposit) throws CustomException{
+    public Account updateBalanceAccount(String accountNumber, BigDecimal amount, OperationType deposit) {
              Account accountToBeUpdated = getAccountByAccountNumber(accountNumber);
              BigDecimal initialBalance = accountToBeUpdated.getBalance();
              if(deposit == OperationType.DEPOSIT){
@@ -74,17 +73,17 @@ public class AccountService {
                  if(initialBalance.compareTo(amount) >= 0)
                     initialBalance = initialBalance.subtract(amount);
                  else
-                    throw new CustomException("Insufficient funds.",HttpStatus.BAD_REQUEST);
+                    throw new InsufficientFundsException("Insufficient funds.");
              }
              accountToBeUpdated.setBalance(initialBalance);
              return  accountRepository.save(accountToBeUpdated);
     }
 
-    Account getAccountByAccountNumber(String accountNumber) throws CustomException{
+    Account getAccountByAccountNumber(String accountNumber) {
         Optional<Account> account = accountRepository.findByAccountNumber(accountNumber);
        if(account.isPresent())
            return account.get();
-       throw new CustomException("Account doesn't exists.", HttpStatus.NOT_FOUND);
+       throw new AccountNotExistsException("Account does not exists.");
     }
 
     boolean validateAccountTypes(AccountType accountTypeFrom, AccountType accountTypeTo){

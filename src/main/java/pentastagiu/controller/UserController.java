@@ -11,7 +11,7 @@ import pentastagiu.model.User;
 import pentastagiu.services.AuthenticationService;
 import pentastagiu.services.PersonService;
 import pentastagiu.services.UserService;
-import pentastagiu.util.CustomException;
+import pentastagiu.exceptions.CustomException;
 
 @RestController
 public class UserController {
@@ -56,7 +56,7 @@ public class UserController {
      */
     @PostMapping("/user")
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDTO createUser(@RequestBody User user) throws CustomException {
+    public UserDTO createUser(@RequestBody User user){
         return userConverter.convertToUserDTO(userService.createUser(user));
     }
 
@@ -87,7 +87,7 @@ public class UserController {
 
     @PutMapping("/user/{token}")
     public void addUserDetails(@PathVariable(value = "token") String token,
-                               @RequestBody Person person) throws CustomException{
+                               @RequestBody Person person){
         if(authenticationService.existsByToken(token)){
             personService.savePersonDetails(person,token);
         }

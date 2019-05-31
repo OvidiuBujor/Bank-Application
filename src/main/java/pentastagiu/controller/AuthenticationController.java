@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import pentastagiu.convertor.AuthenticationConvertor;
 import pentastagiu.convertor.AuthenticationDTO;
 import pentastagiu.services.AuthenticationService;
-import pentastagiu.util.CustomException;
+import pentastagiu.exceptions.CustomException;
 
 @RestController
 public class AuthenticationController {
@@ -36,7 +36,7 @@ public class AuthenticationController {
      */
     @GetMapping("/authentication/{username}/{password}")
     public ResponseEntity<AuthenticationDTO> login(@PathVariable(value = "username") String username,
-                                                   @PathVariable(value = "password") String password) throws CustomException {
+                                                   @PathVariable(value = "password") String password) {
         return new ResponseEntity<>(authenticationConvertor.convertToAuthenticationDTO(authenticationService.login(username,password)),
                 HttpStatus.OK);
     }
@@ -50,7 +50,7 @@ public class AuthenticationController {
      */
     @DeleteMapping("/authentication/{token}")
     @ResponseStatus(HttpStatus.OK)
-    public void logout(@PathVariable(value ="token") String token) throws CustomException{
+    public void logout(@PathVariable(value ="token") String token) {
         authenticationService.deleteToken(token);
     }
 }

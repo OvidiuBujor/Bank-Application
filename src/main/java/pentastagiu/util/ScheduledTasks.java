@@ -15,6 +15,7 @@ import pentastagiu.services.PersonService;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * This class handles the scheduled
@@ -84,7 +85,8 @@ public class ScheduledTasks {
             Long duration = Duration.between(authentication.getCreationTime(),LocalDateTime.now()).toMinutes();
             if (duration >= tokenValability) {
                 authenticationService.deleteAuthentication(authentication);
-                System.out.println(LocalDateTime.now() + "  Authentication with id = " + authentication.getId() + " was deleted.");
+                System.out.println(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE) +
+                        "  Authentication with id = " + authentication.getId() + " was deleted.");
             }
         }
     }

@@ -2,12 +2,13 @@ package pentastagiu.services;
 
 import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import pentastagiu.model.Authentication;
 import pentastagiu.model.User;
 import pentastagiu.repository.AuthenticationRepository;
-import pentastagiu.util.CustomException;
+import pentastagiu.exceptions.CredentialsNotCorrectException;
+import pentastagiu.exceptions.TokenNotFoundException;
+import pentastagiu.exceptions.UserAlreadyLoggedInException;
 
 import java.util.Optional;
 @Service
@@ -23,27 +24,27 @@ public class AuthenticationService {
         this.userService = userService;
     }
 
-    public Authentication findByToken(String token) throws CustomException{
+    public Authentication findByToken(String token){
         if (existsByToken(token))
             return authenticationRepository.findByToken(token).get();
-        throw new CustomException("Token not found.", HttpStatus.NOT_FOUND);
+        throw new TokenNotFoundException("Token not found.");
     }
 
     public boolean existsByToken(String token){
         return authenticationRepository.existsByToken(token);
     }
 
-    public Authentication login(String username, String password) throws CustomException{
+    public Authentication login(String username, String password){
         if (userService.validateUser(username,password)) {
             User user = userService.getUserByUsername(username);
             Optional<Authentication> authenticationToBeReturned = findByUser(user);
             if (authenticationToBeReturned.isPresent()) {
-                throw new CustomException("User already logged in!", HttpStatus.ALREADY_REPORTED);
+                throw new UserAlreadyLoggedInException("User already logged in.");
             }else{
                 return createAuthentication(user);
             }
         }else
-            throw new CustomException("Credentials are not correct!",HttpStatus.NOT_FOUND);
+            throw new CredentialsNotCorrectException("Credentials are not correct.");
     }
 
     private Optional<Authentication> findByUser(User user) {
@@ -74,11 +75,11 @@ public class AuthenticationService {
         return authenticationRepository.findByToken(token).isPresent();
     }
 
-    public void deleteToken(String token) throws CustomException {
+    public void deleteToken(String token) {
         if(existsByToken(token)) {
             authenticationRepository.delete(authenticationRepository.findByToken(token).get());
         }else
-           throw new CustomException("Token not found", HttpStatus.NOT_FOUND);
+           throw new TokenNotFoundException("Token not found");
     }
 
     public Iterable<Authentication> getAuthentications(){

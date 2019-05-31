@@ -13,7 +13,7 @@ import pentastagiu.model.Account;
 import pentastagiu.model.OperationAccountDetails;
 import pentastagiu.services.AccountService;
 import pentastagiu.services.AuthenticationService;
-import pentastagiu.util.CustomException;
+import pentastagiu.exceptions.CustomException;
 
 import java.util.List;
 
@@ -44,8 +44,7 @@ public class AccountController {
      * this exception is thrown
      */
     @GetMapping("/account/{token}")
-    public ResponseEntity<List<AccountDTO>> getAccountsByToken(@PathVariable(value = "token") String token)
-            throws CustomException {
+    public ResponseEntity<List<AccountDTO>> getAccountsByToken(@PathVariable(value = "token") String token) {
         return new ResponseEntity<>(accountConvertor.convertToAccountDTOList(accountService.getAccountsByToken(token)),
                 HttpStatus.OK);
     }
@@ -62,7 +61,7 @@ public class AccountController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<AccountDTO> saveAccount(@PathVariable(value = "token") String token,
                                                   @PathVariable(value = "accountType") AccountType accountType)
-            throws CustomException{
+    {
         return new ResponseEntity<>(accountConvertor.convertToAccountDTO(accountService.saveAccount(accountType,token)),
                 HttpStatus.OK);
     }

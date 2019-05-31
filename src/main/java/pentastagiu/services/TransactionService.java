@@ -1,7 +1,6 @@
 package pentastagiu.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import pentastagiu.convertor.OperationType;
 import pentastagiu.convertor.TransactionType;
@@ -10,7 +9,8 @@ import pentastagiu.model.Authentication;
 import pentastagiu.model.Notification;
 import pentastagiu.model.Transaction;
 import pentastagiu.repository.TransactionRepository;
-import pentastagiu.util.CustomException;
+import pentastagiu.exceptions.AccountTypesMismatchException;
+import pentastagiu.exceptions.CustomException;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -50,8 +50,7 @@ public class TransactionService {
      * @return the corresponding notification of the transfer
      * @throws CustomException in case account types don't match
      */
-    public Notification saveTransfer(String accountNumberFrom, String accountNumberTo, BigDecimal amount, String details)
-            throws CustomException{
+    public Notification saveTransfer(String accountNumberFrom, String accountNumberTo, BigDecimal amount, String details){
         Account accountFrom = accountService.getAccountByAccountNumber(accountNumberFrom);
         Account accountTo = accountService.getAccountByAccountNumber(accountNumberTo);
         if (accountService.validateAccountTypes(accountFrom.getAccountType(),accountTo.getAccountType())) {
@@ -77,7 +76,7 @@ public class TransactionService {
             return notificationService.addNotification(accountFrom.getUser(), transactionDetails);
         }
         else
-            throw new CustomException("Account types doesn't match. Transfer can't be executed.", HttpStatus.BAD_REQUEST);
+            throw new AccountTypesMismatchException("Account types doesn't match. Transfer can't be executed.");
     }
 
     /**
