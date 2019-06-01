@@ -27,12 +27,12 @@ public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private String id;
+    private long id;
     /**
      * The account number of the account
      */
     @Column(name = "account_number", unique = true)
-    @Size(min = 24, max = 24)
+    @Size(min = 24,max = 24)
     private String accountNumber;
     /**
      * Current balance of the account
@@ -105,11 +105,11 @@ public class Account {
         LOGGER.info("Account '" + this.getAccountNumber() + "' updated. New balance is: " + balance + ".");
     }
 
-    public String getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(long id) {
         this.id = id;
     }
 

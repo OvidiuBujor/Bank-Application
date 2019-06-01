@@ -87,6 +87,11 @@ public class AccountController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+    /**
+     * This method is used to be able to send AccountType
+     * as PathVariable parameter for saveAccount method from this
+     * class.
+     */
     @InitBinder
     public void initBinderAccountType(final WebDataBinder webdataBinder) {
         webdataBinder.registerCustomEditor(AccountType.class, new AccountTypeConvertor());

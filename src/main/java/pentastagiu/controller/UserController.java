@@ -1,9 +1,12 @@
 package pentastagiu.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pentastagiu.convertor.PersonConvertor;
+import pentastagiu.convertor.PersonDTO;
 import pentastagiu.convertor.UserConvertor;
 import pentastagiu.convertor.UserDTO;
 import pentastagiu.model.Person;
@@ -11,7 +14,6 @@ import pentastagiu.model.User;
 import pentastagiu.services.AuthenticationService;
 import pentastagiu.services.PersonService;
 import pentastagiu.services.UserService;
-import pentastagiu.exceptions.CustomException;
 
 @RestController
 public class UserController {
@@ -24,15 +26,19 @@ public class UserController {
 
     private PersonService personService;
 
+    private PersonConvertor personConvertor;
+
     @Autowired
     public UserController(UserService userService,
                           UserConvertor userConvertor,
-                          AuthenticationService authenticationService,
-                          PersonService personService) {
+                          @Lazy AuthenticationService authenticationService,
+                          PersonService personService,
+                          PersonConvertor personConvertor) {
         this.userService = userService;
         this.userConverter = userConvertor;
         this.authenticationService = authenticationService;
         this.personService = personService;
+        this.personConvertor = personConvertor;
     }
 
     /**
@@ -51,8 +57,6 @@ public class UserController {
      * parameter in database.
      * @param user to be saved
      * @return the corresponding UserDTO
-     * @throws CustomException in case User already exists
-     * in database
      */
     @PostMapping("/user")
     @ResponseStatus(HttpStatus.CREATED)
@@ -61,13 +65,15 @@ public class UserController {
     }
 
     /**
-     * This method updates the User password
-     * @param user contains the new password
-     * @return the corresponding UseDTO of the updated user
+     * This method updates the password for a logged in user
+     * @param token used to validate the user
+     * @param password the new password
+     * @return UserDTO corresponding object
      */
-    @PutMapping("/user")
-    public ResponseEntity<UserDTO> updateUser(@RequestBody User user) {
-        User updatedUser = userService.updateUser(user);
+    @PutMapping("/user/update/{token}/{password}")
+    public ResponseEntity<UserDTO> updateUser(@PathVariable(value = "token") String token,
+                                              @PathVariable(value = "password") String password) {
+        User updatedUser = userService.updateUser(token, password);
         if (updatedUser != null) {
             return new ResponseEntity<>(userConverter.convertToUserDTO(updatedUser), HttpStatus.OK);
         }
@@ -75,21 +81,29 @@ public class UserController {
     }
 
     /**
-     * This method deletes an User
-     * from database
+     * This method adds user personal details
+     * like address, email, first and last names.
+     * @param token used to validate user
+     * @param person the details to be added
+     * @return the corresponding PersonDTO object
+     */
+    @PutMapping("/user/addDetails/{token}")
+    public ResponseEntity<PersonDTO> addUserDetails(@PathVariable(value = "token") String token,
+                                                    @RequestBody Person person){
+        if(authenticationService.existsByToken(token)){
+            return new ResponseEntity<>(personConvertor.convertToPersonDTO(personService.savePersonDetails(person,token)),
+                    HttpStatus.OK);
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
+    /**
+     * This method deletes an User from database
      * @param id of the User to be deleted
      */
     @DeleteMapping("/user/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable(value = "id") Long id) {
         userService.deleteUserById(id);
-    }
-
-    @PutMapping("/user/{token}")
-    public void addUserDetails(@PathVariable(value = "token") String token,
-                               @RequestBody Person person){
-        if(authenticationService.existsByToken(token)){
-            personService.savePersonDetails(person,token);
-        }
     }
 }

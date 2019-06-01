@@ -64,12 +64,14 @@ public class ScheduledTasks {
             if(notification.getStatus() == NotificationStatus.NOT_SEND) {
                 User user = notification.getUser();
                 Person personDetails = personService.getPersonDetails(user.getId());
-                Mail email = emailServiceImpl.createEmail(personDetails,notification);
-                emailServiceImpl.send(email.getFrom(),email.getTo(),email.getSubject(),email.getContent());
-                notification.setStatus(NotificationStatus.SEND);
-                notificationService.updateNotification(notification);
-                System.out.println("Email sent for notification: " + notification.getDetails());
-                LOGGER.info("Email sent for notification: " + notification.getDetails());
+                if(personDetails.getEmail() != null) {
+                    Mail email = emailServiceImpl.createEmail(personDetails, notification);
+                    emailServiceImpl.send(email.getFrom(), email.getTo(), email.getSubject(), email.getContent());
+                    notification.setStatus(NotificationStatus.SEND);
+                    notificationService.updateNotification(notification);
+                    System.out.println("Email sent for notification: " + notification.getDetails());
+                    LOGGER.info("Email sent for notification: " + notification.getDetails());
+                }
             }
         }
     }

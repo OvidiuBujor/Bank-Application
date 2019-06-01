@@ -55,4 +55,9 @@ public class RestControllerAdvice {
     void handleUserNotFoundException(HttpServletResponse response, UserNotFoundException e) throws IOException {
         response.sendError(HttpStatus.NOT_FOUND.value(), e.getMessage());
     }
+
+    @ExceptionHandler({ EmailAddressNotValidException.class })
+    void handleEmailAddressNotValidException(HttpServletResponse response, EmailAddressNotValidException e) throws IOException {
+        response.sendError(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+    }
 }

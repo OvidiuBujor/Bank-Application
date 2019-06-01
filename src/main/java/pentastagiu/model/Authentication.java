@@ -22,7 +22,7 @@ public class Authentication {
      * The generated token for the user
      */
     @Column(name = "token", unique = true)
-    @Size(min = 20, max = 20)
+    @Size(min = 20, max =20)
     private String token;
     /**
      * The user that is logged in

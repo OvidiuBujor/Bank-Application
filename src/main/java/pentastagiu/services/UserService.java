@@ -2,11 +2,10 @@ package pentastagiu.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pentastagiu.exceptions.*;
+import pentastagiu.model.Authentication;
 import pentastagiu.model.User;
 import pentastagiu.repository.UserRepository;
-import pentastagiu.exceptions.CustomException;
-import pentastagiu.exceptions.UserAlreadyRegisteredException;
-import pentastagiu.exceptions.UserNotFoundException;
 
 import java.util.Optional;
 
@@ -17,14 +16,14 @@ import java.util.Optional;
 @Service
 public class UserService {
 
+    private AuthenticationService authenticationService;
     private UserRepository userRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository){
+    public UserService(AuthenticationService authenticationService, UserRepository userRepository){
+        this.authenticationService = authenticationService;
         this.userRepository = userRepository;
     }
-
-    
 
     /**
      * This method gets the User based on
@@ -48,26 +47,28 @@ public class UserService {
     public User createUser(User user) {
         Optional<User> result = userRepository.findByUsername(user.getUsername());
         if (result.isPresent())
-            throw new UserAlreadyRegisteredException("User already registered!");
+            throw new UserAlreadyRegisteredException("User already registered. Please use other username.");
+        if(user.getUsername() == null || user.getPassword() == null)
+            throw new CredentialsNotCorrectException("The credentials are not complete. Please provide username and password.");
         return userRepository.save(user);
     }
 
     /**
-     * This method updates the password of an user.
-     * @param user that contains the new information
-     * @return the updated user
-     * @throws CustomException in case the user to be updated doesn't
-     * exists in database.
+     * This method updates the password for a
+     * user that is currently logged in.
+     * @param token used to validate the user
+     * @param password the new password
+     * @return the updated User
      */
-    public User updateUser(User user) {
-        Optional<User> resultedUser = userRepository.findById(user.getId());
-        if(resultedUser.isPresent()) {
-            User userToUpdate = resultedUser.get();
-            userToUpdate.setPassword(user.getPassword());
-            userRepository.save(userToUpdate);
-            return resultedUser.orElseGet(User::new);
+    public User updateUser(String token, String password) {
+        if (authenticationService.existsByToken(token)){
+                Authentication authentication = authenticationService.findByToken(token);
+                User userToUpdate = authentication.getUser();
+                userToUpdate.setPassword(password);
+                userRepository.save(userToUpdate);
+                return userToUpdate;
         }
-        throw new UserNotFoundException("User not found.");
+         throw new TokenNotFoundException("Authentication failed. Token not found. ");
     }
 
     /**

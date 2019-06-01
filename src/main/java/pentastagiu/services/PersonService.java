@@ -1,11 +1,14 @@
 package pentastagiu.services;
 
 import org.springframework.stereotype.Service;
+import pentastagiu.exceptions.EmailAddressNotValidException;
 import pentastagiu.model.Authentication;
 import pentastagiu.model.Person;
 import pentastagiu.model.User;
 import pentastagiu.repository.PersonRepository;
 
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 import java.util.Optional;
 
 /**
@@ -45,8 +48,15 @@ public class PersonService {
 
         if(person.getAddress() != null)
             personToBeSaved.setAddress(person.getAddress());
-        if(person.getEmail() != null)
-            personToBeSaved.setEmail(person.getEmail());
+        if(person.getEmail() != null) {
+            try {
+                InternetAddress internetAddress = new InternetAddress(person.getEmail());
+                internetAddress.validate();
+                personToBeSaved.setEmail(person.getEmail());
+            } catch (AddressException e) {
+                throw new EmailAddressNotValidException("Email address is not valid.");
+            }
+        }
         if(person.getFirstName() != null)
             personToBeSaved.setFirstName(person.getFirstName());
         if(person.getLastName() != null)
