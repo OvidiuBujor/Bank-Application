@@ -8,6 +8,10 @@ import pentastagiu.exceptions.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * This class handles all the custom exceptions
+ * that we throw.
+ */
 @ControllerAdvice
 public class RestControllerAdvice {
 

@@ -6,9 +6,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pentastagiu.convertor.PersonConvertor;
-import pentastagiu.convertor.PersonDTO;
+import pentastagiu.DTOs.PersonDTO;
 import pentastagiu.convertor.UserConvertor;
-import pentastagiu.convertor.UserDTO;
+import pentastagiu.DTOs.UserDTO;
 import pentastagiu.model.Person;
 import pentastagiu.model.User;
 import pentastagiu.services.AuthenticationService;
@@ -41,39 +41,21 @@ public class UserController {
         this.personConvertor = personConvertor;
     }
 
-    /**
-     * This method returns the user with
-     * the id provided
-     * @param id of the user to be returned
-     * @return the user with the id provided
-     */
     @GetMapping("/user/{id}")
     public UserDTO getUser(@PathVariable(value = "id") Long id) {
         return userConverter.convertToUserDTO(userService.getUserById(id));
     }
 
-    /**
-     * This method saves the User passed as
-     * parameter in database.
-     * @param user to be saved
-     * @return the corresponding UserDTO
-     */
     @PostMapping("/user")
     @ResponseStatus(HttpStatus.CREATED)
     public UserDTO createUser(@RequestBody User user){
         return userConverter.convertToUserDTO(userService.createUser(user));
     }
 
-    /**
-     * This method updates the password for a logged in user
-     * @param token used to validate the user
-     * @param password the new password
-     * @return UserDTO corresponding object
-     */
     @PutMapping("/user/update/{token}/{password}")
-    public ResponseEntity<UserDTO> updateUser(@PathVariable(value = "token") String token,
-                                              @PathVariable(value = "password") String password) {
-        User updatedUser = userService.updateUser(token, password);
+    public ResponseEntity<UserDTO> updateUserPassword(@PathVariable(value = "token") String token,
+                                                      @PathVariable(value = "password") String password) {
+        User updatedUser = userService.updateUserPassword(token, password);
         if (updatedUser != null) {
             return new ResponseEntity<>(userConverter.convertToUserDTO(updatedUser), HttpStatus.OK);
         }
@@ -85,7 +67,7 @@ public class UserController {
      * like address, email, first and last names.
      * @param token used to validate user
      * @param person the details to be added
-     * @return the corresponding PersonDTO object
+     * @return the corresponding PersonDTO
      */
     @PutMapping("/user/addDetails/{token}")
     public ResponseEntity<PersonDTO> addUserDetails(@PathVariable(value = "token") String token,
@@ -97,10 +79,7 @@ public class UserController {
         return ResponseEntity.badRequest().build();
     }
 
-    /**
-     * This method deletes an User from database
-     * @param id of the User to be deleted
-     */
+
     @DeleteMapping("/user/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable(value = "id") Long id) {

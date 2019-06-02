@@ -7,24 +7,10 @@ import java.math.BigDecimal;
  * a transfer between 2 accounts
  */
 public class TransferDetails {
-    /**
-     * Account number of the account from which the amount is transferred
-     */
+
     private String accountNumberFrom;
-
-    /**
-     * Account number of the account where the amount is transferred
-     */
     private String accountNumberTo;
-
-    /**
-     * The amount to be transferred
-     */
     private BigDecimal amount;
-
-    /**
-     * The details of the transfer
-     */
     private String details;
 
     public String getAccountNumberFrom() {

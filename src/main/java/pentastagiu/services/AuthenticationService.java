@@ -12,6 +12,11 @@ import pentastagiu.exceptions.TokenNotFoundException;
 import pentastagiu.exceptions.UserAlreadyLoggedInException;
 
 import java.util.Optional;
+
+/**
+ * This class handles the operations for
+ * authentication process: login, create, delete.
+ */
 @Service
 public class AuthenticationService {
 
@@ -42,6 +47,7 @@ public class AuthenticationService {
             if (authenticationToBeReturned.isPresent()) {
                 throw new UserAlreadyLoggedInException("User already logged in.");
             }else{
+                System.out.println("User '" + user.getUsername() + "' logged in successfully.");
                 return createAuthentication(user);
             }
         }else
@@ -78,6 +84,7 @@ public class AuthenticationService {
 
     public void deleteToken(String token) {
         if(existsByToken(token)) {
+            System.out.println("User logged out.");
             authenticationRepository.delete(authenticationRepository.findByToken(token).get());
         }else
            throw new TokenNotFoundException("Token not found");

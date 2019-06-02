@@ -1,4 +1,4 @@
-package pentastagiu.convertor;
+package pentastagiu.util;
 
 /**
  * This enum holds the type of a notification status.

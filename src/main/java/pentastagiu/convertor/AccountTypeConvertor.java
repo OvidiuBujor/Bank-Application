@@ -1,5 +1,7 @@
 package pentastagiu.convertor;
 
+import pentastagiu.util.AccountType;
+
 import java.beans.PropertyEditorSupport;
 
 public class AccountTypeConvertor extends PropertyEditorSupport {

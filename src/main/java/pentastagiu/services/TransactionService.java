@@ -2,15 +2,14 @@ package pentastagiu.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pentastagiu.convertor.OperationType;
-import pentastagiu.convertor.TransactionType;
+import pentastagiu.exceptions.AccountTypesMismatchException;
 import pentastagiu.model.Account;
 import pentastagiu.model.Authentication;
 import pentastagiu.model.Notification;
 import pentastagiu.model.Transaction;
 import pentastagiu.repository.TransactionRepository;
-import pentastagiu.exceptions.AccountTypesMismatchException;
-import pentastagiu.exceptions.CustomException;
+import pentastagiu.util.OperationType;
+import pentastagiu.util.TransactionType;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -48,7 +47,6 @@ public class TransactionService {
      * @param amount that is transferred
      * @param details of the transfer
      * @return the corresponding notification of the transfer
-     * @throws CustomException in case account types don't match
      */
     public Notification saveTransfer(String accountNumberFrom, String accountNumberTo, BigDecimal amount, String details){
         Account accountFrom = accountService.getAccountByAccountNumber(accountNumberFrom);
@@ -97,14 +95,6 @@ public class TransactionService {
     /**
      * This method saves a transaction that has all the
      * details passed as parameters.
-     * @param accountFrom the account from which the amount
-     *                    is transferred
-     * @param amount to be transferred
-     * @param accountTo the account to which the amount
-     *                  is transferred to
-     * @param details of the transaction
-     * @param transactionType the type of the transaction:
-     *                        incoming or outgoing
      */
     private void saveTransaction(Account accountFrom,
                                  BigDecimal amount,

@@ -1,4 +1,4 @@
-package pentastagiu.convertor;
+package pentastagiu.DTOs;
 
 public class PersonDTO {
     private String username;
@@ -7,7 +7,7 @@ public class PersonDTO {
     private String email;
     private String address;
 
-    PersonDTO(String username, String firstName, String lastName, String email, String address) {
+    public PersonDTO(String username, String firstName, String lastName, String email, String address) {
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;

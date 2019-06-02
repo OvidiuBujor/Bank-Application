@@ -1,6 +1,6 @@
 package pentastagiu.model;
 
-import pentastagiu.convertor.OperationType;
+import pentastagiu.util.OperationType;
 
 import java.math.BigDecimal;
 
@@ -10,15 +10,9 @@ import java.math.BigDecimal;
  * a withdraw.
  */
 public class OperationAccountDetails {
-    /**
-     * The account number of the account
-     */
+
     private String accountNumber;
 
-    /**
-     * The amount that will be used
-     * in operation
-     */
     private BigDecimal amount;
 
     /**

@@ -17,6 +17,7 @@ class UserServiceTest {
 
     @Autowired
     private UserService userService;
+
     @Test
     void getUserById() {
         User user = authenticationService.findByToken("jCHk8ui2faMP5Tpu3mbb").getUser();

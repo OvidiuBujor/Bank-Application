@@ -1,4 +1,4 @@
-package pentastagiu.convertor;
+package pentastagiu.DTOs;
 
 import java.time.LocalDateTime;
 

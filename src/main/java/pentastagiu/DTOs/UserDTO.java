@@ -1,4 +1,4 @@
-package pentastagiu.convertor;
+package pentastagiu.DTOs;
 
 public class UserDTO {
     private String username;

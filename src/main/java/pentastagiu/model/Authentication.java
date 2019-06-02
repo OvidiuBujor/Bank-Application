@@ -37,9 +37,6 @@ public class Authentication {
     @Column(name = "creation_time")
     private LocalDateTime creationTime;
 
-    /**
-     * This method adds the creation time of the authentication
-     */
     @PrePersist
     private void prePersist(){
         creationTime = LocalDateTime.now();

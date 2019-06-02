@@ -1,7 +1,7 @@
 package pentastagiu.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import pentastagiu.convertor.TransactionType;
+import pentastagiu.util.TransactionType;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -23,19 +23,13 @@ public class Transaction {
      */
     @Column(name = "account")
     private String account;
-    /**
-     * The amount transferred
-     */
+
     @Column(name = "amount")
     private BigDecimal amount;
-    /**
-     * Details of the transaction
-     */
+
     @Column(name = "details")
     private String details;
-    /**
-     * Time when the transaction was created
-     */
+
     @Column(name = "created_time")
     private LocalDateTime createdTime;
     /**
@@ -53,9 +47,6 @@ public class Transaction {
     @JsonIgnoreProperties("transactionList")
     private Account accountID;
 
-    /**
-     * This method adds the time when the transaction was created.
-     */
     @PrePersist
     void prePersist(){
         this.createdTime = LocalDateTime.now();

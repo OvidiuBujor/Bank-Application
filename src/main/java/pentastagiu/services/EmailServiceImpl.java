@@ -4,10 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
-import pentastagiu.model.Mail;
+import pentastagiu.util.Mail;
 import pentastagiu.model.Notification;
 import pentastagiu.model.Person;
 
+/**
+ * This class is used to send notifications
+ * regarding transfers.
+ */
 @Service
 public class EmailServiceImpl implements EmailService{
 

@@ -15,30 +15,19 @@ public class Person {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private long id;
-    /**
-     * The address of the user
-     */
+
     @Column(name = "address")
     private String address;
-    /**
-     * First name of the user
-     */
+
     @Column(name = "first_name")
     private String firstName;
-    /**
-     * Last name of the user
-     */
+
     @Column(name = "last_name")
     private String lastName;
-    /**
-     * Email of the user
-     */
+
     @Column(name = "email")
     private String email;
-    /**
-     * The corresponding user, creates the connection
-     * with the User class
-     */
+
     @OneToOne
     @JoinColumn(name= "userID")
     @JsonIgnoreProperties("details")

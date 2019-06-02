@@ -1,4 +1,6 @@
-package pentastagiu.convertor;
+package pentastagiu.DTOs;
+
+import pentastagiu.util.TransactionType;
 
 import java.math.BigDecimal;
 

@@ -1,4 +1,4 @@
-package pentastagiu.convertor;
+package pentastagiu.util;
 
 public enum OperationType {
     DEPOSIT("DEPOSIT"), WITHDRAW("WITHDRAW");

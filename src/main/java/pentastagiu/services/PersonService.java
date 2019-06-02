@@ -27,13 +27,6 @@ public class PersonService {
         this.authenticationService = authenticationService;
     }
 
-    /**
-     * This method returns the Person corresponding
-     * to the passed id as parameter
-     * @param id of the Person to be returned
-     * @return the corresponding Person if the person exists,
-     * an empty Person object otherwise
-     */
     public Person getPersonDetails(Long id){
         Optional<Person> personDetails = personRepository.findById(id);
         return personDetails.orElseGet(Person::new);

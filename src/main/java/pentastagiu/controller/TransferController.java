@@ -5,9 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pentastagiu.convertor.NotificationConvertor;
-import pentastagiu.convertor.NotificationDTO;
+import pentastagiu.DTOs.NotificationDTO;
 import pentastagiu.convertor.TransactionConvertor;
-import pentastagiu.convertor.TransactionDTO;
+import pentastagiu.DTOs.TransactionDTO;
 import pentastagiu.model.*;
 import pentastagiu.services.AuthenticationService;
 import pentastagiu.services.TransactionService;
@@ -64,8 +64,7 @@ public class TransferController {
      * This method returns all the transactions for the
      * user with the token provided as parameter.
      * @param token used to validate user
-     * @return list of transactions for user with the token
-     * provided as parameter
+     * @return list of transactions for this user
      */
     @GetMapping("/transaction/{token}")
     @ResponseStatus(HttpStatus.OK)

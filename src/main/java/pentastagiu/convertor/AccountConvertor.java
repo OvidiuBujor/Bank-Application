@@ -1,6 +1,7 @@
 package pentastagiu.convertor;
 
 import org.springframework.stereotype.Component;
+import pentastagiu.DTOs.AccountDTO;
 import pentastagiu.model.Account;
 
 import java.util.List;

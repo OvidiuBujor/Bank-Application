@@ -3,7 +3,7 @@ package pentastagiu.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import pentastagiu.convertor.AccountType;
+import pentastagiu.util.AccountType;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -28,15 +28,11 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private long id;
-    /**
-     * The account number of the account
-     */
+
     @Column(name = "account_number", unique = true)
     @Size(min = 24,max = 24)
     private String accountNumber;
-    /**
-     * Current balance of the account
-     */
+
     @Column(name = "balance")
     private BigDecimal balance;
     /**
@@ -44,16 +40,13 @@ public class Account {
      */
     @Column(name = "account_type")
     private AccountType accountType;
-    /**
-     * Time when the account was created
-     */
+
     @Column(name = "created_time")
     private LocalDateTime createdTime;
-    /**
-     * Time when the account was last updated
-     */
+
     @Column(name = "updated_time")
     private LocalDateTime updatedTime;
+
     /**
      * The owner of the account. Creates the connection
      * with the User class.
@@ -71,23 +64,20 @@ public class Account {
     @JsonIgnoreProperties("accountID")
     private List<Transaction> transactionList = new ArrayList<>();
 
-    /**
-     * Empty constructor used for initialization of some accounts
-     * that will be generated after some future calculations.
-     */
     public Account(){
 
     }
 
+    /**
+     * This constructor is used for conversion of the Account
+     * to AccountDTO.
+     */
     public Account(String accountNumber, BigDecimal balance, AccountType accountType){
         this.accountNumber = accountNumber;
         this.balance = balance;
         this.accountType = accountType;
     }
 
-    /**
-     * This method adds the time when the account was created.
-     */
     @PrePersist
     void prePersit(){
         this.createdTime = LocalDateTime.now();
@@ -95,9 +85,6 @@ public class Account {
         LOGGER.info("Account '" + this.getAccountNumber() + "' created.");
     }
 
-    /**
-     * This method adds the time when the account is updated.
-     */
     @PreUpdate
     void preUpdate(){
         this.updatedTime = LocalDateTime.now();

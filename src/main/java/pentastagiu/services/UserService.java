@@ -25,25 +25,18 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    /**
-     * This method gets the User based on
-     * the id sent as parameter.
-     * @param id of the returned user
-     * @return the user with the id passed as
-     * parameter
-     */
     public User getUserById(Long id) {
         Optional<User> userToReturn = userRepository.findById(id);
         return userToReturn.orElseGet(User::new);
     }
 
-    /**
-     * This method creates a new User
-     * @param user the user to be created
-     * @return the created User
-     * @throws CustomException in case user is
-     * already registered.
-     */
+    User getUserByUsername(String username){
+        Optional<User> result = userRepository.findByUsername(username);
+        if(result.isPresent())
+            return result.get();
+        throw new UserNotFoundException("User does not exists.");
+    }
+
     public User createUser(User user) {
         Optional<User> result = userRepository.findByUsername(user.getUsername());
         if (result.isPresent())
@@ -53,14 +46,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    /**
-     * This method updates the password for a
-     * user that is currently logged in.
-     * @param token used to validate the user
-     * @param password the new password
-     * @return the updated User
-     */
-    public User updateUser(String token, String password) {
+    public User updateUserPassword(String token, String password) {
         if (authenticationService.existsByToken(token)){
                 Authentication authentication = authenticationService.findByToken(token);
                 User userToUpdate = authentication.getUser();
@@ -71,39 +57,17 @@ public class UserService {
          throw new TokenNotFoundException("Authentication failed. Token not found. ");
     }
 
-    /**
-     * This method deletes an user based on the id
-     * provided as parameter.
-     * @param id of the user to be deleted
-     */
     public void deleteUserById(Long id) {
         userRepository.deleteById(id);
     }
 
     /**
      * This method validates the credentials of an
-     * user that wants to login
-     * @param username of the user that wants to login
-     * @param password of the user that wants to login
-     * @return true if user credentials are correct,
-     * false otherwise
+     * user that wants to login.
      */
     boolean validateUser(String username, String password){
         return userRepository.findByUsernameAndPassword(username, password).isPresent();
     }
 
-    /**
-     * This method returns an User
-     * based on the username passed as parameter.
-     * @param username of the user to be found
-     * @return the corresponding User
-     * @throws CustomException in case User doesn't
-     * exists in database.
-     */
-    User getUserByUsername(String username){
-        Optional<User> result = userRepository.findByUsername(username);
-        if(result.isPresent())
-            return result.get();
-        throw new UserNotFoundException("User does not exists.");
-    }
+
 }

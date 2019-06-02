@@ -2,8 +2,8 @@ package pentastagiu.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import pentastagiu.convertor.AccountType;
-import pentastagiu.convertor.OperationType;
+import pentastagiu.util.AccountType;
+import pentastagiu.util.OperationType;
 import pentastagiu.exceptions.*;
 import pentastagiu.model.Account;
 import pentastagiu.model.Authentication;
@@ -16,7 +16,7 @@ import java.util.Optional;
 
 /**
  * This class handles the operations for accounts:
- * deposit and withdraw.
+ * create, deposit and withdraw.
  */
 
 @Service
@@ -64,10 +64,10 @@ public class AccountService {
         return String.format("%016d", accountRepository.count());
     }
 
-    public Account updateBalanceAccount(String accountNumber, BigDecimal amount, OperationType deposit) {
+    public Account updateBalanceAccount(String accountNumber, BigDecimal amount, OperationType operationType) {
              Account accountToBeUpdated = getAccountByAccountNumber(accountNumber);
              BigDecimal initialBalance = accountToBeUpdated.getBalance();
-             if(deposit == OperationType.DEPOSIT){
+             if(operationType == OperationType.DEPOSIT){
                  initialBalance = initialBalance.add(amount);
              }else {
                  if(initialBalance.compareTo(amount) >= 0)

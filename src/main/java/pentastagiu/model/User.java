@@ -25,20 +25,15 @@ public class User {
 
     @Column(name = "password")
     private String password;
-    /**
-     * The time when the user was created
-     */
+
     @Column(name = "created_time")
     private LocalDateTime createdTime;
 
-    /**
-     * The time of the last update for the user
-     */
     @Column(name = "updated_time")
     private LocalDateTime updatedTime;
 
     /**
-     * User personal details
+     * User personal details: address, first and last name,email.
      */
     @OneToOne(mappedBy = "user", orphanRemoval = true)
     @JsonIgnoreProperties("user")
@@ -52,7 +47,8 @@ public class User {
     private Authentication reference;
 
     /**
-     * The list of notifications for user
+     * The list of notifications for user corresponding
+     * to all his transfers.
      */
     @OneToMany(mappedBy = "user", orphanRemoval = true)
     @JsonIgnoreProperties("user")

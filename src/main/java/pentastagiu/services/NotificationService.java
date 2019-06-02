@@ -8,6 +8,10 @@ import pentastagiu.repository.NotificationRepository;
 
 import java.time.LocalDateTime;
 
+/**
+ * This class handles the operations
+ * regarding notifications: add, update.
+ */
 @Service
 public class NotificationService {
 
@@ -28,6 +32,10 @@ public class NotificationService {
         return notificationRepository.save(notificationToBeSaved);
     }
 
+    /**
+     * This method is used to update the status a notification
+     * once is sent to the user via email.
+     */
     public Notification updateNotification(Notification notification){
         return notificationRepository.save(notification);
     }

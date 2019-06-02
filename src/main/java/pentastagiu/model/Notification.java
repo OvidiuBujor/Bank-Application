@@ -1,7 +1,7 @@
 package pentastagiu.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import pentastagiu.convertor.NotificationStatus;
+import pentastagiu.util.NotificationStatus;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -18,21 +18,19 @@ public class Notification {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private long id;
-    /**
-     * The details of the transfer
-     */
+
     @Column(name = "details")
     private String details;
-    /**
-     * Time when the transfer was created
-     */
+
     @Column(name = "created_time")
     private LocalDateTime createdTime;
+
     /**
      * Time when the notification was send to the user
      */
     @Column(name = "sent_time")
     private LocalDateTime sentTime;
+
     /**
      * Status of the notification:
      * SEND(when the notification was sent to the user) or

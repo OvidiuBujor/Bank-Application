@@ -1,9 +1,8 @@
-package pentastagiu.model;
+package pentastagiu.util;
 
 /**
- * This class represents the email
- * object that is sent for each
- * notification.
+ * This class represents the email object that
+ * is sent for each notification.
  */
 public class Mail {
 
@@ -22,7 +21,7 @@ public class Mail {
         this.content = content;
     }
 
-    public String getFrom() {
+    String getFrom() {
         return from;
     }
 
@@ -38,7 +37,7 @@ public class Mail {
         this.to = to;
     }
 
-    public String getSubject() {
+    String getSubject() {
         return subject;
     }
 
@@ -46,7 +45,7 @@ public class Mail {
         this.subject = subject;
     }
 
-    public String getContent() {
+    String getContent() {
         return content;
     }
 
