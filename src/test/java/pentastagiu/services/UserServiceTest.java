@@ -20,7 +20,7 @@ class UserServiceTest {
 
     @Test
     void getUserById() {
-        User user = authenticationService.findByToken("jCHk8ui2faMP5Tpu3mbb").getUser();
+        User user = authenticationService.findByToken("fYonKtquD8WCgctRH6za").getUser();
         assertEquals(user ,userService.getUserById((long) 1));
     }
 

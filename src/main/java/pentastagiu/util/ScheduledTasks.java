@@ -8,7 +8,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import pentastagiu.model.*;
 import pentastagiu.services.AuthenticationService;
-import pentastagiu.services.EmailServiceImpl;
+import pentastagiu.services.EmailService;
 import pentastagiu.services.NotificationService;
 import pentastagiu.services.PersonService;
 
@@ -28,7 +28,7 @@ public class ScheduledTasks {
 
     private NotificationService notificationService;
 
-    private EmailServiceImpl emailServiceImpl;
+    private EmailService emailService;
 
     private PersonService personService;
 
@@ -42,11 +42,11 @@ public class ScheduledTasks {
 
     @Autowired
     public ScheduledTasks(NotificationService notificationService,
-                          EmailServiceImpl emailServiceImpl,
+                          EmailService emailService,
                           PersonService personService,
                           AuthenticationService authenticationService){
         this.notificationService = notificationService;
-        this.emailServiceImpl = emailServiceImpl;
+        this.emailService = emailService;
         this.personService = personService;
         this.authenticationService = authenticationService;
     }
@@ -64,8 +64,8 @@ public class ScheduledTasks {
                 User user = notification.getUser();
                 Person personDetails = personService.getPersonDetails(user.getId());
                 if(personDetails.getEmail() != null) {
-                    Mail email = emailServiceImpl.createEmail(personDetails, notification);
-                    emailServiceImpl.send(email.getFrom(), email.getTo(), email.getSubject(), email.getContent());
+                    Mail email = emailService.createEmail(personDetails, notification);
+                    emailService.send(email.getFrom(), email.getTo(), email.getSubject(), email.getContent());
                     notification.setStatus(NotificationStatus.SEND);
                     notificationService.updateNotification(notification);
                     System.out.println("Email sent for notification: " + notification.getDetails());
